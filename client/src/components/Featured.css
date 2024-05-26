@@ -1,0 +1,46 @@
+.featured-products-carousel {
+  width: 100%;  /* Fills entire width */
+  overflow-x: scroll;  /* Enables horizontal scrolling */
+  white-space: nowrap; /* Prevents line breaks */
+  scroll-snap-type: x mandatory; /* Enables snapping */
+}
+
+.carousel-container {
+  display: flex;
+  scroll-snap-destination: 0px 0px; /* Defines snapping area */
+}
+
+.carousel-item {
+  flex-shrink: 0; /* Prevents items from shrinking */
+  scroll-snap-align: start; /* Snaps items to the left */
+  padding: 1rem;  /* Add some space between items */
+  /* Style product details here (image, title, price, etc.) */
+}
+
+/* Responsive Styles */
+
+@media (max-width: 768px) {
+  .carousel-item {
+    /* 2 items per row on medium screens */
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel-item {
+    /* 1 item per row on mobile */
+  }
+  .carousel-control {
+    display: none; /* Hide controls on mobile */
+  }
+}
+
+/* Style carousel controls (optional) */
+
+.carousel-control {
+  opacity: 0.5;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.featured-products-carousel:hover .carousel-control {
+  opacity: 1; /* Show controls on hover */
+}

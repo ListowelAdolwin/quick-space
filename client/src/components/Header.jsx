@@ -2,8 +2,8 @@ import { useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { FaRegHeart, FaRegUserCircle } from "react-icons/fa";
-import logo_desktop from "../assets/logo_desktop.png";
-import logo_mobile from "../assets/logo_mobile.png";
+import logo_desktop from "../assets/logo_desktop-min.png";
+import logo_mobile from "../assets/logo_mobile-min.png";
 import { useSelector } from "react-redux";
 
 const Header = () => {
@@ -20,7 +20,7 @@ const Header = () => {
 							className="hidden sm:inline-block sm:w-32 sm:h-auto md:w-40 md:h-16"
 							src={logo_desktop}
 							alt="Logo"
-						/>
+						/> 
 						<img
 							className="sm:hidden w-12 h-12"
 							src={logo_mobile}
@@ -187,14 +187,14 @@ const Header = () => {
 					>
 						About
 					</Link>
-					<Link
-						to="/contact"
-						className="text-gray-800 hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
-					>
-						Contact
-					</Link>
 					{currentUser ? (
 						<div>
+							<Link
+								to="/add-product"
+								className="text-gray-800 hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
+							>
+								Add Product
+							</Link>
 							<Link
 								to="/favourites"
 								className="text-gray-800 hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"

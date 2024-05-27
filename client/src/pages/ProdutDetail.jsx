@@ -77,7 +77,7 @@ const ProductDetail = () => {
 				) : (
 					<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 						{product && (
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div className="grid grid-cols-1 md:grid-cols-2 md:gap-6">
 								<div className="swipper-image w-full rounded-md">
 									<div className="bg-white rounded-xl py-3 text-blue-900 flex flex-col space-y-4 h-full">
 										<Swiper

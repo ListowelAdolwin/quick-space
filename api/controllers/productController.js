@@ -150,3 +150,24 @@ export const removeFromFavorites = async (req, res) => {
 		});
 	}
 };
+
+
+
+
+export const getFavoriteProducts = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found!" });
+        }
+
+        const favorites = await Product.find({ _id: { $in: user.favourites } });
+
+        res.status(200).json(favorites);
+    } catch (error) {
+        res.status(500).json({ message: "An error occurred retrieving favorite products", error: error.message });
+    }
+};
+

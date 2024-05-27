@@ -39,39 +39,10 @@ const Shop = () => {
 							</h1>
 							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 								{products.map((product) => (
-									// <Link
-									// 	to={`/product/${product._id}`}
-									// 	key={product._id}
-									// 	className="bg-white rounded-lg overflow-hidden shadow-md"
-									// >
-									// 	<img
-									// 		src={product.imageUrls[0]}
-									// 		alt={product.name}
-									// 		className="w-full h-40 pt-2 object-contain object-center"
-									// 	/>
-									// 	<div className="p-4">
-									// 		<h2 className="text-xl font-semibold text-gray-800">
-									// 			{product.name}
-									// 		</h2>
-									// 		<p className="text-gray-600 mt-2">
-									// 			₵{product.price}
-									// 		</p>
-									// 		<div className="flex items-center mt-6 space-x-4">
-									// 			<button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
-									// 				<CiViewList className="mr-2" />{" "}
-									// 				Details
-									// 			</button>
-									// 			<button className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center">
-									// 				<FiHeart className="mr-2" />{" "}
-									// 				Favourite
-									// 			</button>
-									// 		</div>
-									// 	</div>
-									// </Link>
 									<Link
 										to={`/product/${product._id}`}
 										key={product._id}
-										className="relative m-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
+										className="relative lg:m-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
 									>
 										<div className="flex items-center justify-center">
 											<p className="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">

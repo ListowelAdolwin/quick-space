@@ -1,13 +1,13 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import Product from "../models/Product.js"
 
 export const userProfile = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const userProfile = await User.findById(id);
+		const userProducts = await Product.find({vendor: userProfile})
 		const { password: pass, ...rest } = userProfile._doc;
-		return res.status(200).json(rest);
+		return res.status(200).json({...rest, products: userProducts});
 	} catch (error) {
 		return res.status(400).json({ message: error.message });
 	}

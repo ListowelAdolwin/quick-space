@@ -12,12 +12,14 @@ import Login from "./pages/Login";
 import CategoryItems from "./pages/CategoryItems";
 import AddProduct from "./pages/AddProduct";
 import UpdateProfile from "./pages/UpdateProfile";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
 	return (
 		<>
 			<BrowserRouter>
 				<Header />
+				<ScrollToTop />
 				<Routes>
 					<Route exact path="/" element={<Home />} />
 					<Route path="/home" element={<Home />} />

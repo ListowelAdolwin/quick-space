@@ -5,20 +5,21 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
 import "./SwipperStyles.css";
-import { CiStar } from "react-icons/ci";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import PageLoader from "../components/PageLoader";
 import useFavorites from "../hooks/useFavorites";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaPhone } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { Hearts } from "react-loader-spinner";
 
 const ProductDetail = () => {
 	const { addToFavorites, removeFromFavorites } = useFavorites();
 	const [isFavorited, setIsFavorited] = useState(false);
 	const [product, setProduct] = useState(null);
 	const [pageLoading, setPageLoading] = useState(true);
+	const [likeLoading, setLikeLoading] = useState(false);
 
 	const params = useParams();
 	const id = params.id;
@@ -26,13 +27,24 @@ const ProductDetail = () => {
 	const { currentUser } = useSelector((state) => state.user);
 
 	const reviews = [
-		{ id: 1, name: "Alice", rating: 5, comment: "Great product!" },
-		{ id: 2, name: "Bob", rating: 4, comment: "Good value for money." },
+		{
+			id: 1,
+			name: "Alice",
+			rating: 5,
+			comment: "Wow, Great product! Highly recommend",
+		},
+		{
+			id: 2,
+			name: "Bob",
+			rating: 4,
+			comment: "Good value for money. Could have been better though",
+		},
 		{
 			id: 3,
 			name: "Charlie",
 			rating: 4,
-			comment: "Satisfied with the purchase.",
+			comment:
+				"I was hesitant but went ahead to purchase. Satisfied with the purchase.",
 		},
 	];
 
@@ -58,14 +70,18 @@ const ProductDetail = () => {
 	}, []);
 
 	const handleFavorite = async () => {
-		setIsFavorited(true);
+		setLikeLoading(true);
 		const response = await addToFavorites(product._id);
+		setIsFavorited(true);
+		setLikeLoading(false);
 		console.log("Favorite results: ", response);
 	};
 
 	const handleUnfavorite = async () => {
-		setIsFavorited(false);
+		setLikeLoading(true);
 		const response = await removeFromFavorites(product._id);
+		setIsFavorited(false);
+		setLikeLoading(false);
 		console.log("Unfavorite results: ", response);
 	};
 
@@ -77,9 +93,9 @@ const ProductDetail = () => {
 				) : (
 					<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 						{product && (
-							<div className="grid grid-cols-1 md:grid-cols-2 md:gap-6">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
 								<div className="swipper-image w-full rounded-md">
-									<div className="bg-white rounded-xl py-3 text-blue-900 flex flex-col space-y-4 h-full">
+									<div className="bg-white rounded-xl py-1 sm:py-3 text-blue-900 flex flex-col space-y-0 sm:space-y-4 h-full">
 										<Swiper
 											pagination={{
 												type: "fraction",
@@ -107,18 +123,70 @@ const ProductDetail = () => {
 									<h1 className="text-3xl font-bold text-gray-800">
 										{product.name}
 									</h1>
-									<div className="flex items-center gap-16">
-										<p className="text-2xl text-gray-600 mt-4">
-											₵{product.price}
-										</p>
-										<div className="text-white flex items-center mt-4 px-3 py-1 bg-yellow-400 rounded-md">
-											<span className="flex items-center text-xl font-bold mr-1">
-												<CiStar />
+									<div className="flex items-center gap-5">
+										<div className="mt-4">
+											<span className="text-2xl sm:text-3xl lg:text-3xl font-bold text-slate-900">
+												₵{product.price}
 											</span>
-											<span className="text-lg font-semibold">
-												{product.rating}
+											<span className="text-md sm:text-lg text-slate-900 line-through">
+												₵
+												{(product.price - 78).toFixed(
+													2
+												)}
 											</span>
-											<span className="ml-2">/ 5.0</span>
+										</div>
+										<div className="font-bold flex items-center mt-4 px-3">
+											<div className="flex items-center">
+												<svg
+													aria-hidden="true"
+													className="h-5 w-5 text-yellow-500"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+												</svg>
+												<svg
+													aria-hidden="true"
+													className="h-5 w-5 text-yellow-500"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+												</svg>
+												<svg
+													aria-hidden="true"
+													className="h-5 w-5 text-yellow-500"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+												</svg>
+												<svg
+													aria-hidden="true"
+													className="h-5 w-5 text-yellow-500"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+												</svg>
+												<svg
+													aria-hidden="true"
+													className="h-5 w-5 text-yellow-500"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+												</svg>
+
+												<span className="text-white mr-2 ml-3 rounded bg-yellow-600 px-2.5 py-0.5 text-xs font-semibold">
+													5.0
+												</span>
+											</div>
 										</div>
 									</div>
 
@@ -136,30 +204,51 @@ const ProductDetail = () => {
 											Phone: {product.vendorContact}
 										</p>
 									</div>
-									<div className="flex items-center mt-6 space-x-4">
-										<button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded flex items-center">
-											<FiShoppingCart className="mr-2" />{" "}
+									<div className="w-full flex items-center mt-6 space-x-2 sm:space-x-4 overflow-hidden text-xs sm:text-sm">
+										<a
+											href={`tel:${product.vendorContact}`}
+											className="basis-1/3 border border-blue-600 hover:opacity-75 text-blue-700 font-bold py-2 px-1 sm:px-2 rounded flex items-center justify-center"
+										>
+											<FaPhone className="mr-1 sm:mr-2" />{" "}
+											Call Vendor
+										</a>
+										<button className="basis-1/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-1 sm:px-2 rounded flex items-center justify-center">
+											<FiShoppingCart className="mr-1 sm:mr-2" />{" "}
 											Add to Cart
 										</button>
-										<button className="border border-red-600 hover:opacity-85 text-red-600 font-bold py-2 px-2 rounded">
-											{isFavorited ? (
-												<span
-													onClick={handleUnfavorite}
-													className="flex items-center"
-												>
-													<FaHeart className="mr-2 text-red-700 font-bold" />
-													Unfavourite
-												</span>
-											) : (
-												<span
-													onClick={handleFavorite}
-													className="flex items-center"
-												>
-													<FiHeart className="mr-2 text-red-700 font-bold" />
-													Favourite
-												</span>
-											)}
-										</button>
+										{likeLoading ? (
+											<Hearts
+												height="40"
+												width="40"
+												color="red"
+												ariaLabel="hearts-loading"
+												wrapperStyle={{}}
+												wrapperClass=""
+												visible={true}
+											/>
+										) : (
+											<button className="basis-1/3 border border-red-600 text-center hover:opacity-75 text-red-600 font-bold py-2 px-1 sm:px-2 rounded like-button">
+												{isFavorited ? (
+													<span
+														onClick={
+															handleUnfavorite
+														}
+														className="flex items-center justify-center"
+													>
+														<FaHeart className="mr-1 sm:mr-2 text-red-700 font-bold dislike transition-all duration-100" />
+														Unfavourite
+													</span>
+												) : (
+													<span
+														onClick={handleFavorite}
+														className="flex items-center justify-center"
+													>
+														<FiHeart className="mr-2 text-red-700 font-bold like transition-all duration-100" />
+														Favourite
+													</span>
+												)}
+											</button>
+										)}
 									</div>
 									<div className="mt-8">
 										<h2 className="text-xl font-semibold text-gray-800">

@@ -7,53 +7,46 @@ import services from "../assets/category_images/services.jpg";
 import food from "../assets/category_images/food.jpg";
 import book from "../assets/category_images/book.avif";
 
-export const categories = [
-	{
+export const categories = {
+	health_and_beauty: {
 		name: "Health and Beauty",
-		val: "health_and_beauty",
-		image: health_and_beauty,
-		qty: 45,
+    image: health_and_beauty,
+    qty: 45,
 	},
-	{
+	electronics: {
 		name: "Electronics",
-		val: "electronics",
-		image: appliances,
-		qty: 89,
+    image: appliances,
+    qty: 89,
 	},
-	{
+	airtime_and_data: {
 		name: "Airtime and Data",
-		val: "airtime_and_data",
-		image: airtime,
-		qty: 106,
+    image: airtime,
+    qty: 106,
 	},
-	{
+	furniture_and_appliances: {
 		name: "Furniture and Appliances",
-		val: "furniture_and_appliances",
-		image: furniture,
-		qty: 19,
+    image: furniture,
+    qty: 19,
 	},
-	{
+	fashion: {
 		name: "Fashion",
-		val: "fashion",
-		image: fashion,
-		qty: 95,
+    image: fashion,
+    qty: 95,
 	},
-	{
+	services: {
 		name: "Services",
-		val: "services",
-		image: services,
-		qty: 465,
+    image: services,
+    qty: 465,
 	},
-	{
-		name: "Food and Everyday Essentials",
-		val: "food_and_everyday_essentials",
-		image: food,
-		qty: 211,
+	food: {
+		name: "Food",
+    image: food,
+    qty: 123,
 	},
-	{
-		name: "Everything Else",
-		val: "others",
-		image: book,
-		qty: 203,
-	},
-];
+	others: {
+		name: "Everything else",
+    image: book,
+    qty: 123,
+	}
+};
+

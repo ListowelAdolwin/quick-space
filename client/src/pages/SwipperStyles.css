@@ -39,6 +39,33 @@ body {
   object-fit: contain;
 }
 
-.swipper-image {
-  height: 70%;
+/* Small screens (sm: 640px and up) */
+@media (min-width: 640px) {
+  .swipper-image {
+    height: 95%;
+  }
+}
+
+/* Medium screens (md: 768px and up) */
+@media (min-width: 768px) {
+  .like-button:hover{
+  .like{
+    font-size: 15px;
+  }
+  .dislike{
+    font-size: 15px;
+  }
+}
+
+  .swipper-image {
+    height: 70%;
+  }
+  
+}
+
+/* Large screens (lg: 1024px and up) */
+@media (min-width: 1024px) {
+  .swipper-image {
+    height: 70%;
+  }
 }

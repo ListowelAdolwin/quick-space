@@ -174,8 +174,8 @@ const AddProduct = () => {
 							required
 						>
 							<option value="">Select Category</option>
-							{categories.map((category) => (
-								<option key={category.val} value={category.val}>
+							{Object.entries(categories).map(([key, category]) => (
+								<option key={key} value={key}>
 									{category.name}
 								</option>
 							))}

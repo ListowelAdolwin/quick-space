@@ -9,10 +9,10 @@ const Categories = () => {
 					Shop by Category
 				</h2>
 				<div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-					{categories.map((category) => (
+					{Object.entries(categories).map(([key, category]) => (
 						<Link
-							to={`products/${category.val}`}
-							key={category.val}
+							to={`products/${key}`}
+							key={key}
 							className="group relative"
 						>
 							<div className="relative w-full h-72 bg-gray-200 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80">

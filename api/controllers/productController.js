@@ -82,7 +82,7 @@ export const getProduct = async (req, res) => {
 			price: result.price,
 			rating: result.rating,
 			imageUrls: result.imageUrls,
-			ratings: result.ratings,
+			vendorId: result.vendor._id,
 			vendorName: result.vendor.vendorDetails.name,
 			vendorContact: result.vendor.vendorDetails.contact,
 			vendorEmail: result.vendor.email,

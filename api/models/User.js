@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
+    school: {
+        type: String,
+        default: "knust"
+    },
     isVendor: {
         type: Boolean,
         default: false

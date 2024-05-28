@@ -18,6 +18,10 @@ const productSchema = new mongoose.Schema(
       type: [String],
       required: [true, 'Product image(s) required!']
     },
+    school: {
+        type: String,
+        default: "knust"
+    },
     vendor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -27,22 +31,6 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
-    ratings: {
-      type: [
-        {
-          user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-          },
-          rating: {
-            type: Number,
-            required: true
-          },
-          review: String
-        }
-      ],
-      required: false
-    }
   },
   { timestamps: true }
 )

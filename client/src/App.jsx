@@ -13,6 +13,7 @@ import CategoryItems from "./pages/CategoryItems";
 import AddProduct from "./pages/AddProduct";
 import UpdateProfile from "./pages/UpdateProfile";
 import ScrollToTop from "./components/ScrollToTop";
+import SearchProducts from "./pages/SearchProducts";
 
 function App() {
 	return (
@@ -29,9 +30,13 @@ function App() {
 					<Route path="/register" element={<Register />} />
 					<Route path="/login" element={<Login />} />
 					<Route path="/profile/:id" element={<UserProfile />} />
-					<Route path="/update-profile/:id" element={<UpdateProfile />} />
+					<Route
+						path="/update-profile/:id"
+						element={<UpdateProfile />}
+					/>
 					<Route path="/product/:id" element={<ProductDetail />} />
 					<Route path="/add-product" element={<AddProduct />} />
+					<Route path="/search" element={<SearchProducts />} />
 					<Route
 						path="/products/:category"
 						element={<CategoryItems />}

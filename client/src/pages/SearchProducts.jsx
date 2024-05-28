@@ -170,7 +170,7 @@ export default function SearchProducts() {
 				</form>
 			</div>
 
-			<div className="flex-1">
+			<div className="flex-1 min-h-screen">
 				<h1 className="text-3xl font-semibold border-b p-3 text-slate-700">
 					Search results:
 				</h1>

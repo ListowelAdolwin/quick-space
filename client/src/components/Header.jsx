@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaRegHeart, FaRegUserCircle } from "react-icons/fa";
 import logo_desktop from "../assets/logo_desktop-min.png";
 import logo_mobile from "../assets/logo_mobile-min.png";
 import { useSelector } from "react-redux";
+import { schools } from "../data/schools";
 
 const Header = () => {
 	const [isOpen, setIsOpen] = useState(false);
+	const [searchTerm, setSearchTerm] = useState("");
+	const [school, setSchool] = useState("");
 
 	const { currentUser } = useSelector((state) => state.user);
+	const navigate = useNavigate();
 
 	const handleOverlayClick = () => {
 		setIsOpen(false);
@@ -21,9 +25,20 @@ const Header = () => {
 		}
 	};
 
+	const handleSchoolChange = (e) => {
+		navigate(`/search?school=${e.target.value}`);
+	};
+
+	const handleFormSubmit = (e) => {
+		e.preventDefault();
+		navigate(`/search?searchTerm=${e.target.value}`);
+	};
+
 	useEffect(() => {
-		setIsOpen(false)
-	}, [])
+		const urlParams = new URLSearchParams(location.search);
+		setSearchTerm(urlParams.get("searchTerm"));
+		setSchool(urlParams.get("school"));
+	}, [location.search]);
 
 	return (
 		<nav className="bg-white shadow-md">
@@ -42,19 +57,24 @@ const Header = () => {
 						/>
 					</Link>
 					<div className="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 pl-2 py-1 rounded-md font-medium">
-						<select className="bg-gray-200 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-1 rounded-l-md">
+						<select
+							onChange={handleSchoolChange}
+							className="bg-gray-200 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-1 rounded-l-md"
+							value={school}
+						>
 							<option value="">Select School</option>
-							<option value="KNUST">KNUST</option>
-							<option value="UCC">UCC</option>
-							<option value="UG">UG</option>
-							<option value="UDS">UDS</option>
-							<option value="UEW">UEW</option>
-							<option value="UHAS">UHAS</option>
-							<option value="UMAT">UMAT</option>
+							<option value="all">All</option>
+							{Object.entries(schools).map(([key, school]) => (
+								<option key={key} value={key}>
+									{school}
+								</option>
+							))}
 						</select>
 						<div className="border-l border-gray-400 h-6 mx-2"></div>
 						<input
+							onChange={handleFormSubmit}
 							type="text"
+							value={searchTerm}
 							placeholder="Search product"
 							className="bg-gray-200 w-12 sm:w-36 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-2 pr-2 rounded-r-md"
 						/>

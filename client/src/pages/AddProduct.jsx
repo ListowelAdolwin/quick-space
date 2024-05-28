@@ -21,6 +21,7 @@ const AddProduct = () => {
 	const [formData, setFormData] = useState({
 		itemName: "",
 		price: "",
+		discount: 0,
 		category: "",
 		images: [],
 		imageUrls: [],
@@ -77,6 +78,7 @@ const AddProduct = () => {
 			const productData = {
 				name: formData.itemName,
 				price: formData.price,
+				discount: formData.discount,
 				category: formData.category,
 				imageUrls: urls,
 				vendor: currentUser._id,
@@ -98,6 +100,7 @@ const AddProduct = () => {
 					setFormData({
 						itemName: "",
 						price: "",
+						discount: 0,
 						category: "",
 						images: [],
 						imageUrls: [],
@@ -127,7 +130,7 @@ const AddProduct = () => {
 							className="block text-gray-700 font-bold mb-2"
 							htmlFor="itemName"
 						>
-							Item Name
+							Product Name
 						</label>
 						<input
 							type="text"
@@ -161,6 +164,27 @@ const AddProduct = () => {
 					<div className="mb-4">
 						<label
 							className="block text-gray-700 font-bold mb-2"
+							htmlFor="discount"
+						>
+							Discount
+							<div className="text-xs italic font-light py-1">
+								Want to offer a discount? How much discount?
+							</div>
+						</label>
+						<input
+							type="number"
+							name="discount"
+							id="discount"
+							value={formData.discount}
+							onChange={handleChange}
+							className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+							placeholder="Enter product discount"
+							required
+						/>
+					</div>
+					<div className="mb-4">
+						<label
+							className="block text-gray-700 font-bold mb-2"
 							htmlFor="category"
 						>
 							Category
@@ -174,11 +198,13 @@ const AddProduct = () => {
 							required
 						>
 							<option value="">Select Category</option>
-							{Object.entries(categories).map(([key, category]) => (
-								<option key={key} value={key}>
-									{category.name}
-								</option>
-							))}
+							{Object.entries(categories).map(
+								([key, category]) => (
+									<option key={key} value={key}>
+										{category.name}
+									</option>
+								)
+							)}
 						</select>
 					</div>
 					<div className="mb-4">

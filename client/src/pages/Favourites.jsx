@@ -1,19 +1,21 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { CiViewList } from "react-icons/ci";
-import { FiHeart } from "react-icons/fi";
-import {FaHeart} from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import PageLoader from "../components/PageLoader";
 
 const Favourites = () => {
-	const [favorites, setFavorites] = useState([])
+	const [favorites, setFavorites] = useState([]);
+	const [pageLoading, setPageLoading] = useState(true);
 
-	const BASE_URL = import.meta.env.VITE_BASE_URL
+	const BASE_URL = import.meta.env.VITE_BASE_URL;
 	const { currentUser } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		const getFavoriteProducts = async () => {
+			setPageLoading(true)
 			const response = await axios.get(
 				`${BASE_URL}/api/products/favorites/${currentUser?._id}`,
 				{
@@ -25,10 +27,10 @@ const Favourites = () => {
 			console.log("Favorite response: ", response);
 			if (response.status === 200) {
 				setFavorites(response.data);
-				
 			} else {
 				console.log("Favorite response: ", response);
 			}
+			setPageLoading(false)
 		};
 
 		getFavoriteProducts();
@@ -36,45 +38,50 @@ const Favourites = () => {
 
 	return (
 		<div className="flex flex-col min-h-screen">
-			<main className="flex-grow">
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-					<h1 className="text-3xl font-bold text-gray-800 mb-4">
-						My Favourites
-					</h1>
-					<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-1 gap-y-2 sm:gap-x-4 sm-gap-y-4">
-						{favorites.map((product) => (
-							<Link
-								to={`/product/${product._id}`}
-								key={product._id}
-								className="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
-							>
-								<span className="text-lg absolute right-2 top-2 hover:text-xl hover:opacity-85 transition-all duration-300"><FaHeart className="text-red-700" /></span>
-								<div className="flex items-center justify-center">
-									<p className="mx-0 sm:mx-0 mt-3 flex h-36 sm:h-40 overflow-hidden rounded-xl">
-										<img
-											className="object-cover"
-											src={product.imageUrls[0]}
-											alt="product image"
-										/>
-									</p>
-								</div>
-								<div className="mt-4 px-2 sm:px-4 pb-3 sm:pb-5">
-									<h5 className="text-lg sm:text-xl tracking-tight text-slate-900 line-clamp-1">
-										{product.name}
-									</h5>
-									<div className="mt-0 sm:mt-2 mb-1 sm:mb-5 flex items-center justify-between">
-										<p>
-											<span className="text-md sm:text-xl lg:text-2xl font-bold text-slate-900">
-												₵{product.price}
-											</span>
-											<span className="text-xs sm:text-sm text-slate-900 line-through">
-												₵
-												{(product.price - 78).toFixed(
-													2
-												)}
-											</span>
+			{pageLoading ? (
+				<PageLoader />
+			) : (
+				<main className="flex-grow">
+					<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+						<h1 className="text-3xl font-bold text-gray-800 mb-4">
+							My Favourites
+						</h1>
+						<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-1 gap-y-2 sm:gap-x-4 sm-gap-y-4">
+							{favorites.map((product) => (
+								<Link
+									to={`/product/${product._id}`}
+									key={product._id}
+									className="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
+								>
+									<span className="text-lg absolute right-2 top-2 hover:text-xl hover:opacity-85 transition-all duration-300">
+										<FaHeart className="text-red-700" />
+									</span>
+									<div className="flex items-center justify-center">
+										<p className="mx-0 sm:mx-0 mt-3 flex h-36 sm:h-40 overflow-hidden rounded-xl">
+											<img
+												className="object-cover"
+												src={product.imageUrls[0]}
+												alt="product image"
+											/>
 										</p>
-										{/* <div className="flex items-center">
+									</div>
+									<div className="mt-4 px-2 sm:px-4 pb-3 sm:pb-5">
+										<h5 className="text-lg sm:text-xl tracking-tight text-slate-900 line-clamp-1">
+											{product.name}
+										</h5>
+										<div className="mt-0 sm:mt-2 mb-1 sm:mb-5 flex items-center justify-between">
+											<p>
+												<span className="text-md sm:text-xl lg:text-2xl font-bold text-slate-900">
+													₵{product.price}
+												</span>
+												<span className="text-xs sm:text-sm text-slate-900 line-through">
+													₵
+													{(
+														product.price - 78
+													).toFixed(2)}
+												</span>
+											</p>
+											{/* <div className="flex items-center">
 													<svg
 														aria-hidden="true"
 														className="h-5 w-5 text-yellow-300"
@@ -124,17 +131,18 @@ const Favourites = () => {
 														5.0
 													</span>
 												</div> */}
+										</div>
+										<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-900 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+											<CiViewList className="text-xl font-bold" />
+											View details
+										</button>
 									</div>
-									<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-900 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
-										<CiViewList className="text-xl font-bold" />
-										View details
-									</button>
-								</div>
-							</Link>
-						))}
+								</Link>
+							))}
+						</div>
 					</div>
-				</div>
-			</main>
+				</main>
+			)}
 		</div>
 	);
 };

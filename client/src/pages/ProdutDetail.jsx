@@ -7,7 +7,7 @@ import { Pagination, Navigation } from "swiper/modules";
 import "./SwipperStyles.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import PageLoader from "../components/PageLoader";
 import useFavorites from "../hooks/useFavorites";
 import { FaHeart, FaPhone } from "react-icons/fa";
@@ -126,13 +126,13 @@ const ProductDetail = () => {
 									<div className="flex items-center gap-5">
 										<div className="mt-4">
 											<span className="text-2xl sm:text-3xl lg:text-3xl font-bold text-slate-900">
-												₵{product.price}
-											</span>
-											<span className="text-md sm:text-lg text-slate-900 line-through">
 												₵
 												{(product.price - 78).toFixed(
-													2
+													0
 												)}
+											</span>
+											<span className="text-md sm:text-lg text-slate-900 line-through">
+												₵{product.price}
 											</span>
 										</div>
 										<div className="font-bold flex items-center mt-4 px-3">
@@ -204,6 +204,12 @@ const ProductDetail = () => {
 											Phone: {product.vendorContact}
 										</p>
 									</div>
+									<Link
+										to={`/profile/${product.vendorId}`}
+										className="basis-1/3 border border-blue-600 hover:opacity-75 text-blue-700 font-bold py-2 mt-3 px-1 sm:px-2 rounded flex items-center justify-center"
+									>
+										See more products from vendor
+									</Link>
 									<div className="w-full flex items-center mt-6 space-x-2 sm:space-x-4 overflow-hidden text-xs sm:text-sm">
 										<a
 											href={`tel:${product.vendorContact}`}

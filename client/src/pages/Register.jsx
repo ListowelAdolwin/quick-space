@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
+import { schools } from "../data/schools";
+import { categories } from "../data/categories";
 
 const Register = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +17,7 @@ const Register = () => {
 		vendorName: "",
 		contact: "",
 		category: "",
+		school: "",
 	});
 
 	const navigate = useNavigate();
@@ -42,6 +45,7 @@ const Register = () => {
 			email: formData.email,
 			password: formData.password,
 			isVendor: userType === "vendor",
+			school: formData.school,
 		};
 
 		if (userType === "vendor") {
@@ -147,6 +151,31 @@ const Register = () => {
 							<div className="mb-4">
 								<label
 									className="block text-gray-700 font-bold mb-2"
+									htmlFor="school"
+								>
+									School
+								</label>
+								<select
+									name="school"
+									id="school"
+									value={formData.school}
+									onChange={handleChange}
+									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+									required
+								>
+									<option value="">Select school</option>
+									{Object.entries(schools).map(
+										([key, school]) => (
+											<option key={key} value={key}>
+												{school}
+											</option>
+										)
+									)}
+								</select>
+							</div>
+							<div className="mb-4">
+								<label
+									className="block text-gray-700 font-bold mb-2"
 									htmlFor="password"
 								>
 									Password
@@ -206,7 +235,11 @@ const Register = () => {
 											className="block text-gray-700 font-bold mb-2"
 											htmlFor="category"
 										>
-											Category
+											Products Category{" "}
+											<div className="text-xs italic font-light py-1">
+												Select the category your
+												products fall under
+											</div>
 										</label>
 										<select
 											name="category"
@@ -219,21 +252,16 @@ const Register = () => {
 											<option value="">
 												Select Category
 											</option>
-											<option value="electronics">
-												Electronics
-											</option>
-											<option value="clothing">
-												Clothing
-											</option>
-											<option value="home-garden">
-												Home & Garden
-											</option>
-											<option value="sports">
-												Sports
-											</option>
-											<option value="beauty-health">
-												Beauty & Health
-											</option>
+											{Object.entries(categories).map(
+												([key, category]) => (
+													<option
+														key={key}
+														value={key}
+													>
+														{category.name}
+													</option>
+												)
+											)}
 										</select>
 									</div>
 								</>

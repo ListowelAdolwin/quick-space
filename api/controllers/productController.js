@@ -3,8 +3,9 @@ import User from "../models/User.js";
 
 export const addProduct = async (req, res) => {
 	try {
-		const { name, price, category, imageUrls } = req.body;
+		const { name, price, category, imageUrls, discount } = req.body;
 		const vendor = req.user;
+		const school = vendor.school;
 
 		const newProduct = new Product({
 			name,
@@ -12,6 +13,8 @@ export const addProduct = async (req, res) => {
 			category,
 			imageUrls,
 			vendor,
+			school,
+			discount,
 		});
 
 		await newProduct.save();
@@ -151,23 +154,71 @@ export const removeFromFavorites = async (req, res) => {
 	}
 };
 
-
-
-
 export const getFavoriteProducts = async (req, res) => {
-    try {
-        const userId = req.params.id;
+	try {
+		const userId = req.params.id;
 
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "User not found!" });
-        }
+		const user = await User.findById(userId);
+		if (!user) {
+			return res.status(404).json({ message: "User not found!" });
+		}
 
-        const favorites = await Product.find({ _id: { $in: user.favourites } });
+		const favorites = await Product.find({ _id: { $in: user.favourites } });
 
-        res.status(200).json(favorites);
-    } catch (error) {
-        res.status(500).json({ message: "An error occurred retrieving favorite products", error: error.message });
-    }
+		res.status(200).json(favorites);
+	} catch (error) {
+		res.status(500).json({
+			message: "An error occurred retrieving favorite products",
+			error: error.message,
+		});
+	}
 };
 
+export const filterProducts = async (req, res) => {
+	try {
+		const searchTerm = req.query.searchTerm || "";
+		const price = req.query.price || "";
+		const category = req.query.category || "";
+		const school = req.query.school || "";
+		const limit = Number(req.query.limit) || 10;
+		const startIndex = Number(req.query.startIndex) || 0;
+
+		let sort = {};
+		if (price) {
+			sort.price = price === "asc" ? 1 : -1;
+		}
+
+		let query = {
+			$or: [{ name: { $regex: searchTerm, $options: "i" } }],
+		};
+
+		if (school) {
+			query.school = school;
+		}
+
+		if (category) {
+			query.category = category;
+		}
+
+		if (searchTerm) {
+			const users = await User.find({
+				username: { $regex: searchTerm, $options: "i" },
+			});
+
+			const userIds = users.map((user) => user._id);
+
+			query.$or.push({ vendor: { $in: userIds } });
+		}
+
+		const products = await Product.find(query)
+			.populate("vendor", "name") // Populate vendor name
+			.sort(sort)
+			.skip(startIndex)
+			.limit(limit);
+
+		res.status(200).json(products);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Server error in over" });
+	}
+};

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import User from '../models/User.js'
 
 export const register = async (req, res) => {
-  const { username, email, password, isVendor, vendorDetails } = req.body
+  const { username, email, password, isVendor, school, vendorDetails } = req.body
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'All fields are required!' })
     }
@@ -24,6 +24,7 @@ export const register = async (req, res) => {
       email,
       password: hashedP,
       isVendor,
+      school,
       vendorDetails: isVendor ? vendorDetails : undefined
     })
     await newUser.save()

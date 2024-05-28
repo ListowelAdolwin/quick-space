@@ -6,16 +6,19 @@ import { CiViewList } from "react-icons/ci";
 
 const FeaturedProductsCarousel = () => {
 	const [products, setProducts] = useState([]);
+	const [pageLoading, setPageLoading] = useState(true);
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 	useEffect(() => {
 		const getFeaturedProducts = async () => {
+			setPageLoading(true);
 			const response = await axios.get(
 				`${BASE_URL}/api/products/featured`
 			);
 			if (response.status === 200) {
 				setProducts(response.data);
+				setPageLoading(false);
 				console.log("Featured response: ", response);
 			} else {
 				console.log("Featured response: ", response);
@@ -28,6 +31,13 @@ const FeaturedProductsCarousel = () => {
 	return (
 		<div className="relative w-full max-w-7xl mx-auto py-16">
 			<h1 className="text-3xl font-bold ml-3 pb-5">Featured Products</h1>
+			{pageLoading && (
+				<div className="w-full flex gap-2 ps-2">
+					<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
+					<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
+					<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
+				</div>
+			)}
 			<div className="overflow-x-auto scrollbar-hide">
 				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-1 gap-y-2 sm:gap-x-4 sm-gap-y-4">
 					{products.map((product) => (

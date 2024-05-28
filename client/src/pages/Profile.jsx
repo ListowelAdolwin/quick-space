@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { CiViewList } from "react-icons/ci";
 import PageLoader from "../components/PageLoader";
+import { FaPhone } from "react-icons/fa";
 
 const UserProfile = () => {
 	const [userData, setUserData] = useState(null);
@@ -28,7 +29,7 @@ const UserProfile = () => {
 
 	useEffect(() => {
 		const getUserProfile = async () => {
-			setPageLoading(true)
+			setPageLoading(true);
 			const response = await axios.get(
 				`${BASE_URL}/api/users/profile/${id}`,
 				{
@@ -43,7 +44,7 @@ const UserProfile = () => {
 			} else {
 				console.log("Profile response: ", response.data);
 			}
-			setPageLoading(false)
+			setPageLoading(false);
 		};
 
 		getUserProfile();
@@ -73,27 +74,39 @@ const UserProfile = () => {
 									<p className="text-gray-600">
 										Email: {userData.email}
 									</p>
-									<p className="text-gray-600">
+									<p className="text-gray-600 flex items-center gap-3">
 										Contact Number:{" "}
-										{userData?.vendorDetails?.contact}
+										{userData?.vendorDetails?.contact}{" "}
+										<a
+											href={`tel:${userData.vendorDetails?.contact}`}
+											className="flex items-center gap-1 px-2 py-1 border border-blue-500 rounded-md"
+										>
+											<FaPhone className="text-xs" />
+											call
+										</a>
 									</p>
 									<p className="text-gray-600">
-										School: {user.school}
+										School:{" "}
+										<span className="uppercase">
+											{userData.school}
+										</span>
 									</p>
-									<div className="flex gap-2">
-										<button
-											onClick={logout}
-											className="mt-4 bg-red-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-										>
-											Logout
-										</button>
-										<Link
-											to={`/update-profile/${userData._id}`}
-											className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-										>
-											Update Profile
-										</Link>
-									</div>
+									{currentUser._id === userData._id && (
+										<div className="flex gap-2">
+											<button
+												onClick={logout}
+												className="mt-4 bg-red-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+											>
+												Logout
+											</button>
+											<Link
+												to={`/update-profile/${userData._id}`}
+												className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+											>
+												Update Profile
+											</Link>
+										</div>
+									)}
 								</div>
 
 								<div className="w-full lg:-mt-12 lg:basis-8/12">

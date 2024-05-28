@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-//import { products } from "../data/products";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { CiViewList } from "react-icons/ci";

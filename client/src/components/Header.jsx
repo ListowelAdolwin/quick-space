@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegHeart, FaRegUserCircle } from "react-icons/fa";
-import logo_desktop from "../assets/logo_desktop-min.png";
-import logo_mobile from "../assets/logo_mobile-min.png";
 import { useSelector } from "react-redux";
 import { schools } from "../data/schools";
 
@@ -47,12 +45,12 @@ const Header = () => {
 					<Link to="/" className="flex items-center">
 						<img
 							className="hidden sm:inline-block sm:w-32 sm:h-auto md:w-40 md:h-16"
-							src={logo_desktop}
+							src="/logo_desktop.png"
 							alt="Logo"
 						/>
 						<img
 							className="sm:hidden w-12 h-12"
-							src={logo_mobile}
+							src="/logo_mobile.png"
 							alt="Logo"
 						/>
 					</Link>

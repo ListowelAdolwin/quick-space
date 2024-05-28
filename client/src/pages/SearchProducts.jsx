@@ -27,6 +27,9 @@ export default function SearchProducts() {
 		const categoryFromUrl = urlParams.get("category") || "";
 		const priceFromUrl = urlParams.get("price") || "";
 		const schoolFromUrl = urlParams.get("school") || "";
+		if (schoolFromUrl === "all") {
+			urlParams.set("school", "");
+		}
 
 		setSearchData({
 			searchTerm: searchTermFromUrl,
@@ -56,23 +59,30 @@ export default function SearchProducts() {
 		fetchProducts();
 	}, [location.search]);
 
-	const handleChange = (e) => {
-		setSearchData({
-			...searchData,
-			[e.target.id]: e.target.value,
-		});
-	};
-
 	const handleSubmit = (e) => {
-		e.preventDefault();
-		const urlParams = new URLSearchParams({
-			searchTerm: searchData.searchTerm,
-			price: searchData.price,
-			category: searchData.category,
-			school: searchData.school,
+		const { id, value } = e.target;
+
+		setSearchData((prevState) => {
+			const updatedData = {
+				...prevState,
+				[id]: value,
+			};
+
+			const urlParams = new URLSearchParams({
+				searchTerm: updatedData.searchTerm,
+				price: updatedData.price,
+				category: updatedData.category,
+				school: updatedData.school,
+			});
+			const searchQuery = urlParams.toString();
+
+			console.log("Before: ", prevState);
+			console.log("After: ", updatedData);
+
+			navigate(`/search?${searchQuery}`);
+
+			return updatedData;
 		});
-		const searchQuery = urlParams.toString();
-		navigate(`/search?${searchQuery}`);
 	};
 
 	const onShowMoreClick = async () => {
@@ -101,14 +111,14 @@ export default function SearchProducts() {
 							placeholder="Search by product or vendor name"
 							className="bg-gray-300 hover:bg-gray-200 text-white-800 focus:outline-none focus:bg-gray-300 p-3 rounded-md w-full"
 							value={searchData.searchTerm}
-							onChange={handleChange}
+							onChange={handleSubmit}
 						/>
 					</div>
 
 					<div className="flex items-center gap-2">
 						<label className="font-semibold">Price:</label>
 						<select
-							onChange={handleChange}
+							onChange={handleSubmit}
 							value={searchData.price}
 							id="price"
 							className="w-full bg-gray-200 text-gray-800 focus:outline-none p-2 rounded-md"
@@ -122,7 +132,7 @@ export default function SearchProducts() {
 					<div className="flex items-center gap-2">
 						<label className="font-semibold">Category:</label>
 						<select
-							onChange={handleChange}
+							onChange={handleSubmit}
 							value={searchData.category}
 							id="category"
 							className="w-full bg-gray-200 text-gray-800 focus:outline-none p-2 rounded-md"
@@ -140,12 +150,13 @@ export default function SearchProducts() {
 					<div className="flex items-center gap-2">
 						<label className="font-semibold">School:</label>
 						<select
-							onChange={handleChange}
+							onChange={handleSubmit}
 							value={searchData.school}
 							id="school"
 							className="w-full bg-gray-200 text-gray-800 focus:outline-none p-2 rounded-md"
 						>
 							<option value="">Select school</option>
+							<option value="all">All</option>
 							{Object.entries(schools).map(([key, school]) => (
 								<option key={key} value={key}>
 									{school}
@@ -153,9 +164,7 @@ export default function SearchProducts() {
 							))}
 						</select>
 					</div>
-					<button
-						className="flex items-center justify-center text-blue-800 w-full px-4 py-3 text-sm font-bold leading-6 capitalize duration-100 transform border-2 rounded-sm cursor-pointer border-blue-800 focus:ring-1 focus:ring-blue-900 focus:ring-opacity-90 focus:outline-none sm:w-auto sm:px-6 border-text  hover:shadow-lg hover:-translate-y-1"
-					>
+					<button className="flex items-center justify-center text-blue-800 w-full px-4 py-3 text-md font-bold leading-6 capitalize duration-100 transform border-2 rounded-sm cursor-pointer border-blue-800 focus:ring-1 focus:ring-blue-900 focus:ring-opacity-90 focus:outline-none sm:w-auto sm:px-6 border-text  hover:shadow-lg hover:-translate-y-1">
 						See filtered products
 					</button>
 				</form>

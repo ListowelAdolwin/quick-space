@@ -9,6 +9,7 @@ import { categories } from "../data/categories";
 const Register = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+	const [otherSchool, setOtherSchool] = useState(false);
 	const [userType, setUserType] = useState("normal");
 	const [formData, setFormData] = useState({
 		name: "",
@@ -18,6 +19,7 @@ const Register = () => {
 		contact: "",
 		category: "",
 		school: "",
+		otherSchool: "",
 	});
 
 	const navigate = useNavigate();
@@ -26,8 +28,14 @@ const Register = () => {
 
 	const handleChange = (e) => {
 		setIsLoading(false);
-		const { name, value } = e.target;
+		let { name, value } = e.target;
+		if (name === "school" && value == "other") {
+			setOtherSchool(true);
+		} else {
+			//setOtherSchool(false)
+		}
 		setFormData({ ...formData, [name]: value });
+		console.log(formData);
 	};
 
 	const handleUserTypeChange = (type) => {
@@ -45,7 +53,9 @@ const Register = () => {
 			email: formData.email,
 			password: formData.password,
 			isVendor: userType === "vendor",
-			school: formData.school,
+			school: formData.otherSchool
+				? formData.otherSchool
+				: formData.school,
 		};
 
 		if (userType === "vendor") {
@@ -55,6 +65,7 @@ const Register = () => {
 				category: formData.category,
 			};
 		}
+		console.log(userPayload);
 
 		try {
 			setIsLoading(true);
@@ -81,8 +92,8 @@ const Register = () => {
 	return (
 		<div className="flex flex-col min-h-screen">
 			<main className="flex-grow">
-				<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-					<h1 className="text-3xl font-bold text-gray-800 mb-4">
+				<div className="max-w-3xl mx-auto px-0 sm:px-6 lg:px-8 py-8">
+					<h1 className="text-3xl font-bold text-gray-800 mb-4 px-4">
 						Register
 					</h1>
 					<div className="bg-white p-6 rounded-lg shadow-md">
@@ -173,6 +184,26 @@ const Register = () => {
 									)}
 								</select>
 							</div>
+							{otherSchool && (
+								<div className="mb-4 ms-5">
+									<label
+										className="block text-gray-700 font-bold mb-2"
+										htmlFor="other-school"
+									>
+										Please enter school name here
+									</label>
+									<input
+										type="text"
+										name="otherSchool"
+										id="other-school"
+										value={formData.otherSchool}
+										onChange={handleChange}
+										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+										placeholder="Enter your school name here (Abbreviated)"
+										required
+									/>
+								</div>
+							)}
 							<div className="mb-4">
 								<label
 									className="block text-gray-700 font-bold mb-2"

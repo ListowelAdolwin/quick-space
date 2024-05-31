@@ -11,14 +11,6 @@ const UserProfile = () => {
 	const [userData, setUserData] = useState(null);
 	const [pageLoading, setPageLoading] = useState(true);
 
-	const user = {
-		name: "John Doe",
-		email: "john.doe@example.com",
-		phone: "123-456-7890",
-		school: "School 1",
-		profilePicture: "https://via.placeholder.com/150",
-	};
-
 	const { currentUser } = useSelector((state) => state.user);
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -69,22 +61,24 @@ const UserProfile = () => {
 							<div className="flex flex-wrap items-start justify-start gap-5">
 								<div className="w-full lg:basis-3/12 flex flex-col gap-4 text-start bg-white p-6 rounded-lg shadow-md">
 									<p className="text-2xl font-semibold text-gray-800">
-										Username: {userData.username}
+										Username: {userData.name}
 									</p>
 									<p className="text-gray-600">
 										Email: {userData.email}
 									</p>
-									<p className="text-gray-600 flex items-center gap-3">
-										Contact Number:{" "}
-										{userData?.vendorDetails?.contact}{" "}
-										<a
-											href={`tel:${userData.vendorDetails?.contact}`}
-											className="flex items-center gap-1 px-2 py-1 border border-blue-500 rounded-md"
-										>
-											<FaPhone className="text-xs" />
-											call
-										</a>
-									</p>
+									{userData.isVendor && (
+										<p className="text-gray-600 flex items-center gap-3">
+											Contact Number:{" "}
+											{userData?.vendorContact}{" "}
+											<a
+												href={`tel:${userData.vendorContact}`}
+												className="flex items-center gap-1 px-2 py-1 border border-blue-500 rounded-md"
+											>
+												<FaPhone className="text-xs" />
+												call
+											</a>
+										</p>
+									)}
 									<p className="text-gray-600">
 										School:{" "}
 										<span className="uppercase">

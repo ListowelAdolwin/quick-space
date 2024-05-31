@@ -28,7 +28,7 @@ const FeaturedProductsCarousel = () => {
 	}, []);
 
 	return (
-		<div className="relative w-full max-w-7xl mx-auto py-16">
+		<div className="relative w-full max-w-7xl mx-auto py-10">
 			<h1 className="text-3xl font-bold ml-3 pb-5">Featured Products</h1>
 			{pageLoading && (
 				<div className="w-full flex gap-2 ps-2">

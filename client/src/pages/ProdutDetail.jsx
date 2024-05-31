@@ -127,12 +127,13 @@ const ProductDetail = () => {
 										<div className="mt-4">
 											<span className="text-2xl sm:text-3xl lg:text-3xl font-bold text-slate-900">
 												₵
-												{(product.price - 78).toFixed(
-													0
-												)}
+												{(
+													product.price -
+													product.discount
+												).toFixed(2)}
 											</span>
 											<span className="text-md sm:text-lg text-slate-900 line-through">
-												₵{product.price}
+												₵{product.price.toFixed(2)}
 											</span>
 										</div>
 										<div className="font-bold flex items-center mt-4 px-3">

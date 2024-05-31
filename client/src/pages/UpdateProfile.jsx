@@ -116,7 +116,7 @@ function UpdateProfile() {
 									value={formData.name}
 									onChange={handleChange}
 									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-									placeholder="Enter username"
+									placeholder="Enter name"
 									required
 								/>
 							</div>

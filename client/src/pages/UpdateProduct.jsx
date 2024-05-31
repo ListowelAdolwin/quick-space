@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { categories } from "../data/categories";
 import ErrorMessage from "../components/ErrorMessage";
@@ -14,8 +14,7 @@ import Spinner from "../components/Spinner";
 // 	alert("A jpeg/png file could not be found");
 // }
 
-const AddProduct = () => {
-	const [redirect, setRedirect] = useState(true);
+const UpdateProduct = () => {
 	const [errorMessage, setErrowMessage] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [formData, setFormData] = useState({
@@ -30,12 +29,38 @@ const AddProduct = () => {
 
 	const { currentUser } = useSelector((state) => state.user);
 	const navigate = useNavigate();
+	const params = useParams();
+	const { id } = params;
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 	const cloudName = import.meta.env.VITE_CLOUDINARY_NAME;
 	const apiKey = import.meta.env.VITE_CLOUDINARY_SECRET;
 	const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+	useEffect(() => {
+		const getOldProduct = async () => {
+			const response = await axios.get(`${BASE_URL}/api/products/${id}`);
+			if (response.status === 200) {
+				const data = response.data;
+        console.log(data)
+				setFormData({
+					itemName: data.name,
+					price: data.price,
+					discount: data.discount,
+					category: data.category,
+					description: data.description,
+					images: [],
+					imageUrls: data.imageUrls,
+				});
+			} else {
+        setErrowMessage('Product not found')
+				console.log("Profile response error: ", response.data);
+			}
+		};
+
+		getOldProduct();
+	}, []);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -44,8 +69,8 @@ const AddProduct = () => {
 
 	const handleFileChange = (e) => {
 		setFormData({ ...formData, images: Array.from(e.target.files) });
-		setIsLoading(false)
-		setErrowMessage("")
+		setIsLoading(false);
+		setErrowMessage("");
 	};
 
 	const handleSubmit = async (e) => {
@@ -84,12 +109,14 @@ const AddProduct = () => {
 				discount: formData.discount,
 				category: formData.category,
 				description: formData.description,
-				imageUrls: urls,
+				imageUrls: formData.imageUrls.concat(urls),
 				vendor: currentUser._id,
 			};
 
+			console.log(productData)
+
 			const saveProductResponse = await axios.post(
-				`${BASE_URL}/api/products/add`,
+				`${BASE_URL}/api/products/update/${id}`,
 				productData,
 				{
 					headers: {
@@ -97,20 +124,8 @@ const AddProduct = () => {
 					},
 				}
 			);
-			if (saveProductResponse.status === 201) {
-				if (redirect) {
-					navigate(`/profile/${currentUser._id}`);
-				} else {
-					setFormData({
-						itemName: "",
-						price: "",
-						discount: 0,
-						category: "",
-						description: "",
-						images: [],
-						imageUrls: [],
-					});
-				}
+			if (saveProductResponse.status === 200) {
+				navigate(`/product/${id}`);
 			} else {
 				setErrowMessage(saveProductResponse.message);
 			}
@@ -118,7 +133,7 @@ const AddProduct = () => {
 			console.log("Product saved:", saveProductResponse.data);
 		} catch (error) {
 			setErrowMessage("Error uploading images. Please retry");
-			setIsLoading(false)
+			setIsLoading(false);
 			console.error("Error uploading images:", error);
 		}
 	};
@@ -220,7 +235,8 @@ const AddProduct = () => {
 						>
 							Product description
 							<div className="text-xs italic font-light py-1">
-								Add some description to help buyers better understand the product
+								Add some description to help buyers better
+								understand the product
 							</div>
 						</label>
 						<textarea
@@ -248,31 +264,17 @@ const AddProduct = () => {
 							onChange={handleFileChange}
 							className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
 							placeholder="Upload product images"
-							required
 						/>
 					</div>
 					{isLoading ? (
 						<Spinner />
 					) : (
-						<div className="flex gap-3 mt-2 mb-3">
+						<div className="mb-3">
 							<button
-								onClick={() => {
-									setRedirect(true);
-								}}
 								type="submit"
 								className="px-3 py-2 min-w-[120px] text-center text-white bg-blue-600 border border-blue-600 rounded active:text-blue-500 hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring"
 							>
-								Save Product
-							</button>
-
-							<button
-								onClick={() => {
-									setRedirect(false);
-								}}
-								type="submit"
-								className="px-3 py-2 min-w-[120px] text-center text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white active:bg-indigo-500 focus:outline-none focus:ring"
-							>
-								Save and Add Another
+								Update Product
 							</button>
 						</div>
 					)}
@@ -282,4 +284,4 @@ const AddProduct = () => {
 	);
 };
 
-export default AddProduct;
+export default UpdateProduct;

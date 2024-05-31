@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegHeart, FaRegUserCircle } from "react-icons/fa";
-import { IoIosAddCircleOutline } from "react-icons/io";
+import { IoIosAddCircleOutline, IoIosLogIn } from "react-icons/io";
+import { BsPersonPlus } from "react-icons/bs";
 import { IoInformationCircleOutline, IoHomeOutline } from "react-icons/io5";
 import { CiShoppingTag } from "react-icons/ci";
 import { useSelector } from "react-redux";
@@ -306,14 +307,22 @@ const Header = () => {
 									{" "}
 									<Link
 										to="login"
-										className="text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+										className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
 									>
+										<IoIosLogIn
+											className="inline-block"
+											size={20}
+										/>
 										Login
 									</Link>{" "}
 									<Link
 										to="register"
-										className="text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+										className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
 									>
+										<BsPersonPlus
+											className="inline-block"
+											size={20}
+										/>
 										Register
 									</Link>
 								</div>

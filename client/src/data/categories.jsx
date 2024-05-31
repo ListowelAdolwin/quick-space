@@ -6,6 +6,11 @@ import fashion from "../assets/category_images/fashion.jpeg";
 import services from "../assets/category_images/services.jpg";
 import food from "../assets/category_images/food.jpg";
 import book from "../assets/category_images/book.avif";
+import { useEffect } from "react";
+
+// const Categories = () => {
+// 	useEffect(() => {});
+// }
 
 export const categories = {
 	health_and_beauty: {

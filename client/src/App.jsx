@@ -15,34 +15,44 @@ import UpdateProfile from "./pages/UpdateProfile";
 import ScrollToTop from "./components/ScrollToTop";
 import SearchProducts from "./pages/SearchProducts";
 import RegisterAlert from "./components/RegisterAlert";
+import PrivateRoute from "./components/PrivateRoute";
+import UpdateProduct from "./pages/UpdateProduct";
+import { useSelector } from "react-redux";
 
 function App() {
+	const { currentUser } = useSelector((state) => state.user);
 	return (
 		<>
 			<BrowserRouter>
 				<Header />
-				<RegisterAlert />
+				{!currentUser && <RegisterAlert />}
 				<ScrollToTop />
 				<Routes>
 					<Route exact path="/" element={<Home />} />
 					<Route path="/home" element={<Home />} />
 					<Route path="/shop" element={<Shop />} />
-					<Route path="/favourites" element={<Favourites />} />
 					<Route path="/about" element={<About />} />
 					<Route path="/register" element={<Register />} />
 					<Route path="/login" element={<Login />} />
 					<Route path="/profile/:id" element={<UserProfile />} />
-					<Route
-						path="/update-profile/:id"
-						element={<UpdateProfile />}
-					/>
 					<Route path="/product/:id" element={<ProductDetail />} />
-					<Route path="/add-product" element={<AddProduct />} />
 					<Route path="/search" element={<SearchProducts />} />
 					<Route
 						path="/products/:category"
 						element={<CategoryItems />}
 					/>
+					<Route element={<PrivateRoute />}>
+						<Route path="/add-product" element={<AddProduct />} />
+						<Route
+							path="/update-product/:id"
+							element={<UpdateProduct />}
+						/>
+						<Route
+							path="/update-profile/:id"
+							element={<UpdateProfile />}
+						/>
+						<Route path="/favourites" element={<Favourites />} />
+					</Route>
 				</Routes>
 
 				<Footer />

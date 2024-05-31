@@ -18,7 +18,6 @@ const FeaturedProductsCarousel = () => {
 			if (response.status === 200) {
 				setProducts(response.data);
 				setPageLoading(false);
-				console.log("Featured response: ", response);
 			} else {
 				console.log("Featured response: ", response);
 			}
@@ -31,10 +30,13 @@ const FeaturedProductsCarousel = () => {
 		<div className="relative w-full max-w-7xl mx-auto py-10">
 			<h1 className="text-3xl font-bold ml-3 pb-5">Featured Products</h1>
 			{pageLoading && (
-				<div className="w-full flex gap-2 ps-2">
-					<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
-					<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
-					<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
+				<div>
+					<div className="w-full flex gap-2 ps-2">
+						<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
+						<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
+						<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
+					</div>
+					<p className="ps-2 mt-3">This may take a few seconds</p>
 				</div>
 			)}
 			<div className="overflow-x-auto scrollbar-hide">
@@ -61,10 +63,13 @@ const FeaturedProductsCarousel = () => {
 								<div className="mt-0 sm:mt-2 mb-1 sm:mb-5 flex items-center justify-between">
 									<p>
 										<span className="text-md sm:text-xl lg:text-2xl font-bold text-slate-900">
-											₵{product.price}
+											₵
+											{(
+												product.price - product.discount
+											).toFixed(2)}
 										</span>
 										<span className="text-xs sm:text-sm text-slate-900 line-through">
-											₵{(product.price - 78).toFixed(2)}
+											₵{product.price.toFixed(2)}
 										</span>
 									</p>
 									{/* <div className="flex items-center">

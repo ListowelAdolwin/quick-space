@@ -70,13 +70,11 @@ const CategoryItems = () => {
 										<div className="mt-0 sm:mt-2 mb-1 sm:mb-5 flex items-center justify-between">
 											<p>
 												<span className="text-md sm:text-xl lg:text-2xl font-bold text-slate-900">
-													₵{product.price}
+													₵{(product.price - product.discount).toFixed(2)}
 												</span>
 												<span className="text-xs sm:text-sm text-slate-900 line-through">
 													₵
-													{(
-														product.price - 78
-													).toFixed(2)}
+													{product.price .toFixed(2)}
 												</span>
 											</p>
 											{/* <div className="flex items-center">

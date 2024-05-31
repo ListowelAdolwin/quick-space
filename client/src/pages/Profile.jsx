@@ -61,7 +61,7 @@ const UserProfile = () => {
 							<div className="flex flex-wrap items-start justify-start gap-5">
 								<div className="w-full lg:basis-3/12 flex flex-col gap-4 text-start bg-white p-6 rounded-lg shadow-md">
 									<p className="text-2xl font-semibold text-gray-800">
-										Username: {userData.name}
+										Name: {userData.name}
 									</p>
 									<p className="text-gray-600">
 										Email: {userData.email}
@@ -85,7 +85,7 @@ const UserProfile = () => {
 											{userData.school}
 										</span>
 									</p>
-									{currentUser._id === userData._id && (
+									{currentUser?._id === userData._id && (
 										<div className="flex gap-2">
 											<button
 												onClick={logout}
@@ -133,14 +133,17 @@ const UserProfile = () => {
 													<div className="mt-0 sm:mt-2 mb-1 sm:mb-5 flex items-center justify-between">
 														<p>
 															<span className="text-md sm:text-xl lg:text-2xl font-bold text-slate-900">
-																₵{product.price}
-															</span>
-															<span className="text-xs sm:text-sm text-slate-900 line-through">
 																₵
 																{(
 																	product.price -
-																	78
+																	product.discount
 																).toFixed(2)}
+															</span>
+															<span className="text-xs sm:text-sm text-slate-900 line-through">
+																₵
+																{product.price.toFixed(
+																	2
+																)}
 															</span>
 														</p>
 														{/* <div className="flex items-center">
@@ -198,6 +201,15 @@ const UserProfile = () => {
 														<CiViewList className="text-xl font-bold" />
 														View details
 													</button>
+													{currentUser?._id ===
+														userData._id && (
+														<Link
+															to={`/update-product/${product._id}`}
+															className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-900 mt-2 px-2 sm:px-5 py-2.5 sm:py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
+														>
+															Update product
+														</Link>
+													)}
 												</div>
 											</Link>
 										))}

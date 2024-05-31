@@ -14,12 +14,14 @@ import AddProduct from "./pages/AddProduct";
 import UpdateProfile from "./pages/UpdateProfile";
 import ScrollToTop from "./components/ScrollToTop";
 import SearchProducts from "./pages/SearchProducts";
+import RegisterAlert from "./components/RegisterAlert";
 
 function App() {
 	return (
 		<>
 			<BrowserRouter>
 				<Header />
+				<RegisterAlert />
 				<ScrollToTop />
 				<Routes>
 					<Route exact path="/" element={<Home />} />

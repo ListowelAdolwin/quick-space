@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegHeart, FaRegUserCircle } from "react-icons/fa";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { IoInformationCircleOutline, IoHomeOutline } from "react-icons/io5";
+import { CiShoppingTag } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import { schools } from "../data/schools";
 
@@ -45,20 +48,33 @@ const Header = () => {
 					<Link to="/" className="flex items-center">
 						<img
 							className="hidden sm:inline-block sm:w-32 sm:h-auto md:w-40 md:h-16"
-							src="/logo_desktop.png"
+							src="/logo-desktop.png"
 							alt="Logo"
 						/>
 						<img
 							className="sm:hidden w-12 h-12"
-							src="/logo_mobile.png"
+							src="/logo-mobile.png"
 							alt="Logo"
 						/>
 					</Link>
-					<div className="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 pl-2 py-1 rounded-md font-medium">
+					<div className="flex items-center bg-gray-300 hover:bg-gray-300 text-gray-800 pl-2 py-1 rounded-md font-medium">
 						<select
 							onChange={handleSchoolChange}
-							className="bg-gray-200 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-1 rounded-l-md"
 							value={school}
+							data-hs-select='{
+  "hasSearch": true,
+  "searchPlaceholder": "Search...",
+  "searchClasses": "block w-full text-sm border-gray-200 rounded-lg focus:bg-gray-300 before:absolute before:inset-0 before:z-[1] dark:placeholder-neutral-500 py-2 px-2",
+  "searchWrapperClasses": "bg-gray-100 p-1 sticky top-0 dark:bg-gray-100",
+  "placeholder": "School",
+  "toggleTag": "<button type=\"button\"><span class=\"me-1\" data-icon></span><span class=\"text-gray-800 dark:text-gray-800\" data-title></span></button>",
+  "toggleClasses": "hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 relative py-2 px-2 pe-9 flex text-nowrap w-full cursor-pointer bg-gray-300 focus:border focus:border-gray-200 rounded-lg text-start text-sm focus:bg-gray-300 focus:ring-gray-200 before:absolute before:inset-0 before:z-[1]",
+  "dropdownClasses": "mt-2 max-h-72 min-w-28 pb-1 px-1 z-20 w-full bg-gray-300 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-100 dark:[&::-webkit-scrollbar-track]:bg-gray-100 dark:[&::-webkit-scrollbar-thumb]:bg-gray-300 dark:bg-gray-100 dark:border-neutral-700",
+  "optionClasses": "py-1 px-2 w-full text-sm text-gray-800 cursor-pointer hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100 dark:bg-gray-100 dark:hover:bg-gray-300 dark:text-gray-800 dark:focus:bg-gray-300",
+  "optionTemplate": "<div><div class=\"flex items-center\"><div class=\"me-2\" data-icon></div><div class=\"text-gray-800 dark:text-gray-800\" data-title></div></div></div>",
+  "extraMarkup": "<div class=\"absolute top-1/2 end-3 -translate-y-1/2\"><svg class=\"flex-shrink-0 size-3.5 text-gray-800 dark:text-gray-800\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
+}'
+							className="hidden bg-gray-200 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-1 rounded-l-md"
 						>
 							<option value="">Select School</option>
 							<option value="all">All</option>
@@ -68,13 +84,14 @@ const Header = () => {
 								</option>
 							))}
 						</select>
+
 						<div className="border-l border-gray-400 h-6 mx-2"></div>
 						<input
 							onChange={handleFormSubmit}
 							type="text"
 							value={searchTerm}
 							placeholder="Search product"
-							className="bg-gray-200 w-12 sm:w-36 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-2 pr-2 rounded-r-md"
+							className="bg-gray-300 w-28 sm:w-36 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-2 pr-2 rounded-r-md"
 						/>
 					</div>
 
@@ -213,33 +230,49 @@ const Header = () => {
 						<div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
 							<Link
 								to="/"
-								className="text-gray-800 hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
+								className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 							>
+								<IoHomeOutline
+									className="inline-block"
+									size={20}
+								/>
 								Home
 							</Link>
 							<Link
 								to="/shop"
-								className="text-gray-800 hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
+								className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 							>
+								<CiShoppingTag
+									className="inline-block"
+									size={20}
+								/>
 								Shop
 							</Link>
 							<Link
 								to="/about"
-								className="text-gray-800 hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
+								className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 							>
+								<IoInformationCircleOutline
+									className="inline-block"
+									size={20}
+								/>
 								About
 							</Link>
 							{currentUser ? (
 								<div>
 									<Link
 										to="/add-product"
-										className="text-gray-800 hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
+										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 									>
+										<IoIosAddCircleOutline
+											className="inline-block"
+											size={20}
+										/>
 										Add Product
 									</Link>
 									<Link
 										to="/favourites"
-										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-base font-medium"
+										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 									>
 										<FaRegHeart
 											className="inline-block"
@@ -249,7 +282,7 @@ const Header = () => {
 									</Link>
 									<Link
 										to="/cart"
-										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-base font-medium"
+										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 									>
 										<FiShoppingCart
 											className="inline-block"
@@ -259,7 +292,7 @@ const Header = () => {
 									</Link>
 									<Link
 										to={`/profile/${currentUser._id}`}
-										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-base font-medium"
+										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 									>
 										<FaRegUserCircle
 											className="inline-block"
@@ -273,13 +306,13 @@ const Header = () => {
 									{" "}
 									<Link
 										to="login"
-										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+										className="text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
 									>
 										Login
 									</Link>{" "}
 									<Link
 										to="register"
-										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+										className="text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
 									>
 										Register
 									</Link>

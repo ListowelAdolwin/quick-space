@@ -5,8 +5,8 @@ function Home() {
 	return (
 		<div>
 			<main>
-				<FeaturedProductsCarousel />
 				<Categories />
+				<FeaturedProductsCarousel />
 			</main>
 		</div>
 	);

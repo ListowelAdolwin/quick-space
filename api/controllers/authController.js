@@ -18,8 +18,8 @@ export const register = async (req, res) => {
     return res.status(400).json({ message: 'All fields are required!' })
   }
   try {
-    const duplicateUsername = await User.findOne({ name }).exec()
-    if (duplicateUsername) {
+    const duplicateName = await User.findOne({ name }).exec()
+    if (duplicateName) {
       return res.status(409).json({ message: `The name ${name} already exist` })
     }
     const duplicateEmail = await User.findOne({ email }).exec()

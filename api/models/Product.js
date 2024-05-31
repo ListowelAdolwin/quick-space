@@ -27,6 +27,14 @@ const productSchema = new mongoose.Schema(
       ref: 'User',
       required: true
     },
+    description: {
+      type: String,
+      required: false
+    },
+    discount: {
+      type: Number,
+      default: 0
+    },
     rating: {
       type: Number,
       default: 0

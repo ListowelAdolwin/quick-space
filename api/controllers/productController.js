@@ -3,7 +3,8 @@ import User from "../models/User.js";
 
 export const addProduct = async (req, res) => {
 	try {
-		const { name, price, category, imageUrls, discount } = req.body;
+		const { name, price, category, imageUrls, discount, description } =
+			req.body;
 		const vendor = req.user;
 		const school = vendor.school;
 
@@ -15,6 +16,7 @@ export const addProduct = async (req, res) => {
 			vendor,
 			school,
 			discount,
+			description,
 		});
 
 		await newProduct.save();
@@ -29,6 +31,40 @@ export const addProduct = async (req, res) => {
 	}
 };
 
+export const updateProduct = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const prod = await Product.findById(id).populate("vendor");
+		console.log("vendor: ", prod.vendor.name)
+		console.log("User: ", req.user.name)
+		if (prod.vendor.name !== req.user.name) {
+			return res
+				.status(403)
+				.json({ message: "You can only update your product!" });
+		}
+
+		try {
+			const newProduct = await Product.findByIdAndUpdate(
+				id,
+				{
+					$set: req.body,
+				},
+				{ new: true }
+			);
+			return res.status(200).json(newProduct);
+		} catch (error) {
+			return res
+				.status(400)
+				.json({ message: "Server error: failed to update product!" });
+		}
+	} catch (error) {
+		return res.json({
+			message: "Server error while trying to retrieving product!",
+		});
+	}
+};
+
+
 export const getProducts = async (req, res) => {
 	try {
 		const products = await Product.find();
@@ -39,6 +75,12 @@ export const getProducts = async (req, res) => {
 };
 
 export const getFeaturedProducts = async (req, res) => {
+	// const all = await Product.find()
+	// for (let i = 0; i < all.length; i++){
+	// 	prod = all[i]
+	// 	prod.discount = Math.floor(Math.random() * 100) + 5
+	// 	await prod.save()
+	// }
 	try {
 		const products = await Product.find().sort({ createdAt: -1 }).limit(10);
 		res.status(200).json(products);
@@ -82,6 +124,9 @@ export const getProduct = async (req, res) => {
 			price: result.price,
 			rating: result.rating,
 			imageUrls: result.imageUrls,
+			discount: result.discount,
+			category: result.category,
+			description: result.description,
 			vendorId: result.vendor._id,
 			vendorName: result.vendor.name,
 			vendorContact: result.vendor.vendorContact,
@@ -211,7 +256,7 @@ export const filterProducts = async (req, res) => {
 		}
 
 		const products = await Product.find(query)
-			.populate("vendor", "name") // Populate vendor name
+			.populate("vendor", "name")
 			.sort(sort)
 			.skip(startIndex)
 			.limit(limit);

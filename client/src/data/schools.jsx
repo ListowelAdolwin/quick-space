@@ -6,4 +6,5 @@ export const schools = {
   uew: "UEW",
   uhas: "UHAS",
   umat: "UMAT",
+  other: "Other",
 }

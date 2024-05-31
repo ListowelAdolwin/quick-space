@@ -15,9 +15,9 @@ const Register = () => {
 		name: "",
 		email: "",
 		password: "",
-		vendorName: "",
-		contact: "",
-		category: "",
+		vendorContact: "",
+		vendorCategory: "",
+		vendorAddress: "",
 		school: "",
 		otherSchool: "",
 	});
@@ -31,11 +31,10 @@ const Register = () => {
 		let { name, value } = e.target;
 		if (name === "school" && value == "other") {
 			setOtherSchool(true);
-		} else {
-			//setOtherSchool(false)
+		} else if (name !== "otherSchool") {
+			setOtherSchool(false)
 		}
 		setFormData({ ...formData, [name]: value });
-		console.log(formData);
 	};
 
 	const handleUserTypeChange = (type) => {
@@ -48,8 +47,8 @@ const Register = () => {
 		setIsLoading(true);
 		setErrorMessage("");
 
-		const userPayload = {
-			username: formData.name,
+		let userPayload = {
+			name: formData.name,
 			email: formData.email,
 			password: formData.password,
 			isVendor: userType === "vendor",
@@ -59,10 +58,11 @@ const Register = () => {
 		};
 
 		if (userType === "vendor") {
-			userPayload.vendorDetails = {
-				name: formData.vendorName,
-				contact: formData.contact,
-				category: formData.category,
+			userPayload = {
+				...userPayload,
+				vendorContact: formData.vendorContact,
+				vendorCategory: formData.vendorCategory,
+				vendorAddressa: formData.vendorAddress,
 			};
 		}
 		console.log(userPayload);
@@ -123,24 +123,45 @@ const Register = () => {
 							<ErrorMessage errorMessage={errorMessage} />
 						)}
 						<form onSubmit={handleSubmit}>
-							<div className="mb-4">
-								<label
-									className="block text-gray-700 font-bold mb-2"
-									htmlFor="name"
-								>
-									Name
-								</label>
-								<input
-									type="text"
-									name="name"
-									id="name"
-									value={formData.name}
-									onChange={handleChange}
-									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-									placeholder="Enter username"
-									required
-								/>
-							</div>
+							{userType === "normal" ? (
+								<div className="mb-4">
+									<label
+										className="block text-gray-700 font-bold mb-2"
+										htmlFor="name"
+									>
+										Name
+									</label>
+									<input
+										type="text"
+										name="name"
+										id="name"
+										value={formData.name}
+										onChange={handleChange}
+										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+										placeholder="Enter username"
+										required
+									/>
+								</div>
+							) : (
+								<div className="mb-4">
+									<label
+										className="block text-gray-700 font-bold mb-2"
+										htmlFor="vendorName"
+									>
+										Vendor Name
+									</label>
+									<input
+										type="text"
+										name="name"
+										id="name"
+										value={formData.name}
+										onChange={handleChange}
+										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+										placeholder="Enter vendor name here"
+										required
+									/>
+								</div>
+							)}
 							<div className="mb-4">
 								<label
 									className="block text-gray-700 font-bold mb-2"
@@ -228,43 +249,25 @@ const Register = () => {
 									<div className="mb-4">
 										<label
 											className="block text-gray-700 font-bold mb-2"
-											htmlFor="vendorName"
-										>
-											Vendor Name
-										</label>
-										<input
-											type="text"
-											name="vendorName"
-											id="vendorName"
-											value={formData.vendorName}
-											onChange={handleChange}
-											className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-											placeholder="Enter vendor name here"
-											required
-										/>
-									</div>
-									<div className="mb-4">
-										<label
-											className="block text-gray-700 font-bold mb-2"
-											htmlFor="contact"
+											htmlFor="vendorContact"
 										>
 											Phone Number
 										</label>
 										<input
 											type="text"
-											name="contact"
-											id="contact"
-											value={formData.contact}
+											name="vendorContact"
+											id="vendorContact"
+											value={formData.vendorContact}
 											onChange={handleChange}
 											className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-											placeholder="Enter your contact number"
+											placeholder="Enter your vendor contact number"
 											required
 										/>
 									</div>
 									<div className="mb-4">
 										<label
 											className="block text-gray-700 font-bold mb-2"
-											htmlFor="category"
+											htmlFor="vendorCategory"
 										>
 											Products Category{" "}
 											<div className="text-xs italic font-light py-1">
@@ -273,9 +276,9 @@ const Register = () => {
 											</div>
 										</label>
 										<select
-											name="category"
-											id="category"
-											value={formData.category}
+											name="vendorCategory"
+											id="vendorCategory"
+											value={formData.vendorCategory}
 											onChange={handleChange}
 											className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
 											required

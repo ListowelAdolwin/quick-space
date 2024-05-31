@@ -39,7 +39,7 @@ export const categories = {
     qty: 465,
 	},
 	food: {
-		name: "Food",
+		name: "Food and Everyday Essentials",
     image: food,
     qty: 123,
 	},

@@ -1,17 +1,22 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function RegisterAlert() {
-	const [hide, setHide] = useState(false);
+	const [fadeOut, setFadeOut] = useState(false);
 
 	const handleClick = (e) => {
 		e.preventDefault();
-		setHide(true);
+		setFadeOut(true);
 	};
 	return (
-		<div
-			className={`${
-				hide ? "hidden" : "block"
-			} w-full max-w-7xl mx-auto py-4`}
+		<Link
+			to="/register"
+			className={`w-full max-w-7xl mx-auto py-4 ${
+				fadeOut
+					? "opacity-0 transition-opacity duration-500 ease-out"
+					: "opacity-100"
+			}`}
+			style={{ display: fadeOut ? "none" : "block" }}
 		>
 			<div
 				id="alert-border-1"
@@ -55,7 +60,7 @@ function RegisterAlert() {
 					</svg>
 				</button>
 			</div>
-		</div>
+		</Link>
 	);
 }
 

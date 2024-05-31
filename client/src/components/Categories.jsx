@@ -3,30 +3,30 @@ import { categories } from "../data/categories";
 
 const Categories = () => {
 	return (
-		<div className="bg-gray-50 py-16">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div className="bg-gray-50 py-8">
+			<div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
 				<h2 className="text-3xl font-bold text-gray-800">
 					Shop by Category
 				</h2>
-				<div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+				<div className="mt-6 grid grid-cols-3 gap-y-6 gap-x-1 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:gap-x-8">
 					{Object.entries(categories).map(([key, category]) => (
 						<Link
 							to={`products/${key}`}
 							key={key}
-							className="group relative"
+							className="group flex flex-col items-center justify-center text-center"
 						>
-							<div className="relative w-full h-72 bg-gray-200 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80">
-								<img
-									src={category.image}
-									alt={category.name}
-									className="w-full h-full object-center object-cover"
-								/>
-							</div>
-							<div className="flex items-center gap-2 text-blue-900 bg-white p-3 absolute top-3/4 left-0 font-thin">
-								<div className="font-bold">{category.name}</div>
-								<div className="flex items-center justify-center text-xs text-white rounded-full w-6 h-6 mx-auto bg-blue-800">
-									{category.qty}
+							<img
+								src={category.image}
+								alt={category.name}
+								className="h-24 w-24 md:w-40 md:h-40 rounded-full object-center object-cover hover:opacity-100"
+							/>
+							<div className="text-gray-900">
+								<div className="text-xs md:text-sm">
+									{category.name}
 								</div>
+							</div>
+							<div className="flex items-center justify-center text-xs text-white rounded-full w-6 h-6 p-3 mx-auto bg-blue-800">
+								{category.qty}
 							</div>
 						</Link>
 					))}

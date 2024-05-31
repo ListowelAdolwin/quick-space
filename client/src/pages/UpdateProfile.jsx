@@ -5,6 +5,7 @@ import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../redux/features/user/userSlice";
+import { categories } from "../data/categories";
 
 function UpdateProfile() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -12,9 +13,8 @@ function UpdateProfile() {
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
-		vendorName: "",
-		contact: "",
-		category: "",
+		vendorContact: "",
+		vendorCategory: "",
 	});
 
 	const { currentUser } = useSelector((state) => state.user);
@@ -32,11 +32,10 @@ function UpdateProfile() {
 			if (response.status === 200) {
 				const data = response.data;
 				setFormData({
-					name: data.username,
+					name: data.name,
 					email: data.email,
-					vendorName: data.vendorDetails.name,
-					contact: data.vendorDetails.contact,
-					category: data.vendorDetails.category,
+					vendorContact: data.vendorContact,
+					vendorCategory: data.vendorCategory,
 				});
 			} else {
 				console.log("Profile response: ", response.data);
@@ -58,13 +57,10 @@ function UpdateProfile() {
 		setErrorMessage("");
 
 		const userPayload = {
-			username: formData.name,
+			name: formData.name,
 			email: formData.email,
-			vendorDetails: {
-				name: formData.vendorName,
-				contact: formData.contact,
-				category: formData.category,
-			},
+			vendorContact: formData.vendorContact,
+			vendorCategory: formData.vendorCategory,
 		};
 
 		try {
@@ -146,33 +142,15 @@ function UpdateProfile() {
 								<div className="mb-4">
 									<label
 										className="block text-gray-700 font-bold mb-2"
-										htmlFor="vendorName"
-									>
-										Vendor Name
-									</label>
-									<input
-										type="text"
-										name="vendorName"
-										id="vendorName"
-										value={formData.vendorName}
-										onChange={handleChange}
-										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-										placeholder="Enter vendor name here"
-										required
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										className="block text-gray-700 font-bold mb-2"
 										htmlFor="contact"
 									>
 										Phone Number
 									</label>
 									<input
 										type="text"
-										name="contact"
-										id="contact"
-										value={formData.contact}
+										name="vendorContact"
+										id="contvendorContactact"
+										value={formData.vendorContact}
 										onChange={handleChange}
 										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
 										placeholder="Enter your contact number"
@@ -182,14 +160,14 @@ function UpdateProfile() {
 								<div className="mb-4">
 									<label
 										className="block text-gray-700 font-bold mb-2"
-										htmlFor="category"
+										htmlFor="vendorCategory"
 									>
 										Category
 									</label>
 									<select
-										name="category"
-										id="category"
-										value={formData.category}
+										name="vendorCategory"
+										id="vendorCategory"
+										value={formData.vendorCategory}
 										onChange={handleChange}
 										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
 										required
@@ -197,19 +175,13 @@ function UpdateProfile() {
 										<option value="">
 											Select Category
 										</option>
-										<option value="electronics">
-											Electronics
-										</option>
-										<option value="clothing">
-											Clothing
-										</option>
-										<option value="home-garden">
-											Home & Garden
-										</option>
-										<option value="sports">Sports</option>
-										<option value="beauty-health">
-											Beauty & Health
-										</option>
+										{Object.entries(categories).map(
+											([key, category]) => (
+												<option key={key} value={key}>
+													{category.name}
+												</option>
+											)
+										)}
 									</select>
 								</div>
 							</>

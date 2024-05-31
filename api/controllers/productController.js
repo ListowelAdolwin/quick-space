@@ -83,8 +83,8 @@ export const getProduct = async (req, res) => {
 			rating: result.rating,
 			imageUrls: result.imageUrls,
 			vendorId: result.vendor._id,
-			vendorName: result.vendor.vendorDetails.name,
-			vendorContact: result.vendor.vendorDetails.contact,
+			vendorName: result.vendor.name,
+			vendorContact: result.vendor.vendorContact,
 			vendorEmail: result.vendor.email,
 			isFavorited: isFavoritedArray[0],
 		};
@@ -202,7 +202,7 @@ export const filterProducts = async (req, res) => {
 
 		if (searchTerm) {
 			const users = await User.find({
-				username: { $regex: searchTerm, $options: "i" },
+				name: { $regex: searchTerm, $options: "i" },
 			});
 
 			const userIds = users.map((user) => user._id);

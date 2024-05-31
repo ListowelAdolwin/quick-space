@@ -3,16 +3,24 @@ import jwt from 'jsonwebtoken'
 import User from '../models/User.js'
 
 export const register = async (req, res) => {
-  const { username, email, password, isVendor, school, vendorDetails } = req.body
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: 'All fields are required!' })
-    }
+  console.log(req.body)
+  const {
+    name,
+    email,
+    password,
+    isVendor,
+    school,
+    vendorContact,
+    vendorAddress,
+    vendorCategory
+  } = req.body
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: 'All fields are required!' })
+  }
   try {
-    const duplicateUsername = await User.findOne({ username }).exec()
+    const duplicateUsername = await User.findOne({ name }).exec()
     if (duplicateUsername) {
-      return res
-        .status(409)
-        .json({ message: `Username ${username} already exist` })
+      return res.status(409).json({ message: `The name ${name} already exist` })
     }
     const duplicateEmail = await User.findOne({ email }).exec()
     if (duplicateEmail) {
@@ -20,13 +28,17 @@ export const register = async (req, res) => {
     }
     const hashedP = bcrypt.hashSync(password, 10)
     const newUser = new User({
-      username,
+      name,
       email,
       password: hashedP,
       isVendor,
-      school,
-      vendorDetails: isVendor ? vendorDetails : undefined
+      school
     })
+    if (isVendor) {
+      newUser.vendorContact = vendorContact
+      newUser.vendorAddress = vendorAddress
+      newUser.vendorCategory = vendorCategory
+    }
     await newUser.save()
     const { password: pass, ...rest } = newUser._doc
     res.status(201).json(rest)
@@ -43,11 +55,11 @@ export const register = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-  const { username, password } = req.body
-  if (!username || !password) {
-    return res.status(400).json({ message: 'Username and password required!' })
+  const { name, password } = req.body
+  if (!name || !password) {
+    return res.status(400).json({ message: 'Name and password required!' })
   }
-  const foundUser = await User.findOne({ username }).exec()
+  const foundUser = await User.findOne({ name }).exec()
   if (!foundUser) {
     return res
       .status(401)
@@ -64,7 +76,7 @@ export const login = async (req, res) => {
 
     const accessToken = jwt.sign(
       {
-        username,
+        name,
         isVendor: foundUser.isVendor,
         userId: foundUser._id
       },
@@ -75,7 +87,7 @@ export const login = async (req, res) => {
     const { password: pass, ...rest } = foundUser._doc
 
     return res.status(200).json({
-      message: `User ${username} successfully logged in!`,
+      message: `User ${name} successfully logged in!`,
       user: { ...rest, accessToken },
       ok: true
     })
@@ -88,21 +100,20 @@ export const login = async (req, res) => {
 }
 
 export const verifyToken = (req, res, next) => {
-	const header = req.headers.Authorization || req.headers.authorization;
-  
-	if (!header?.startsWith("Bearer ")) {
-		return res.status(401).json({ message: "Invalid token format", ok: false });
-	}
-	const token = header.split(" ")[1];
-	/* eslint-disable-next-line consistent-return */
-	jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-		if (err) {
-			console.log(err);
-			return res
-				.status(401)
-				.json({ expired: true, message: "Token expired", ok: false });
-		}
-		req.user = await User.findOne({username:decoded.username});
-		next();
-	});
-};
+  const header = req.headers.Authorization || req.headers.authorization
+
+  if (!header?.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Invalid token format', ok: false })
+  }
+  const token = header.split(' ')[1]
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+    if (err) {
+      console.log(err)
+      return res
+        .status(401)
+        .json({ expired: true, message: 'Token expired', ok: false })
+    }
+    req.user = await User.findOne({ name: decoded.name })
+    next()
+  })
+}

@@ -1,40 +1,40 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
-const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: [true, "Username required!"],
-        unique: [true, "Username already exists!"]
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Name required!'],
+      unique: [true, 'Name already exists!']
     },
     email: {
-        type: String,
-        required: [true, "Email required!"],
-        unique: [true, "Email already exists!"]
+      type: String,
+      required: [true, 'Email required!'],
+      unique: [true, 'Email already exists!']
     },
     password: {
-        type: String,
-        required: [true, "Password required!"],
+      type: String,
+      required: [true, 'Password required!']
     },
     favourites: {
-        type: [String],
-        default: []
+      type: [String],
+      default: []
     },
     school: {
-        type: String,
-        default: "knust"
+      type: String,
+      default: 'knust'
     },
     isVendor: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false
     },
-    vendorDetails: {
-        name: String,
-        contact: String,
-        category: String,
-        address: String,
-    }
-}, { timestamps: true });
+    vendorContact: String,
+    vendorAddress: String,
+    vendorCategory: String
+  },
+  { timestamps: true }
+)
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema)
 
-export default User;
+export default User

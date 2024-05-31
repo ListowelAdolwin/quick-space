@@ -10,7 +10,7 @@ const Login = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [formData, setFormData] = useState({
-		username: "",
+		name: "",
 		password: "",
 	});
 
@@ -36,7 +36,6 @@ const Login = () => {
 				const data = response.data;
 				console.log(data);
 				dispatch(loginUser(data.user));
-				//localStorage.setItem("currentUser", JSON.stringify(data.user));
 				navigate("/");
 			} else {
 				setErrorMessage(response.data.message);
@@ -68,18 +67,18 @@ const Login = () => {
 								<div className="mb-4">
 									<label
 										className="block text-gray-700 font-bold mb-2"
-										htmlFor="username"
+										htmlFor="name"
 									>
-										Username
+										Vendor or user name
 									</label>
 									<input
 										type="text"
-										name="username"
-										id="username"
-										value={formData.username}
+										name="name"
+										id="name"
+										value={formData.name}
 										onChange={handleChange}
 										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-										placeholder="Enter username"
+										placeholder="Enter name"
 										required
 									/>
 								</div>

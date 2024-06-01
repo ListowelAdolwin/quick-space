@@ -27,8 +27,10 @@ const FeaturedProductsCarousel = () => {
 	}, []);
 
 	return (
-		<div className="relative w-full max-w-7xl mx-auto py-10">
-			<h1 className="text-3xl font-bold ml-3 pb-5">Featured Products</h1>
+		<div className="w-full max-w-7xl mx-auto py-10 px-1">
+			<h2 className="text-3xl font-bold text-gray-800">
+				Featured Products
+			</h2>
 			{pageLoading && (
 				<div>
 					<div className="w-full flex gap-2 ps-2">
@@ -36,7 +38,9 @@ const FeaturedProductsCarousel = () => {
 						<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
 						<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
 					</div>
-					<p className="ps-2 mt-3">This may take a few seconds</p>
+					<p className="ps-2 mt-3">
+						Loading featured products. This may take a few seconds
+					</p>
 				</div>
 			)}
 			<div className="overflow-x-auto scrollbar-hide">

@@ -1,19 +1,21 @@
 import { Link } from "react-router-dom";
-import { categories } from "../data/categories";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 const Categories = () => {
 	const [categoryCounts, setCategoryCounts] = useState([]);
+	const [pageLoading, setPageLoading] = useState(true);
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 	useEffect(() => {
+		setPageLoading(true);
 		const getCategoryCounts = async () => {
 			const res = await axios(`${BASE_URL}/api/categories/counts`);
 			console.log(res.data.health_and_beauty);
 			if (res.status === 200) {
 				setCategoryCounts(res.data);
+				setPageLoading(false);
 			}
 		};
 
@@ -21,10 +23,20 @@ const Categories = () => {
 	}, []);
 	return (
 		<div className="py-8">
-			<div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8">
+			<div className="w-full max-w-7xl mx-auto px-1">
 				<h2 className="text-3xl font-bold text-gray-800">
 					Shop by Category
 				</h2>
+				{pageLoading && (
+					<div>
+						<div className="w-full flex gap-2 ps-2">
+							<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
+							<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
+							<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
+						</div>
+						<p className="ps-2 mt-3">Loading category data. This may take a few seconds</p>
+					</div>
+				)}
 				<div className="mt-6 grid grid-cols-3 gap-y-6 gap-x-1 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:gap-x-8">
 					{categoryCounts.map((category) => (
 						<Link

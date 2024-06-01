@@ -37,8 +37,8 @@ const Categories = () => {
 								alt={category.displayName}
 								className="h-24 w-24 md:w-40 md:h-40 rounded-full object-center object-cover hover:opacity-100"
 							/>
-							<div className="text-gray-900">
-								<div className="text-xs md:text-sm">
+							<div className="text-black">
+								<div className="text-xs md:text-lg">
 									{category.displayName}
 								</div>
 							</div>

@@ -37,6 +37,12 @@ const Shop = () => {
 							<h1 className="text-3xl font-bold text-gray-800 mb-4">
 								Shop
 							</h1>
+							{products.length === 0 && (
+								<p>
+									No items in shop at this time. Come back
+									later and shop
+								</p>
+							)}
 							<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-1 gap-y-2 sm:gap-x-4 sm-gap-y-4">
 								{products.map((product) => (
 									<Link
@@ -52,7 +58,12 @@ const Shop = () => {
 													alt="product image"
 												/>
 												<span className="absolute top-0 left-0 m-2 rounded-full bg-blue-900 px-2 text-sm font-medium text-white">
-													{((product.discount/product.price) * 100).toFixed(2)}% off
+													{(
+														(product.discount /
+															product.price) *
+														100
+													).toFixed(2)}
+													% off
 												</span>
 											</p>
 										</div>

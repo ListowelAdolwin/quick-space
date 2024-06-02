@@ -78,7 +78,8 @@ export const login = async (req, res) => {
       {
         name,
         isVendor: foundUser.isVendor,
-        userId: foundUser._id
+        _id: foundUser._id,
+        role: foundUser.role
       },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
@@ -116,4 +117,36 @@ export const verifyToken = (req, res, next) => {
     req.user = await User.findOne({ name: decoded.name })
     next()
   })
+}
+
+export const verifyRole = roles => async (req, res, next) => {
+  try {
+    const header = req.headers.Authorization || req.headers.authorization
+
+    if (!header?.startsWith('Bearer ')) {
+      return res
+        .status(401)
+        .json({ message: 'Invalid token format', ok: false })
+    }
+
+    const token = header.split(' ')[1]
+
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+      if (err) {
+        console.log(err)
+        return res
+          .status(401)
+          .json({ expired: true, message: 'Token expired', ok: false })
+      }
+      const user = await User.findOne({ name: decoded.name })
+      if (!user || !roles.includes(user.role)) {
+        return res.status(403).json({ message: 'Access denied.' })
+      }
+
+      req.user = user
+      next()
+    })
+  } catch (error) {
+    res.status(401).json({ message: 'Please authenticate.' })
+  }
 }

@@ -9,12 +9,13 @@ const categorySchema = new mongoose.Schema(
 		val: {
 			type: String,
 			required: [true, "Category price required!"],
+			unique: true
 		},
 		count: {
 			type: Number,
-			required: [true, "Category category required!"],
+			default: 0
 		},
-		image: {
+		imageUrl: {
 			type: String,
 			required: false,
 		},

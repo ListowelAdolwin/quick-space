@@ -28,6 +28,16 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    isVerified: {
+      type: Boolean,
+      default: true
+    },
+    role: {
+      type: String,
+      enum: ['user', 'vendor', 'admin', 'superadmin'],
+      default: 'user',
+      required: true
+    },
     vendorContact: String,
     vendorAddress: String,
     vendorCategory: String

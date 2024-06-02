@@ -159,6 +159,7 @@ const AddProduct = () => {
 						<input
 							type="number"
 							name="price"
+							min={0}
 							id="price"
 							value={formData.price}
 							onChange={handleChange}
@@ -179,6 +180,7 @@ const AddProduct = () => {
 						</label>
 						<input
 							type="number"
+							min={0}
 							name="discount"
 							id="discount"
 							value={formData.discount}
@@ -220,7 +222,8 @@ const AddProduct = () => {
 						>
 							Product description
 							<div className="text-xs italic font-light py-1">
-								Add some description to help buyers better understand the product
+								Add some description to help buyers better
+								understand the product
 							</div>
 						</label>
 						<textarea

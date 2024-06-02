@@ -18,14 +18,26 @@ import RegisterAlert from "./components/RegisterAlert";
 import PrivateRoute from "./components/PrivateRoute";
 import UpdateProduct from "./pages/UpdateProduct";
 import { useSelector } from "react-redux";
+import AddCategory from "./pages/admin/AddCategory";
+import Vendors from "./pages/admin/Vendors";
+import AdminHome from "./pages/admin/AdminHome";
+import ManageProducts from "./pages/admin/ManageProducts";
+import AdminNavbar from "./components/admin/AdminNavbar";
+import MakeAdmin from "./pages/admin/MakeAdmin";
+import ProtectedAdminRoutes from "./components/admin/ProtectedAdminRoutes";
 
 function App() {
 	const { currentUser } = useSelector((state) => state.user);
+	const path = window.location.pathname;
+	const admin = (path.slice(0, 6) === "/admin");
+	
 	return (
 		<>
 			<BrowserRouter>
-				<Header />
+				{admin ? <AdminNavbar /> : <Header />}
+
 				{!currentUser && <RegisterAlert />}
+
 				<ScrollToTop />
 				<Routes>
 					<Route exact path="/" element={<Home />} />
@@ -41,6 +53,8 @@ function App() {
 						path="/products/:category"
 						element={<CategoryItems />}
 					/>
+
+					{/**Login Required Routes */}
 					<Route element={<PrivateRoute />}>
 						<Route path="/add-product" element={<AddProduct />} />
 						<Route
@@ -52,6 +66,27 @@ function App() {
 							element={<UpdateProfile />}
 						/>
 						<Route path="/favourites" element={<Favourites />} />
+					</Route>
+
+					{/**Admin Routes */}
+					<Route element={<ProtectedAdminRoutes />}>
+						<Route
+							path="/admin/categories/add"
+							element={<AddCategory />}
+						/>
+						<Route
+							path="/admin/dashboard"
+							element={<AdminHome />}
+						/>
+						<Route
+							path="/admin/products"
+							element={<ManageProducts />}
+						/>
+						<Route path="/admin/users" element={<Vendors />} />
+						<Route
+							path="/admin/make-admin"
+							element={<MakeAdmin />}
+						/>
 					</Route>
 				</Routes>
 

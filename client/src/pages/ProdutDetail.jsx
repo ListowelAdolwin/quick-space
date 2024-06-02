@@ -1,4 +1,4 @@
-import { FiHeart, FiShoppingCart } from "react-icons/fi";
+import { FiHeart } from "react-icons/fi";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -11,6 +11,7 @@ import { Link, useParams } from "react-router-dom";
 import PageLoader from "../components/PageLoader";
 import useFavorites from "../hooks/useFavorites";
 import { FaHeart, FaPhone } from "react-icons/fa";
+import { MdVerified } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Hearts } from "react-loader-spinner";
 
@@ -123,7 +124,7 @@ const ProductDetail = () => {
 									<h1 className="text-3xl font-bold text-gray-800">
 										{product.name}
 									</h1>
-									<div className="flex items-center gap-5">
+									<div className="flex items-center gap-2 sm:gap-5">
 										<div className="mt-4">
 											<span className="text-2xl sm:text-3xl lg:text-3xl font-bold text-slate-900">
 												₵
@@ -195,34 +196,50 @@ const ProductDetail = () => {
 										<h2 className="text-xl font-semibold text-gray-800">
 											About the product owner
 										</h2>
-										<p className="mt-2 text-gray-600">
-											Vendor name: {product.vendorName}
+										<p className="mt-2 flex items-center gap-1 text-gray-600">
+											<span className="font-bold">
+												Business name:
+											</span>{" "}
+											{product.vendorName}
+											{product.isVendorVerified && (
+												<MdVerified
+													className=" text-blue-800"
+													size={20}
+												/>
+											)}
 										</p>
 										<p className="mt-1 text-gray-600">
-											Email: {product.vendorEmail}
+											<span className="font-bold">
+												Email:
+											</span>{" "}
+											<a
+												href={`mailto:${product.vendorEmail}`}
+												className="text-blue-500"
+											>
+												{product.vendorEmail}
+											</a>
 										</p>
 										<p className="mt-1 text-gray-600">
-											Phone: {product.vendorContact}
+											<span className="font-bold">
+												Phone:
+											</span>{" "}
+											{product.vendorContact}
 										</p>
 									</div>
-									<Link
-										to={`/profile/${product.vendorId}`}
-										className="basis-1/3 border border-blue-600 hover:opacity-75 text-blue-700 font-bold py-2 mt-3 px-1 sm:px-2 rounded flex items-center justify-center"
-									>
-										See more products from vendor
-									</Link>
+
 									<div className="w-full flex items-center mt-6 space-x-2 sm:space-x-4 overflow-hidden text-xs sm:text-sm">
 										<a
 											href={`tel:${product.vendorContact}`}
-											className="basis-1/3 border border-blue-600 hover:opacity-75 text-blue-700 font-bold py-2 px-1 sm:px-2 rounded flex items-center justify-center"
+											className="basis-1/2 border border-blue-600 hover:opacity-75 text-blue-700 font-bold py-2 px-1 sm:px-2 rounded flex items-center justify-center"
 										>
 											<FaPhone className="mr-1 sm:mr-2" />{" "}
 											Call Vendor
 										</a>
-										<button className="basis-1/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-1 sm:px-2 rounded flex items-center justify-center">
+
+										{/* <button className="basis-1/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-1 sm:px-2 rounded flex items-center justify-center">
 											<FiShoppingCart className="mr-1 sm:mr-2" />{" "}
 											Add to Cart
-										</button>
+										</button> */}
 										{likeLoading ? (
 											<Hearts
 												height="40"
@@ -234,7 +251,7 @@ const ProductDetail = () => {
 												visible={true}
 											/>
 										) : (
-											<button className="basis-1/3 border border-red-600 text-center hover:opacity-75 text-red-600 font-bold py-2 px-1 sm:px-2 rounded like-button">
+											<button className="basis-1/2 border border-red-600 text-center hover:opacity-75 text-red-600 font-bold py-2 px-1 sm:px-2 rounded like-button">
 												{isFavorited ? (
 													<span
 														onClick={
@@ -257,6 +274,12 @@ const ProductDetail = () => {
 											</button>
 										)}
 									</div>
+									<Link
+										to={`/profile/${product.vendorId}`}
+										className="basis-1/3 border border-blue-600 hover:opacity-75 text-blue-700 font-bold py-2 mt-3 px-1 sm:px-2 rounded flex items-center justify-center"
+									>
+										See more products from vendor
+									</Link>
 									<div className="mt-8">
 										<h2 className="text-xl font-semibold text-gray-800">
 											Reviews

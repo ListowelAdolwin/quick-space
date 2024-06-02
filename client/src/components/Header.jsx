@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegHeart, FaRegUserCircle } from "react-icons/fa";
 import { IoIosAddCircleOutline, IoIosLogIn } from "react-icons/io";
@@ -7,12 +6,24 @@ import { BsPersonPlus } from "react-icons/bs";
 import { IoInformationCircleOutline, IoHomeOutline } from "react-icons/io5";
 import { CiShoppingTag } from "react-icons/ci";
 import { useSelector } from "react-redux";
-import { schools } from "../data/schools";
+import Select from "react-select";
+
+const schools = [
+	{ value: "", label: "ALL" },
+	{ value: "knust", label: "KNUST" },
+	{ value: "ucc", label: "UCC" },
+	{ value: "ug", label: "UG" },
+	{ value: "uds", label: "UDS" },
+	{ value: "uew", label: "UEW" },
+	{ value: "uhas", label: "UHAS" },
+	{ value: "umat", label: "UMAT" },
+	{ value: "other", label: "Other" },
+];
 
 const Header = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
-	const [school, setSchool] = useState("");
+	const [selectedSchool, setSelectedSchool] = useState("");
 
 	const { currentUser } = useSelector((state) => state.user);
 	const navigate = useNavigate();
@@ -27,19 +38,31 @@ const Header = () => {
 		}
 	};
 
-	const handleSchoolChange = (e) => {
-		navigate(`/search?school=${e.target.value}`);
+	const handleSchoolChange = (selectedOption) => {
+		setSelectedSchool(selectedOption);
+		console.log(selectedOption);
+		navigate(
+			`/search?school=${selectedOption.value}&&searchTerm=${searchTerm}`
+		);
 	};
 
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
-		navigate(`/search?searchTerm=${e.target.value}`);
+		navigate(`/search?searchTerm=${e.target.value}&&school=${selectedSchool.value}`);
 	};
 
 	useEffect(() => {
 		const urlParams = new URLSearchParams(location.search);
-		setSearchTerm(urlParams.get("searchTerm"));
-		setSchool(urlParams.get("school"));
+		console.log(urlParams);
+
+		const searchTerm = urlParams.get("searchTerm");
+		const schoolValue = urlParams.get("school");
+		const selectedSchool = schools.find(
+			(school) => school.value === schoolValue
+		);
+
+		setSearchTerm(searchTerm || "");
+		setSelectedSchool(selectedSchool || null);
 	}, [location.search]);
 
 	return (
@@ -59,40 +82,28 @@ const Header = () => {
 						/>
 					</Link>
 					<div className="flex items-center bg-gray-300 hover:bg-gray-300 text-gray-800 pl-2 py-1 rounded-md font-medium">
-						<select
+						<Select
+							className="min-w-28"
+							options={schools}
+							value={selectedSchool}
 							onChange={handleSchoolChange}
-							value={school}
-							data-hs-select='{
-  "hasSearch": true,
-  "searchPlaceholder": "Search...",
-  "searchClasses": "block w-full text-sm border-gray-200 rounded-lg focus:bg-gray-300 before:absolute before:inset-0 before:z-[1] dark:placeholder-neutral-500 py-2 px-2",
-  "searchWrapperClasses": "bg-gray-100 p-1 sticky top-0 dark:bg-gray-100",
-  "placeholder": "School",
-  "toggleTag": "<button type=\"button\"><span class=\"me-1\" data-icon></span><span class=\"text-gray-800 dark:text-gray-800\" data-title></span></button>",
-  "toggleClasses": "hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 relative py-2 px-2 pe-9 flex text-nowrap w-full cursor-pointer bg-gray-300 focus:border focus:border-gray-200 rounded-lg text-start text-sm focus:bg-gray-300 focus:ring-gray-200 before:absolute before:inset-0 before:z-[1]",
-  "dropdownClasses": "mt-2 max-h-72 min-w-28 pb-1 px-1 z-20 w-full bg-gray-300 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-100 dark:[&::-webkit-scrollbar-track]:bg-gray-100 dark:[&::-webkit-scrollbar-thumb]:bg-gray-300 dark:bg-gray-100 dark:border-neutral-700",
-  "optionClasses": "py-1 px-2 w-full text-sm text-gray-800 cursor-pointer hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100 dark:bg-gray-100 dark:hover:bg-gray-300 dark:text-gray-800 dark:focus:bg-gray-300",
-  "optionTemplate": "<div><div class=\"flex items-center\"><div class=\"me-2\" data-icon></div><div class=\"text-gray-800 dark:text-gray-800\" data-title></div></div></div>",
-  "extraMarkup": "<div class=\"absolute top-1/2 end-3 -translate-y-1/2\"><svg class=\"flex-shrink-0 size-3.5 text-gray-800 dark:text-gray-800\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
-}'
-							className="hidden bg-gray-200 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-1 rounded-l-md"
-						>
-							<option value="">Select School</option>
-							<option value="all">All</option>
-							{Object.entries(schools).map(([key, school]) => (
-								<option key={key} value={key}>
-									{school}
-								</option>
-							))}
-						</select>
-
-						<div className="border-l border-gray-400 h-6 mx-2"></div>
+							placeholder="School"
+						/>
+						<div
+							style={{
+								color: "hsl(0, 0%, 40%)",
+								display: "inline-block",
+								fontSize: 12,
+								fontStyle: "italic",
+								marginTop: "1em",
+							}}
+						></div>
 						<input
 							onChange={handleFormSubmit}
 							type="text"
 							value={searchTerm}
 							placeholder="Search product"
-							className="bg-gray-300 w-28 sm:w-36 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-2 pr-2 rounded-r-md"
+							className="bg-gray-300 w-24 sm:w-36 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-2 pl-2 rounded-r-md"
 						/>
 					</div>
 
@@ -133,7 +144,7 @@ const Header = () => {
 											size={20}
 										/>
 									</Link>
-									<Link
+									{/* <Link
 										to="/cart"
 										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
 									>
@@ -141,7 +152,7 @@ const Header = () => {
 											className="inline-block"
 											size={20}
 										/>
-									</Link>{" "}
+									</Link>{" "} */}
 									<Link
 										to={`/profile/${currentUser._id}`}
 										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
@@ -281,7 +292,7 @@ const Header = () => {
 										/>
 										Favorites
 									</Link>
-									<Link
+									{/* <Link
 										to="/cart"
 										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 									>
@@ -290,7 +301,7 @@ const Header = () => {
 											size={20}
 										/>
 										Cart
-									</Link>
+									</Link> */}
 									<Link
 										to={`/profile/${currentUser._id}`}
 										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"

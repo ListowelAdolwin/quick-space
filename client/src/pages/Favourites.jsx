@@ -46,6 +46,12 @@ const Favourites = () => {
 						<h1 className="text-3xl font-bold text-gray-800 mb-4">
 							My Favourites
 						</h1>
+						{favorites.length === 0 && (
+							<p>
+								No favourited items. Add some items to your
+								favourites and come view them
+							</p>
+						)}
 						<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-1 gap-y-2 sm:gap-x-4 sm-gap-y-4">
 							{favorites.map((product) => (
 								<Link

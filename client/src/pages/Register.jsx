@@ -32,7 +32,7 @@ const Register = () => {
 		if (name === "school" && value == "other") {
 			setOtherSchool(true);
 		} else if (name !== "otherSchool") {
-			setOtherSchool(false)
+			setOtherSchool(false);
 		}
 		setFormData({ ...formData, [name]: value });
 	};

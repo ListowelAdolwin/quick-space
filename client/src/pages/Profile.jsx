@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { logoutUser } from "../redux/features/user/userSlice";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -13,6 +13,9 @@ const UserProfile = () => {
 
 	const { currentUser } = useSelector((state) => state.user);
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+	const location = useLocation();
+	console.log(location)
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -40,7 +43,7 @@ const UserProfile = () => {
 		};
 
 		getUserProfile();
-	}, []);
+	}, [location.pathname]);
 
 	const logout = async () => {
 		dispatch(logoutUser());

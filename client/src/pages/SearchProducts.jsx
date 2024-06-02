@@ -76,13 +76,14 @@ export default function SearchProducts() {
 			});
 			const searchQuery = urlParams.toString();
 
-			console.log("Before: ", prevState);
-			console.log("After: ", updatedData);
-
 			navigate(`/search?${searchQuery}`);
 
 			return updatedData;
 		});
+	};
+
+	const clearSearch = () => {
+		navigate(`/search?`);
 	};
 
 	const onShowMoreClick = async () => {
@@ -166,6 +167,13 @@ export default function SearchProducts() {
 					</div>
 					<button className="flex items-center justify-center text-blue-800 w-full px-4 py-3 text-md font-bold leading-6 capitalize duration-100 transform border-2 rounded-sm cursor-pointer border-blue-800 focus:ring-1 focus:ring-blue-900 focus:ring-opacity-90 focus:outline-none sm:w-auto sm:px-6 border-text  hover:shadow-lg hover:-translate-y-1">
 						See filtered products
+					</button>
+					<button
+						className="flex items-center justify-center text-gray-800 w-full px-4 py-3 text-md font-bold leading-6 capitalize duration-100 transform border-2 rounded-sm cursor-pointer border-gray-800 focus:ring-1 focus:ring-gray-900 focus:ring-opacity-90 focus:outline-none sm:w-auto sm:px-6 border-text  hover:shadow-lg hover:-translate-y-1"
+						type="button"
+						onClick={clearSearch}
+					>
+						Clear Search
 					</button>
 				</form>
 			</div>

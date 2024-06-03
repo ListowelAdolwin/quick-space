@@ -40,14 +40,13 @@ const Header = () => {
 
 	const handleSchoolChange = (selectedOption) => {
 		setSelectedSchool(selectedOption);
-		console.log(selectedOption);
 		navigate(
 			`/search?school=${selectedOption.value}&&searchTerm=${searchTerm}`
 		);
 	};
 
-	const handleFormSubmit = (e) => {
-		e.preventDefault();
+	const handleSearchChange = (e) => {
+		setSearchTerm(e.target.value)
 		navigate(`/search?searchTerm=${e.target.value}&&school=${selectedSchool.value}`);
 	};
 
@@ -99,7 +98,7 @@ const Header = () => {
 							}}
 						></div>
 						<input
-							onChange={handleFormSubmit}
+							onChange={handleSearchChange}
 							type="text"
 							value={searchTerm}
 							placeholder="Search product"

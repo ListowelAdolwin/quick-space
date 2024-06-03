@@ -78,6 +78,8 @@ function UpdateProfile() {
 			if (response.status === 200) {
 				dispatch(logoutUser());
 				navigate("/login");
+			} else if (response.status === 401) {
+				navigate("/login");
 			} else {
 				setErrorMessage(response.data.message);
 			}

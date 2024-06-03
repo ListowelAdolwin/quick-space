@@ -1,5 +1,6 @@
 import Product from '../models/Product.js'
 import User from '../models/User.js'
+import Category from "../models/Category.js"
 
 export const addProduct = async (req, res) => {
   try {
@@ -18,7 +19,15 @@ export const addProduct = async (req, res) => {
       description
     })
 
+    if (discount > price) {
+      return res.status(400).json({message: "Discount cannot be greater than product price"})
+    }
+
     await newProduct.save()
+    // Increment product category count by one
+    const prodCategory = await Category.findOne({val: category})
+    prodCategory.count = prodCategory.count + 1
+    await prodCategory.save()
 
     res.status(201).json({
       message: 'Product added successfully',
@@ -267,6 +276,11 @@ export const deleteProduct = async (req, res) => {
     }
 
     await Product.findByIdAndDelete(id)
+    // Decrement product category count by one
+    const prodCategory = await Category.findOne({val: prod.category})
+    prodCategory.count = prodCategory.count - 1
+    await prodCategory.save()
+
     return res.status(204)
   } catch (error) {
     return res.status(400).json({ message: 'Failed to delete product' })

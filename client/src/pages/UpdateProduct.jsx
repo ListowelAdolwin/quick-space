@@ -43,7 +43,7 @@ const UpdateProduct = () => {
 			const response = await axios.get(`${BASE_URL}/api/products/${id}`);
 			if (response.status === 200) {
 				const data = response.data;
-        console.log(data)
+				console.log(data);
 				setFormData({
 					itemName: data.name,
 					price: data.price,
@@ -54,7 +54,7 @@ const UpdateProduct = () => {
 					imageUrls: data.imageUrls,
 				});
 			} else {
-        setErrowMessage('Product not found')
+				setErrowMessage("Product not found");
 				console.log("Profile response error: ", response.data);
 			}
 		};
@@ -75,6 +75,10 @@ const UpdateProduct = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		if (formData.discount > formData.price) {
+			setErrowMessage("Discont cannot be greater than price");
+			return;
+		}
 		setErrowMessage("");
 		setIsLoading(true);
 
@@ -113,7 +117,7 @@ const UpdateProduct = () => {
 				vendor: currentUser._id,
 			};
 
-			console.log(productData)
+			console.log(productData);
 
 			const saveProductResponse = await axios.post(
 				`${BASE_URL}/api/products/update/${id}`,
@@ -126,6 +130,8 @@ const UpdateProduct = () => {
 			);
 			if (saveProductResponse.status === 200) {
 				navigate(`/product/${id}`);
+			} else if (saveProductResponse.status === 401) {
+				navigate("/login");
 			} else {
 				setErrowMessage(saveProductResponse.message);
 			}
@@ -143,7 +149,6 @@ const UpdateProduct = () => {
 			<h1 className="text-3xl font-bold text-gray-800 mb-4">
 				Add Product
 			</h1>
-			{errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 			<div className="bg-white p-6 rounded-lg shadow-md">
 				<form onSubmit={handleSubmit}>
 					<div className="mb-4">
@@ -279,6 +284,7 @@ const UpdateProduct = () => {
 						</div>
 					)}
 				</form>
+				{errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 			</div>
 		</div>
 	);

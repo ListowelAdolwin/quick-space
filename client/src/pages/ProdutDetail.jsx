@@ -191,8 +191,15 @@ const ProductDetail = () => {
 											</div>
 										</div>
 									</div>
-
-									<div className="mt-8">
+									<div className="py-3 mt-3">
+										<h2 className="text-xl font-semibold text-gray-800 ">
+											Product description
+										</h2>
+										<p className="">
+											{product.description}
+										</p>
+									</div>
+									<div className="mt-3">
 										<h2 className="text-xl font-semibold text-gray-800">
 											About the product owner
 										</h2>

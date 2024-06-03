@@ -47,14 +47,14 @@ const Categories = () => {
 							<img
 								src={category.imageUrl}
 								alt={category.displayName}
-								className="h-24 w-24 md:w-40 md:h-40 rounded-full object-center object-cover hover:opacity-100"
+								className="h-20 w-20 md:w-32 md:h-32 rounded-full object-center object-cover hover:opacity-100"
 							/>
-							<div className="text-black">
+							<div className="text-gray-950 font-bold">
 								<div className="text-xs md:text-lg">
 									{category.displayName}
 								</div>
 							</div>
-							<div className="flex items-center justify-center text-xs text-white rounded-full w-6 h-6 p-3 mx-auto bg-blue-800">
+							<div className="flex items-center justify-center text-xs text-slate-900 rounded-full w-6 h-6 p-3 mx-auto bg-blue-300">
 								{category.count}
 							</div>
 						</Link>

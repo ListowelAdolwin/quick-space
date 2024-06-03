@@ -50,6 +50,10 @@ const AddProduct = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		if (formData.discount > formData.price){
+			setErrowMessage("Discont cannot be greater than price")
+			return
+		}
 		setErrowMessage("");
 		setIsLoading(true);
 
@@ -128,7 +132,6 @@ const AddProduct = () => {
 			<h1 className="text-3xl font-bold text-gray-800 mb-4">
 				Add Product
 			</h1>
-			{errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 			<div className="bg-white p-6 rounded-lg shadow-md">
 				<form onSubmit={handleSubmit}>
 					<div className="mb-4">
@@ -241,6 +244,7 @@ const AddProduct = () => {
 							htmlFor="images"
 						>
 							Images
+							<p className="italic text-xs">You can upload multiple images.</p>
 						</label>
 						<input
 							type="file"
@@ -280,6 +284,7 @@ const AddProduct = () => {
 						</div>
 					)}
 				</form>
+				{errorMessage && <ErrorMessage errorMessage={errorMessage} />}
 			</div>
 		</div>
 	);

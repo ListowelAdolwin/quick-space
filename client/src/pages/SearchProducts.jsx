@@ -109,8 +109,8 @@ export default function SearchProducts() {
 						<input
 							type="text"
 							id="searchTerm"
-							placeholder="Search by product or vendor name"
-							className="bg-gray-300 hover:bg-gray-200 text-white-800 focus:outline-none focus:bg-gray-300 p-3 rounded-md w-full"
+							placeholder="Search by product or business name"
+							className="bg-gray-50 border border-blue-500 text-white-800 focus:outline-none p-3 rounded-md w-full"
 							value={searchData.searchTerm}
 							onChange={handleSubmit}
 						/>

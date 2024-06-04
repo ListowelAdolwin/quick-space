@@ -195,6 +195,7 @@ const ProductDetail = () => {
 										<h2 className="text-xl font-semibold text-gray-800 ">
 											Product description
 										</h2>
+										{!product.description && <p>No description provided</p>}
 										<p className="">
 											{product.description}
 										</p>

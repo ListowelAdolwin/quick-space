@@ -15,7 +15,7 @@ const UserProfile = () => {
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 	const location = useLocation();
-	console.log(location)
+	console.log(location);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();

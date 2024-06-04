@@ -24,6 +24,7 @@ const Header = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedSchool, setSelectedSchool] = useState("");
+	const [school, setSchool] = useState("");
 
 	const { currentUser } = useSelector((state) => state.user);
 	const navigate = useNavigate();
@@ -40,14 +41,15 @@ const Header = () => {
 
 	const handleSchoolChange = (selectedOption) => {
 		setSelectedSchool(selectedOption);
+		setSchool(selectedOption.value);
 		navigate(
 			`/search?school=${selectedOption.value}&&searchTerm=${searchTerm}`
 		);
 	};
 
 	const handleSearchChange = (e) => {
-		setSearchTerm(e.target.value)
-		navigate(`/search?searchTerm=${e.target.value}&&school=${selectedSchool.value}`);
+		setSearchTerm(e.target.value);
+		navigate(`/search?searchTerm=${e.target.value}&&school=${school}`);
 	};
 
 	useEffect(() => {
@@ -80,13 +82,13 @@ const Header = () => {
 							alt="Logo"
 						/>
 					</Link>
-					<div className="flex items-center bg-gray-300 hover:bg-gray-300 text-gray-800 pl-2 py-1 rounded-md font-medium">
+					<div className="flex items-center text-gray-800 font-medium border border-blue-300 text-sm rounded-lg z-20">
 						<Select
-							className="min-w-28"
+							className="min-w-40 "
 							options={schools}
 							value={selectedSchool}
 							onChange={handleSchoolChange}
-							placeholder="School"
+							placeholder="Select school"
 						/>
 						<div
 							style={{
@@ -102,12 +104,20 @@ const Header = () => {
 							type="text"
 							value={searchTerm}
 							placeholder="Search product"
-							className="bg-gray-300 w-24 sm:w-36 hover:bg-gray-300 text-gray-800 focus:outline-none focus:bg-gray-300 py-2 pl-2 rounded-r-md"
+							className="hidden md:flex border border-blue-300 text-sm rounded-e-md w-full py-2 pl-2"
 						/>
 					</div>
 
 					<div className="hidden md:block">
 						<div className="ml-10 flex items-baseline space-x-4">
+							{currentUser?.role === "admin" && (
+								<a
+									href="/admin/dashboard"
+									className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+								>
+									Admin Panel
+								</a>
+							)}
 							<Link
 								to="/"
 								className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"

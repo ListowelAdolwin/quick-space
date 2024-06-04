@@ -39,6 +39,12 @@ const AdminNavbar = () => {
 					</Link>
 					<div className="hidden md:block">
 						<div className="ml-10 flex items-baseline space-x-4">
+							<a
+								href="/"
+								className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+							>
+								Back to Home
+							</a>
 							<Link
 								to="/admin/dashboard"
 								className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"

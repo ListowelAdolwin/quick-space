@@ -20,7 +20,6 @@ const productSchema = new mongoose.Schema(
     },
     school: {
         type: String,
-        default: "knust"
     },
     vendor: {
       type: mongoose.Schema.Types.ObjectId,

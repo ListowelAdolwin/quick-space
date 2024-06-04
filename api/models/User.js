@@ -22,7 +22,6 @@ const userSchema = new mongoose.Schema(
     },
     school: {
       type: String,
-      default: 'knust'
     },
     isVendor: {
       type: Boolean,
@@ -30,7 +29,7 @@ const userSchema = new mongoose.Schema(
     },
     isVerified: {
       type: Boolean,
-      default: true
+      default: false
     },
     role: {
       type: String,

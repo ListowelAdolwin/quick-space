@@ -4,6 +4,7 @@ import axios from "axios";
 import { categories } from "../data/categories";
 import { schools } from "../data/schools";
 import { CiViewList } from "react-icons/ci";
+import { MdOutlinePerson3 } from "react-icons/md";
 
 export default function SearchProducts() {
 	const navigate = useNavigate();
@@ -212,11 +213,11 @@ export default function SearchProducts() {
 											/>
 										</p>
 									</div>
-									<div className="mt-4 px-2 pb-3 sm:pb-5">
+									<div className="mt-4 px-2 pb-1 sm:pb-5">
 										<h5 className="text-xs sm:text-xl tracking-tight text-slate-900 line-clamp-1">
 											{product.name}
 										</h5>
-										<div className="mt-0 sm:mt-2 mb-1 sm:mb-5 flex items-center justify-between">
+										<div className="mt-0 sm:mt-2 mb-1 sm:mb-3 flex items-center justify-between">
 											<p>
 												<span className="text-md sm:text-xl lg:text-2xl font-bold text-slate-900">
 													₵
@@ -230,6 +231,11 @@ export default function SearchProducts() {
 												</span>
 											</p>
 										</div>
+										<p className="pb-3 flex items-center text-xs font-extralight">
+											<MdOutlinePerson3 />
+
+											{product.vendor.name}
+										</p>
 										<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-900 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
 											<CiViewList className="text-xl font-bold" />
 											View details

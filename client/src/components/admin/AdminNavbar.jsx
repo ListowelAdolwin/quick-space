@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaRegHeart, FaRegUserCircle } from "react-icons/fa";
+import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoInformationCircleOutline, IoHomeOutline } from "react-icons/io5";
-import { CiShoppingTag } from "react-icons/ci";
+import { TbCategory, TbUsersGroup } from "react-icons/tb";
 import { useSelector } from "react-redux";
+import { MdOutlineDashboardCustomize } from "react-icons/md";
 
 const AdminNavbar = () => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -147,11 +148,21 @@ const AdminNavbar = () => {
 						className="bg-white w-3/4 max-w-sm shadow-lg transform translate-x-0 transition-transform duration-300 ease-in-out pt-4 overflow-scroll"
 					>
 						<div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+							<a
+								href="/"
+								className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+							>
+								<IoHomeOutline
+									className="inline-block"
+									size={20}
+								/>
+								Back to Home
+							</a>
 							<Link
 								to="/admin/dashboard"
 								className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 							>
-								<IoHomeOutline
+								<TbCategory
 									className="inline-block"
 									size={20}
 								/>
@@ -161,10 +172,10 @@ const AdminNavbar = () => {
 								to="/admin/users"
 								className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 							>
-								<CiShoppingTag
+								<TbUsersGroup
 									className="inline-block"
 									size={20}
-								/>
+								/>{" "}
 								Users
 							</Link>
 							<Link
@@ -191,7 +202,7 @@ const AdminNavbar = () => {
 								to="/admin/categories/add"
 								className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 							>
-								<FaRegHeart
+								<MdOutlineDashboardCustomize
 									className="inline-block"
 									size={20}
 								/>

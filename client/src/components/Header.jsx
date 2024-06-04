@@ -4,6 +4,7 @@ import { FaRegHeart, FaRegUserCircle } from "react-icons/fa";
 import { IoIosAddCircleOutline, IoIosLogIn } from "react-icons/io";
 import { BsPersonPlus } from "react-icons/bs";
 import { IoInformationCircleOutline, IoHomeOutline } from "react-icons/io5";
+import { MdAdminPanelSettings } from "react-icons/md";
 import { CiShoppingTag } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import Select from "react-select";
@@ -28,6 +29,7 @@ const Header = () => {
 
 	const { currentUser } = useSelector((state) => state.user);
 	const navigate = useNavigate();
+	const path = location.pathname;
 
 	const handleOverlayClick = () => {
 		setIsOpen(false);
@@ -54,7 +56,6 @@ const Header = () => {
 
 	useEffect(() => {
 		const urlParams = new URLSearchParams(location.search);
-		console.log(urlParams);
 
 		const searchTerm = urlParams.get("searchTerm");
 		const schoolValue = urlParams.get("school");
@@ -249,9 +250,23 @@ const Header = () => {
 						className="bg-white w-3/4 max-w-sm shadow-lg transform translate-x-0 transition-transform duration-300 ease-in-out pt-4 overflow-scroll"
 					>
 						<div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+							{currentUser?.role === "admin" && (
+								<a
+									href="/admin/dashboard"
+									className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+								>
+									<MdAdminPanelSettings
+										className="inline-block"
+										size={20}
+									/>
+									Admin Panel
+								</a>
+							)}
 							<Link
 								to="/"
-								className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
+								className={`${
+									path === "/" ? "bg-gray-200" : ""
+								} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 							>
 								<IoHomeOutline
 									className="inline-block"
@@ -261,7 +276,9 @@ const Header = () => {
 							</Link>
 							<Link
 								to="/shop"
-								className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
+								className={`${
+									path === "/shop" ? "bg-gray-200" : ""
+								} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 							>
 								<CiShoppingTag
 									className="inline-block"
@@ -271,7 +288,9 @@ const Header = () => {
 							</Link>
 							<Link
 								to="/about"
-								className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
+								className={`${
+									path === "/about" ? "bg-gray-200" : ""
+								} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 							>
 								<IoInformationCircleOutline
 									className="inline-block"
@@ -283,7 +302,11 @@ const Header = () => {
 								<div>
 									<Link
 										to="/add-product"
-										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
+										className={`${
+											path === "/add-product"
+												? "bg-gray-200"
+												: ""
+										} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 									>
 										<IoIosAddCircleOutline
 											className="inline-block"
@@ -293,7 +316,11 @@ const Header = () => {
 									</Link>
 									<Link
 										to="/favourites"
-										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
+										className={`${
+											path === "/favourites"
+												? "bg-gray-200"
+												: ""
+										} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 									>
 										<FaRegHeart
 											className="inline-block"
@@ -313,7 +340,11 @@ const Header = () => {
 									</Link> */}
 									<Link
 										to={`/profile/${currentUser._id}`}
-										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
+										className={`${
+											path.startsWith("/profile")
+												? "bg-gray-200"
+												: ""
+										} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 									>
 										<FaRegUserCircle
 											className="inline-block"

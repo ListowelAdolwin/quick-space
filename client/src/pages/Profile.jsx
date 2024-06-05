@@ -57,13 +57,13 @@ const UserProfile = () => {
 			) : (
 				<main className="flex-grow">
 					<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-8">
-						<h1 className="text-3xl font-bold text-gray-800 mb-4">
+						<h1 className="text-3xl font-bold text-blue-800 mb-4">
 							User Profile
 						</h1>
 						{userData && (
 							<div className="flex flex-wrap items-start justify-start gap-5">
 								<div className="w-full lg:basis-3/12 flex flex-col gap-4 text-start bg-white p-6 rounded-lg shadow-md">
-									<p className="text-2xl font-semibold text-gray-800">
+									<p className="text-xl font-semibold text-blue-700">
 										Name: {userData.name}
 									</p>
 									<p className="text-gray-600">
@@ -109,7 +109,7 @@ const UserProfile = () => {
 								</div>
 
 								<div className="w-full lg:-mt-12 lg:basis-8/12">
-									<h2 className="text-2xl font-semibold text-gray-800 mb-4">
+									<h2 className="text-2xl font-semibold text-blue-800 mb-4">
 										Catalogue
 									</h2>
 									{userData.products.length === 0 && (

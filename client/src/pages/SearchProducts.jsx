@@ -180,7 +180,7 @@ export default function SearchProducts() {
 			</div>
 
 			<div className="flex-1 pb-8">
-				<h1 className="text-3xl font-semibold border-b p-3 text-slate-700">
+				<h1 className="text-3xl font-semibold border-b p-3 text-blue-800">
 					Search results:
 				</h1>
 				<div className="">
@@ -249,7 +249,7 @@ export default function SearchProducts() {
 					{showMore && (
 						<button
 							onClick={onShowMoreClick}
-							className="ml-1 mt-5 flex flex-row items-center justify-center px-4 py-3 mb-4 text-sm font-bold bg-blue-800 leading-6 duration-100 transform rounded-sm shadow cursor-pointer focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 focus:outline-none hover:shadow-lg hover:-translate-y-1 text-white"
+							className="ml-1 mt-5 flex flex-row items-center justify-center px-4 py-3 mb-4 text-sm font-bold bg-blue-700 leading-6 duration-100 transform rounded-sm shadow cursor-pointer focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 focus:outline-none hover:shadow-lg hover:-translate-y-1 text-white"
 						>
 							<h1 className="text-md">Load more products</h1>
 							<span className="">

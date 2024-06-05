@@ -73,11 +73,15 @@ const Header = () => {
 			borderTopRightRadius: "0px",
 			borderBottomRightRadius: "0px",
 			borderColor: "rgb(59, 130, 246)",
+			boxShadow: "none",
+			"&:hover": {
+				borderColor: "rgb(37, 99, 235)",
+			},
 		}),
 	};
 
 	return (
-		<nav className="bg-white shadow-md">
+		<nav className="bg-white shadow-md w-full z-50">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex items-center justify-between h-16">
 					<Link to="/" className="flex items-center">
@@ -101,15 +105,6 @@ const Header = () => {
 							onChange={handleSchoolChange}
 							placeholder="Select school"
 						/>
-						<div
-							style={{
-								color: "hsl(0, 0%, 40%)",
-								display: "inline-block",
-								fontSize: 12,
-								fontStyle: "italic",
-								marginTop: "1em",
-							}}
-						></div>
 						<input
 							onChange={handleSearchChange}
 							type="text"
@@ -122,12 +117,12 @@ const Header = () => {
 					<div className="hidden lg:block">
 						<div className="ml-10 flex items-baseline space-x-4">
 							{currentUser?.role === "admin" && (
-								<a
-									href="/admin/dashboard"
+								<Link
+									to="/admin/dashboard"
 									className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
 								>
 									Admin Panel
-								</a>
+								</Link>
 							)}
 							<Link
 								to="/"
@@ -148,7 +143,7 @@ const Header = () => {
 								About
 							</Link>
 							{currentUser ? (
-								<div>
+								<div className="flex items-center space-x-4">
 									<Link
 										to="/add-product"
 										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
@@ -164,15 +159,6 @@ const Header = () => {
 											size={20}
 										/>
 									</Link>
-									{/* <Link
-										to="/cart"
-										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
-									>
-										<FiShoppingCart
-											className="inline-block"
-											size={20}
-										/>
-									</Link>{" "} */}
 									<Link
 										to={`/profile/${currentUser._id}`}
 										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
@@ -184,13 +170,13 @@ const Header = () => {
 									</Link>
 								</div>
 							) : (
-								<div>
+								<div className="flex items-center space-x-4">
 									<Link
 										to="login"
 										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
 									>
 										Login
-									</Link>{" "}
+									</Link>
 									<Link
 										to="register"
 										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
@@ -205,7 +191,7 @@ const Header = () => {
 						<button
 							onClick={() => setIsOpen(!isOpen)}
 							type="button"
-							className="z-50 inline-flex items-center justify-center p-2 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white  hover:outline-none hover:ring-1 hover:ring-offset-1 hover:ring-offset-gray-800 hover:ring-white"
+							className="z-50 inline-flex items-center justify-center p-2 rounded-md text-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-800 focus:ring-white  hover:outline-none hover:ring-1 hover:ring-offset-1 hover:ring-offset-blue-800 hover:ring-white"
 						>
 							<span className="sr-only">Open main menu</span>
 							<svg
@@ -225,7 +211,6 @@ const Header = () => {
 									d="M4 6h16M4 12h16m-7 6h7"
 								/>
 							</svg>
-
 							<svg
 								className={`${
 									isOpen ? "block" : "hidden"
@@ -261,22 +246,22 @@ const Header = () => {
 					>
 						<div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
 							{currentUser?.role === "admin" && (
-								<a
-									href="/admin/dashboard"
-									className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+								<Link
+									to="/admin/dashboard"
+									className="flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
 								>
 									<MdAdminPanelSettings
 										className="inline-block"
 										size={20}
 									/>
 									Admin Panel
-								</a>
+								</Link>
 							)}
 							<Link
 								to="/"
 								className={`${
 									path === "/" ? "bg-gray-200" : ""
-								} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
+								} flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 							>
 								<IoHomeOutline
 									className="inline-block"
@@ -288,7 +273,7 @@ const Header = () => {
 								to="/shop"
 								className={`${
 									path === "/shop" ? "bg-gray-200" : ""
-								} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
+								} flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 							>
 								<CiShoppingTag
 									className="inline-block"
@@ -300,7 +285,7 @@ const Header = () => {
 								to="/about"
 								className={`${
 									path === "/about" ? "bg-gray-200" : ""
-								} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
+								} flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 							>
 								<IoInformationCircleOutline
 									className="inline-block"
@@ -309,14 +294,14 @@ const Header = () => {
 								About
 							</Link>
 							{currentUser ? (
-								<div>
+								<div className="flex flex-col space-y-1">
 									<Link
 										to="/add-product"
 										className={`${
 											path === "/add-product"
 												? "bg-gray-200"
 												: ""
-										} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
+										} flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 									>
 										<IoIosAddCircleOutline
 											className="inline-block"
@@ -330,7 +315,7 @@ const Header = () => {
 											path === "/favourites"
 												? "bg-gray-200"
 												: ""
-										} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
+										} flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 									>
 										<FaRegHeart
 											className="inline-block"
@@ -338,23 +323,13 @@ const Header = () => {
 										/>
 										Favorites
 									</Link>
-									{/* <Link
-										to="/cart"
-										className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
-									>
-										<FiShoppingCart
-											className="inline-block"
-											size={20}
-										/>
-										Cart
-									</Link> */}
 									<Link
 										to={`/profile/${currentUser._id}`}
 										className={`${
 											path.startsWith("/profile")
 												? "bg-gray-200"
 												: ""
-										} flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
+										} flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
 									>
 										<FaRegUserCircle
 											className="inline-block"
@@ -364,21 +339,20 @@ const Header = () => {
 									</Link>
 								</div>
 							) : (
-								<div className="flex flex-col">
-									{" "}
+								<div className="flex flex-col space-y-1">
 									<Link
 										to="login"
-										className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+										className="flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 									>
 										<IoIosLogIn
 											className="inline-block"
 											size={20}
 										/>
 										Login
-									</Link>{" "}
+									</Link>
 									<Link
 										to="register"
-										className="flex items-center gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+										className="flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 									>
 										<BsPersonPlus
 											className="inline-block"

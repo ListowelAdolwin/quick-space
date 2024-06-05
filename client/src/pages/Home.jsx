@@ -1,5 +1,5 @@
 import Categories from "../components/Categories";
-import FeaturedProductsCarousel from "../components/FeaturedProductsCarousal";
+import FeaturedProducts from "../components/FeaturedProductsCarousal";
 import SearchInput from "../components/SearchInput";
 
 function Home() {
@@ -8,7 +8,7 @@ function Home() {
 			<main>
 				<SearchInput />
 				<Categories />
-				<FeaturedProductsCarousel />
+				<FeaturedProducts />
 			</main>
 		</div>
 	);

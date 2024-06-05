@@ -35,9 +35,9 @@ const Shop = () => {
 				<div className="flex flex-col min-h-screen">
 					<main className="flex-grow">
 						<div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-8">
-							<h1 className="text-3xl font-bold text-gray-800 mb-4">
-								Shop
-							</h1>
+							<h2 className="text-3xl font-bold text-blue-700 mb-6">
+								Shop Items
+							</h2>
 							{products.length === 0 && (
 								<p>
 									No items in shop at this time. Come back
@@ -58,35 +58,39 @@ const Shop = () => {
 													src={product.imageUrls[0]}
 													alt="product image"
 												/>
-												<span className="absolute top-0 left-0 m-2 rounded-full bg-blue-900 px-2 text-sm font-medium text-white">
-													{(
-														(product.discount /
-															product.price) *
-														100
-													).toFixed(2)}
-													% off
-												</span>
+												{product.discount > 0 && (
+													<span className="absolute top-0 left-0 rounded-full bg-blue-700 px-2 text-sm font-medium text-white">
+														{(
+															(product.discount /
+																product.price) *
+															100
+														).toFixed(0)}
+														% off
+													</span>
+												)}
 											</p>
 										</div>
 										<div className="mt-4 px-2 sm:px-4 pb-3">
 											<h5 className="text-lg sm:text-xl tracking-tight text-slate-900 line-clamp-1">
 												{product.name}
 											</h5>
-											<div className="mt-0 sm:mt-2 mb-1 sm:mb-2 flex items-center justify-between">
+											<div className="mt-2 mb-2 flex items-center justify-between">
 												<p>
-													<span className="text-md sm:text-xl lg:text-2xl font-bold text-slate-900">
+													<span className="text-xl sm:text-2xl font-bold text-slate-900">
 														₵
 														{(
 															product.price -
 															product.discount
 														).toFixed(2)}
 													</span>
-													<span className="text-xs sm:text-sm text-slate-900 line-through">
-														₵
-														{product.price.toFixed(
-															2
-														)}
-													</span>
+													{product.discount > 0 && (
+														<span className="text-sm text-slate-500 line-through ml-2">
+															₵
+															{product.price.toFixed(
+																2
+															)}
+														</span>
+													)}
 												</p>
 											</div>
 											<p className="pb-3 flex items-center text-xs font-extralight">

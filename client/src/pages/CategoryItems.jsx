@@ -40,7 +40,7 @@ const CategoryItems = () => {
 			) : (
 				<main className="flex-grow">
 					<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-						<h1 className="text-3xl font-bold text-gray-800 mb-4">
+						<h1 className="text-3xl font-bold text-blue-700 mb-4">
 							{categories[category].name}
 						</h1>
 						{products.length === 0 && (

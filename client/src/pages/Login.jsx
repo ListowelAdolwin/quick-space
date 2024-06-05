@@ -66,11 +66,15 @@ const Login = () => {
 		<div className="flex flex-col min-h-screen">
 			<main className="flex-grow">
 				<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-					<h1 className="text-3xl font-bold text-gray-800 mb-4">
+					<h1 className="text-3xl font-bold text-blue-800 mb-4">
 						Login
 					</h1>
 					<div className="bg-white p-6 rounded-lg shadow-md">
-						{state && <p className="mb-3 text-white bg-red-500 p-2">{state}</p>}
+						{state && (
+							<p className="mb-3 text-white bg-red-500 p-2">
+								{state}
+							</p>
+						)}
 						{errorMessage && (
 							<ErrorMessage errorMessage={errorMessage} />
 						)}

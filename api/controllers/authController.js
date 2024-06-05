@@ -82,7 +82,7 @@ export const login = async (req, res) => {
         role: foundUser.role
       },
       process.env.JWT_SECRET,
-      { expiresIn: '1d' }
+      { expiresIn: '10d' }
     )
 
     const { password: pass, ...rest } = foundUser._doc

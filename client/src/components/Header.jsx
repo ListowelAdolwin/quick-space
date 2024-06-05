@@ -67,6 +67,15 @@ const Header = () => {
 		setSelectedSchool(selectedSchool || null);
 	}, [location.search]);
 
+	const customStyles = {
+		control: (base) => ({
+			...base,
+			borderTopRightRadius: "0px",
+			borderBottomRightRadius: "0px",
+			borderColor: "rgb(59, 130, 246)",
+		}),
+	};
+
 	return (
 		<nav className="bg-white shadow-md">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -86,6 +95,7 @@ const Header = () => {
 					<div className="flex items-center text-gray-800 font-medium border border-blue-300 text-sm rounded-lg z-20">
 						<Select
 							className="min-w-40 "
+							styles={customStyles}
 							options={schools}
 							value={selectedSchool}
 							onChange={handleSchoolChange}
@@ -105,7 +115,7 @@ const Header = () => {
 							type="text"
 							value={searchTerm}
 							placeholder="Search product"
-							className="hidden md:flex border border-blue-300 text-sm rounded-e-md w-full py-2 pl-2"
+							className="hidden md:flex border border-blue-500 focus:ring-1 focus:ring-blue-600 focus:outline-none text-sm rounded-e-md w-full py-2 pl-2"
 						/>
 					</div>
 

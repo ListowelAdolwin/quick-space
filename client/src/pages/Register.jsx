@@ -124,7 +124,7 @@ const Register = () => {
 								}`}
 								onClick={() => handleUserTypeChange("vendor")}
 							>
-								Register as Vendor
+								Register as Business
 							</button>
 						</div>
 						{errorMessage && (
@@ -156,7 +156,7 @@ const Register = () => {
 										className="block text-gray-700 font-bold mb-2"
 										htmlFor="vendorName"
 									>
-										Vendor Name
+										Business Name
 									</label>
 									<input
 										type="text"
@@ -165,7 +165,7 @@ const Register = () => {
 										value={formData.name}
 										onChange={handleChange}
 										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-										placeholder="Enter vendor name here"
+										placeholder="Enter business name here"
 										required
 									/>
 								</div>

@@ -78,7 +78,7 @@ const Login = () => {
 										className="block text-gray-700 font-bold mb-2"
 										htmlFor="name"
 									>
-										Vendor or user name
+										Business or user name
 									</label>
 									<input
 										type="text"
@@ -142,7 +142,7 @@ const Login = () => {
 							)}
 							<div>
 								<p className="mb-2">
-									Don't have an account yet?
+									Don&apos;t have an account yet?
 								</p>
 								<Link
 									to="/register"

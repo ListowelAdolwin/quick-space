@@ -2,12 +2,14 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
 	return (
-		<footer className="bg-gray-200 py-8 shadow-inner text-gray-800">
+		<footer className="bg-gray-300 py-8 shadow-inner text-gray-800">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex justify-around items-center flex-wrap">
 					<div className="w-full md:w-1/2 mt-6 md:mt-0">
-						<h3 className="text-xl font-semibold">Quick Links</h3>
-						<ul className="mt-2 space-y-2">
+						<h3 className="text-xl font-semibold text-blue-800">
+							Quick Links
+						</h3>
+						<ul className="flex flex-wrap mt-2 space-x-2">
 							<li>
 								<Link
 									to="/home"
@@ -43,13 +45,16 @@ const Footer = () => {
 						</ul>
 					</div>
 					<div className="w-full md:w-1/2 mt-6 md:mt-0">
-						<h3 className="text-xl font-semibold">Contact Us</h3>
+						<h3 className="text-xl font-semibold text-blue-800">
+							Contact Us
+						</h3>
 						<ul className="mt-2 space-y-2">
 							<li>Email: support@eshop.com</li>
 							<li>Phone: +233 234 567 890</li>
 							<li>Address: 123 E-Shop St, Online City</li>
 						</ul>
 					</div>
+					
 				</div>
 				<div className="mt-8 border-t border-gray-700 pt-4 flex justify-between items-center">
 					<p>&copy; 2024 E-Shop. All rights reserved.</p>

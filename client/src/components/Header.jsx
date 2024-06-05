@@ -94,7 +94,7 @@ const Header = () => {
 					</Link>
 					<div className="flex items-center text-gray-800 font-medium border border-blue-300 text-sm rounded-lg z-20">
 						<Select
-							className="min-w-40 "
+							className="min-w-40"
 							styles={customStyles}
 							options={schools}
 							value={selectedSchool}
@@ -119,7 +119,7 @@ const Header = () => {
 						/>
 					</div>
 
-					<div className="hidden md:block">
+					<div className="hidden lg:block">
 						<div className="ml-10 flex items-baseline space-x-4">
 							{currentUser?.role === "admin" && (
 								<a
@@ -201,7 +201,7 @@ const Header = () => {
 							)}
 						</div>
 					</div>
-					<div className="-mr-2 flex md:hidden">
+					<div className="-mr-2 flex lg:hidden">
 						<button
 							onClick={() => setIsOpen(!isOpen)}
 							type="button"

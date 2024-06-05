@@ -8,33 +8,27 @@ const About = () => {
 					</h1>
 					<div className="bg-white p-6 rounded-lg shadow-md">
 						<h2 className="text-2xl font-semibold text-gray-800">
-							Our Story
+							Our Mission
 						</h2>
 						<p className="mt-4 text-gray-600">
-							Welcome to our eCommerce store! We started our
-							journey in 2021 with the aim of providing
-							high-quality products at affordable prices. Our
-							mission is to make shopping easy and enjoyable for
-							everyone.
+							Our mission transcends mere technological
+							implementation; it is about creating a holistic
+							ecosystem that supports students, nurtures
+							entrepreneurship, and paves the way for a brighter
+							future. 🚀📚🌟
 						</p>
 						<h2 className="text-2xl font-semibold text-gray-800 mt-8">
-							Our Values
+							Our Vision
 						</h2>
-						<ul className="mt-4 list-disc list-inside text-gray-600">
-							<li>
-								Customer Satisfaction: We prioritize our
-								customers and strive to provide the best service
-								possible.
-							</li>
-							<li>
-								Quality Products: We ensure that all our
-								products meet high standards of quality.
-							</li>
-							<li>
-								Integrity: We believe in honest and transparent
-								business practices.
-							</li>
-						</ul>
+						<p className="mt-4 text-gray-600">
+							Our vision is to be able to create a seamless
+							marketplace where buyers and vendors converge
+							effortlessly. We empower students to access an
+							extensive range of goods and services, all at
+							competitive prices. Simultaneously, we provide
+							sellers with innovative avenues to connect with
+							customers and expand their businesses.
+						</p>
 						<h2 className="text-2xl font-semibold text-gray-800 mt-8">
 							Meet the Team
 						</h2>
@@ -46,7 +40,7 @@ const About = () => {
 									className="w-32 h-32 rounded-full mx-auto"
 								/>
 								<h3 className="text-xl font-semibold text-center text-gray-800 mt-4">
-									John Doe
+									Kofi Boakye
 								</h3>
 								<p className="text-center text-gray-600">
 									Founder & CEO

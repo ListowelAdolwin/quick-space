@@ -54,7 +54,7 @@ const Categories = () => {
 									{category.displayName}
 								</div>
 							</div>
-							<div className="flex items-center justify-center text-xs text-slate-900 rounded-full w-6 h-6 p-3 mx-auto bg-blue-300">
+							<div className="flex items-center justify-center text-xs text-slate-900 rounded-full w-6 h-6 p-3 mx-auto">
 								{category.count}
 							</div>
 						</Link>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { CiViewList } from "react-icons/ci";
+import { MdOutlinePerson3 } from "react-icons/md";
 
 const FeaturedProductsCarousel = () => {
 	const [products, setProducts] = useState([]);
@@ -17,6 +18,7 @@ const FeaturedProductsCarousel = () => {
 			);
 			if (response.status === 200) {
 				setProducts(response.data);
+				console.log(response.data)
 				setPageLoading(false);
 			} else {
 				console.log("Featured response: ", response);
@@ -44,7 +46,7 @@ const FeaturedProductsCarousel = () => {
 				</div>
 			)}
 			<div className="overflow-x-auto scrollbar-hide">
-				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-1 gap-y-2 sm:gap-x-4 sm-gap-y-4">
+				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-x-1 gap-y-2 sm:gap-x-4 sm-gap-y-4">
 					{products.map((product) => (
 						<Link
 							to={`/product/${product._id}`}
@@ -60,11 +62,11 @@ const FeaturedProductsCarousel = () => {
 									/>
 								</p>
 							</div>
-							<div className="mt-4 px-2 sm:px-4 pb-3 sm:pb-5">
+							<div className="mt-4 px-2 sm:px-4 pb-3">
 								<h5 className="text-lg sm:text-xl tracking-tight text-slate-900 line-clamp-1">
 									{product.name}
 								</h5>
-								<div className="mt-0 sm:mt-2 mb-1 sm:mb-5 flex items-center justify-between">
+								<div className="mt-0 sm:mt-2 mb-1 sm:mb-2 flex items-center justify-between">
 									<p>
 										<span className="text-md sm:text-xl lg:text-2xl font-bold text-slate-900">
 											₵
@@ -76,58 +78,13 @@ const FeaturedProductsCarousel = () => {
 											₵{product.price.toFixed(2)}
 										</span>
 									</p>
-									{/* <div className="flex items-center">
-													<svg
-														aria-hidden="true"
-														className="h-5 w-5 text-yellow-300"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-														xmlns="http://www.w3.org/2000/svg"
-													>
-														<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-													</svg>
-													<svg
-														aria-hidden="true"
-														className="h-5 w-5 text-yellow-300"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-														xmlns="http://www.w3.org/2000/svg"
-													>
-														<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-													</svg>
-													<svg
-														aria-hidden="true"
-														className="h-5 w-5 text-yellow-300"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-														xmlns="http://www.w3.org/2000/svg"
-													>
-														<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-													</svg>
-													<svg
-														aria-hidden="true"
-														className="h-5 w-5 text-yellow-300"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-														xmlns="http://www.w3.org/2000/svg"
-													>
-														<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-													</svg>
-													<svg
-														aria-hidden="true"
-														className="h-5 w-5 text-yellow-300"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-														xmlns="http://www.w3.org/2000/svg"
-													>
-														<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-													</svg>
-													<span className="mr-2 ml-3 rounded bg-yellow-200 px-2.5 py-0.5 text-xs font-semibold">
-														5.0
-													</span>
-												</div> */}
 								</div>
-								<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-900 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+								<p className="pb-3 flex items-center text-xs font-extralight">
+									<MdOutlinePerson3 />
+
+									{product.vendor.name}
+								</p>
+								<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-700 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
 									<CiViewList className="text-xl font-bold" />
 									View details
 								</button>
@@ -138,7 +95,7 @@ const FeaturedProductsCarousel = () => {
 			</div>
 			<Link
 				to="/shop"
-				className="ml-1 mt-3 flex flex-row items-center justify-center w-64 px-2 py-3 mb-4 text-sm font-bold bg-blue-600 leading-6 duration-100 transform rounded-sm shadow cursor-pointer focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 focus:outline-none hover:shadow-lg hover:-translate-y-1 text-white"
+				className="ml-1 mt-3 flex flex-row items-center justify-center w-64 px-2 py-3 mb-4 text-sm font-bold bg-blue-700 leading-6 duration-100 transform rounded-sm shadow cursor-pointer focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50 focus:outline-none hover:shadow-lg hover:-translate-y-1 text-white"
 			>
 				<h1 className="text-xl font-bold">See more products</h1>
 				<span className="">

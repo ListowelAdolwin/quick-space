@@ -1,6 +1,6 @@
 import Product from '../models/Product.js'
 import User from '../models/User.js'
-import Category from "../models/Category.js"
+import Category from '../models/Category.js'
 
 export const addProduct = async (req, res) => {
   try {
@@ -20,12 +20,14 @@ export const addProduct = async (req, res) => {
     })
 
     if (discount > price) {
-      return res.status(400).json({message: "Discount cannot be greater than product price"})
+      return res
+        .status(400)
+        .json({ message: 'Discount cannot be greater than product price' })
     }
 
     await newProduct.save()
     // Increment product category count by one
-    const prodCategory = await Category.findOne({val: category})
+    const prodCategory = await Category.findOne({ val: category })
     prodCategory.count = prodCategory.count + 1
     await prodCategory.save()
 
@@ -72,7 +74,7 @@ export const updateProduct = async (req, res) => {
 
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find()
+    const products = await Product.find().populate('vendor', 'name')
     res.status(200).json(products)
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -81,7 +83,10 @@ export const getProducts = async (req, res) => {
 
 export const getFeaturedProducts = async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 }).limit(10)
+    const products = await Product.find()
+      .populate('vendor', 'name')
+      .sort({ createdAt: -1 })
+      .limit(10)
     res.status(200).json(products)
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -91,9 +96,11 @@ export const getFeaturedProducts = async (req, res) => {
 export const getCategoryProducts = async (req, res) => {
   const category = req.params.category
   try {
-    const products = await Product.find({ category }).sort({
-      createdAt: -1
-    })
+    const products = await Product.find({ category })
+      .populate('vendor', 'name')
+      .sort({
+        createdAt: -1
+      })
     res.status(200).json(products)
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -204,7 +211,9 @@ export const getFavoriteProducts = async (req, res) => {
       return res.status(404).json({ message: 'User not found!' })
     }
 
-    const favorites = await Product.find({ _id: { $in: user.favourites } })
+    const favorites = await Product.find({
+      _id: { $in: user.favourites }
+    }).populate('vendor', 'name')
 
     res.status(200).json(favorites)
   } catch (error) {
@@ -277,7 +286,7 @@ export const deleteProduct = async (req, res) => {
 
     await Product.findByIdAndDelete(id)
     // Decrement product category count by one
-    const prodCategory = await Category.findOne({val: prod.category})
+    const prodCategory = await Category.findOne({ val: prod.category })
     prodCategory.count = prodCategory.count - 1
     await prodCategory.save()
 

@@ -179,7 +179,7 @@ export default function SearchProducts() {
 				</form>
 			</div>
 
-			<div className="flex-1">
+			<div className="flex-1 pb-8">
 				<h1 className="text-3xl font-semibold border-b p-3 text-slate-700">
 					Search results:
 				</h1>
@@ -197,7 +197,7 @@ export default function SearchProducts() {
 							<div className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full animate-pulse bg-blue-600"></div>
 						</div>
 					) : (
-						<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-1 gap-y-2">
+						<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-x-1 gap-y-2">
 							{products.map((product) => (
 								<Link
 									to={`/product/${product._id}`}
@@ -236,7 +236,7 @@ export default function SearchProducts() {
 
 											{product.vendor.name}
 										</p>
-										<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-900 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+										<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-700 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
 											<CiViewList className="text-xl font-bold" />
 											View details
 										</button>

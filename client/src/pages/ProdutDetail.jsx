@@ -126,7 +126,7 @@ const ProductDetail = () => {
 									</h1>
 									<div className="flex items-center gap-2 sm:gap-5">
 										<div className="mt-4">
-											<span className="text-2xl sm:text-3xl lg:text-3xl font-bold text-slate-900">
+											<span className="text-xl sm:text-3xl lg:text-3xl font-bold text-slate-900">
 												₵
 												{(
 													product.price -

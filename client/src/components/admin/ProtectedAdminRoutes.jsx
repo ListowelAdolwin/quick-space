@@ -8,7 +8,10 @@ const ProtectedAdminRoutes = ({ children }) => {
 	return currentUser?.role == "admin" ? (
 		children || <Outlet />
 	) : (
-		<Navigate to="/login" />
+		<Navigate
+			to="/login"
+			state="Please login as an admin to access the admin page"
+		/>
 	);
 };
 

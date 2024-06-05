@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { IoMdEye } from "react-icons/io";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -17,10 +17,12 @@ const Login = () => {
 		name: "",
 		password: "",
 	});
-	
 
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+
+	const { state } = useLocation();
+	console.log(state);
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -68,6 +70,7 @@ const Login = () => {
 						Login
 					</h1>
 					<div className="bg-white p-6 rounded-lg shadow-md">
+						{state && <p className="mb-3 text-white bg-red-500 p-2">{state}</p>}
 						{errorMessage && (
 							<ErrorMessage errorMessage={errorMessage} />
 						)}

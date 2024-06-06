@@ -6,6 +6,7 @@ import axios from "axios";
 import { CiViewList } from "react-icons/ci";
 import PageLoader from "../components/PageLoader";
 import { FaPhone } from "react-icons/fa";
+import { MdOutlineDoubleArrow } from "react-icons/md";
 
 const UserProfile = () => {
 	const [userData, setUserData] = useState(null);
@@ -56,38 +57,59 @@ const UserProfile = () => {
 				<PageLoader />
 			) : (
 				<main className="flex-grow">
-					<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-8">
-						<h1 className="text-3xl font-bold text-blue-800 mb-4">
-							User Profile
+					<div className="mx-auto px-4 sm:px-6 py-8">
+						<h1 className="text-2xl sm:text-3xl flex items-center font-bold text-blue-800 mb-4">
+							<span className="text-base">Profile</span>
+							<span className="text-base text-gray-800">
+								<MdOutlineDoubleArrow />
+							</span>
+							{userData.vendorName}
 						</h1>
 						{userData && (
 							<div className="flex flex-wrap items-start justify-start gap-5">
-								<div className="w-full lg:basis-3/12 flex flex-col gap-4 text-start bg-white p-6 rounded-lg shadow-md">
-									<p className="text-xl font-semibold text-blue-700">
-										Name: {userData.name}
-									</p>
-									<p className="text-gray-600">
-										Email: {userData.email}
-									</p>
+								<div className="w-full lg:basis-3/12 flex flex-col gap-4 text-start bg-white px-6 pb-6 rounded-lg shadow-md mt-6">
+									<Link
+										to={userData.vendorFlyerUrl}
+										target="_blank"
+										className="mx-auto sm:mx-0 lg:mx-auto -mt-4 relative block"
+									>
+										<img
+											src={userData.vendorFlyerUrl}
+											alt="Business flyer"
+											className="h-56 w-56 rounded-full object-center object-cover shadow-lg transition-opacity duration-300 hover:opacity-90"
+										/>
+										<span className="bg-blue-700 text-white absolute bottom-1 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded">
+											View Flyer
+										</span>
+									</Link>
+
 									{userData.isVendor && (
-										<p className="text-gray-600 flex items-center gap-3">
-											Contact Number:{" "}
-											{userData?.vendorContact}{" "}
-											<a
-												href={`tel:${userData.vendorContact}`}
-												className="flex items-center gap-1 px-2 py-1 border border-blue-500 rounded-md"
-											>
-												<FaPhone className="text-xs" />
-												call
-											</a>
+										<p className="text-md font-semibold text-blue-700">
+											Bussiness Name:{" "}
+											{userData.vendorName}
 										</p>
 									)}
 									<p className="text-gray-600">
-										School:{" "}
-										<span className="uppercase">
-											{userData.school}
-										</span>
+										Email: {userData.email}
 									</p>
+									<p className="text-gray-600 flex items-center gap-3">
+										Contact Number: {userData?.contact}{" "}
+										<a
+											href={`tel:${userData.vendorContact}`}
+											className="flex items-center gap-1 px-2 py-1 border border-blue-500 rounded-md"
+										>
+											<FaPhone className="text-xs" />
+											call
+										</a>
+									</p>
+									{userData.role === "vendor" && (
+										<p className="text-gray-600">
+											School:{" "}
+											<span className="uppercase">
+												{userData.school}
+											</span>
+										</p>
+									)}
 									{currentUser?._id === userData._id && (
 										<div className="flex gap-2">
 											<button
@@ -108,7 +130,7 @@ const UserProfile = () => {
 									)}
 								</div>
 
-								<div className="w-full lg:-mt-12 lg:basis-8/12">
+								<div className="w-full lg:-mt-3 lg:basis-8/12">
 									<h2 className="text-2xl font-semibold text-blue-800 mb-4">
 										Catalogue
 									</h2>

@@ -117,28 +117,28 @@ const Header = () => {
 					<div className="hidden lg:block">
 						<div className="ml-10 flex items-baseline space-x-4">
 							{currentUser?.role === "admin" && (
-								<Link
-									to="/admin/dashboard"
-									className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+								<a
+									href="/admin/dashboard"
+									className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
 								>
 									Admin Panel
-								</Link>
+								</a>
 							)}
 							<Link
 								to="/"
-								className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+								className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
 							>
 								Home
 							</Link>
 							<Link
 								to="/shop"
-								className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+								className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
 							>
 								Shop
 							</Link>
 							<Link
 								to="/about"
-								className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+								className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
 							>
 								About
 							</Link>
@@ -146,13 +146,13 @@ const Header = () => {
 								<div className="flex items-center space-x-4">
 									<Link
 										to="/add-product"
-										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+										className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
 									>
 										Add Product
 									</Link>
 									<Link
 										to="/favourites"
-										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+										className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
 									>
 										<FaRegHeart
 											className="inline-block"
@@ -161,7 +161,7 @@ const Header = () => {
 									</Link>
 									<Link
 										to={`/profile/${currentUser._id}`}
-										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+										className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
 									>
 										<FaRegUserCircle
 											className="inline-block"
@@ -173,13 +173,13 @@ const Header = () => {
 								<div className="flex items-center space-x-4">
 									<Link
 										to="login"
-										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+										className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
 									>
 										Login
 									</Link>
 									<Link
 										to="register"
-										className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
+										className="text-gray-800 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
 									>
 										Register
 									</Link>
@@ -246,8 +246,8 @@ const Header = () => {
 					>
 						<div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
 							{currentUser?.role === "admin" && (
-								<Link
-									to="/admin/dashboard"
+								<a
+									href="/admin/dashboard"
 									className="flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
 								>
 									<MdAdminPanelSettings
@@ -255,7 +255,7 @@ const Header = () => {
 										size={20}
 									/>
 									Admin Panel
-								</Link>
+								</a>
 							)}
 							<Link
 								to="/"

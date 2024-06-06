@@ -9,15 +9,19 @@ import { MdOutlinePerson3 } from "react-icons/md";
 const Shop = () => {
 	const [products, setProducts] = useState([]);
 	const [pageLoading, setPageLoading] = useState(true);
+	const [showMore, setShowMore] = useState(false);
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+	const limit = 10;
 
 	useEffect(() => {
 		const getProducts = async () => {
 			setPageLoading(true);
-			const response = await axios.get(`${BASE_URL}/api/products/`);
+			const response = await axios.get(`${BASE_URL}/api/products/?limit=${limit}`);
 			if (response.status === 200) {
 				setProducts(response.data);
+				setShowMore(response.data.length >= limit)
 				setPageLoading(false);
 				console.log("Products response: ", response);
 			} else {
@@ -27,6 +31,19 @@ const Shop = () => {
 
 		getProducts();
 	}, []);
+
+		const onShowMoreClick = async () => {
+			const numberOfProducts = products.length;
+			const res = await axios.get(
+				`${BASE_URL}/api/products?startIndex=${numberOfProducts}&&limit=${limit}`
+			);
+			const data = res.data;
+			if (data.length < limit) {
+				setShowMore(false);
+			}
+			setProducts([...products, ...data]);
+		};
+
 	return (
 		<main>
 			{pageLoading ? (
@@ -96,7 +113,7 @@ const Shop = () => {
 											<p className="pb-3 flex items-center text-xs font-extralight">
 												<MdOutlinePerson3 />
 
-												{product.vendor.name}
+												{product.vendor.vendorName}
 											</p>
 											<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-700 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
 												<CiViewList className="text-xl font-bold" />
@@ -106,6 +123,29 @@ const Shop = () => {
 									</Link>
 								))}
 							</div>
+							{showMore && (
+								<button
+									onClick={onShowMoreClick}
+									className="w-full sm:w-60 mt-5 flex flex-row items-center justify-center px-4 py-3 mb-4 text-sm font-bold bg-blue-700 leading-6 duration-100 transform rounded-sm shadow cursor-pointer focus:ring-1 focus:ring-blue-500 focus:ring-opacity-50 focus:outline-none hover:shadow-lg hover:-translate-y-1 text-white"
+								>
+									<h1 className="text-md">
+										Load more products
+									</h1>
+									<span className="">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											data-name="Layer 1"
+											viewBox="0 0 24 24"
+											className="w-5 h-5 fill-current"
+										>
+											<path
+												fill="currentColor"
+												d="M17.92,11.62a1,1,0,0,0-.21-.33l-5-5a1,1,0,0,0-1.42,1.42L14.59,11H7a1,1,0,0,0,0,2h7.59l-3.3,3.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l5-5a1,1,0,0,0,.21-.33A1,1,0,0,0,17.92,11.62Z"
+											></path>
+										</svg>
+									</span>
+								</button>
+							)}
 						</div>
 					</main>
 				</div>

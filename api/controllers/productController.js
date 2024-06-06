@@ -1,17 +1,29 @@
 import Product from '../models/Product.js'
 import User from '../models/User.js'
 import Category from '../models/Category.js'
+import Review from '../models/Review.js'
 
 export const addProduct = async (req, res) => {
   try {
     const { name, price, category, imageUrls, discount, description } = req.body
     const vendor = req.user
+    const vendorName = vendor.vendorName
     const school = vendor.school
+    const prodCategory = await Category.findOne({ val: category })
+    const categoryName = prodCategory.val
+
+    if (Number(discount) > Number(price)) {
+      return res
+        .status(400)
+        .json({ message: 'Discount cannot be greater than product price' })
+    }
 
     const newProduct = new Product({
       name,
+      vendorName,
       price,
-      category,
+      category: prodCategory,
+      categoryName,
       imageUrls,
       vendor,
       school,
@@ -19,15 +31,8 @@ export const addProduct = async (req, res) => {
       description
     })
 
-    if (discount > price) {
-      return res
-        .status(400)
-        .json({ message: 'Discount cannot be greater than product price' })
-    }
-
     await newProduct.save()
     // Increment product category count by one
-    const prodCategory = await Category.findOne({ val: category })
     prodCategory.count = prodCategory.count + 1
     await prodCategory.save()
 
@@ -45,7 +50,7 @@ export const updateProduct = async (req, res) => {
   const { id } = req.params
   try {
     const prod = await Product.findById(id).populate('vendor')
-    if (prod.vendor.name !== req.user.name) {
+    if (prod.vendor.contact !== req.user.contact) {
       return res
         .status(403)
         .json({ message: 'You can only update your product!' })
@@ -67,14 +72,20 @@ export const updateProduct = async (req, res) => {
     }
   } catch (error) {
     return res.json({
-      message: 'Server error while trying to retrieving product!'
+      message: 'Server error while trying to retrieve product!'
     })
   }
 }
 
 export const getProducts = async (req, res) => {
+  const startIndex = req.query.startIndex || 0
+  const limit = req.query.limit || 20
   try {
-    const products = await Product.find().populate('vendor', 'name')
+    const products = await Product.find()
+      .populate('vendor')
+      .sort({ createdAt: -1 })
+      .skip(startIndex)
+      .limit(limit)
     res.status(200).json(products)
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -83,8 +94,8 @@ export const getProducts = async (req, res) => {
 
 export const getFeaturedProducts = async (req, res) => {
   try {
-    const products = await Product.find()
-      .populate('vendor', 'name')
+    const products = await Product.find({isFeatured: true})
+      .populate('vendor')
       .sort({ createdAt: -1 })
       .limit(10)
     res.status(200).json(products)
@@ -93,11 +104,45 @@ export const getFeaturedProducts = async (req, res) => {
   }
 }
 
-export const getCategoryProducts = async (req, res) => {
-  const category = req.params.category
+export const featureProduct = async (req, res) => {
+  const {id} = req.params
   try {
-    const products = await Product.find({ category })
-      .populate('vendor', 'name')
+    const product = await Product.findById(id)
+
+    if (!product){
+      return res.status(404).json({message: "Product not found"})
+    }
+    product.isFeatured = true;
+    await product.save()
+
+    res.status(200).json(product)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+export const unfeatureProduct = async (req, res) => {
+  const {id} = req.params
+  try {
+    const product = await Product.findById(id)
+
+    if (!product){
+      return res.status(404).json({message: "Product not found"})
+    }
+    product.isFeatured = false;
+    await product.save()
+
+    res.status(200).json(product)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+export const getCategoryProducts = async (req, res) => {
+  const categoryName = req.params.category
+  try {
+    const products = await Product.find({ categoryName })
+      .populate('vendor')
       .sort({
         createdAt: -1
       })
@@ -118,27 +163,31 @@ export const getProduct = async (req, res) => {
       isFavoritedArray[0] = true
     }
   } catch (error) {}
+
   try {
-    const result = await Product.findById(id).populate('vendor')
-    if (!result) {
+    const tempProduct = await Product.findById(id).populate('vendor')
+    if (!tempProduct) {
       return res.status(404).json({ message: 'Product not found' })
     }
 
+    const reviews = await Review.find({ product: tempProduct._id })
+
     const product = {
-      _id: result._id,
-      name: result.name,
-      price: result.price,
-      rating: result.rating,
-      imageUrls: result.imageUrls,
-      discount: result.discount,
-      category: result.category,
-      description: result.description,
-      vendorId: result.vendor._id,
-      vendorName: result.vendor.name,
-      isVendorVerified: result.vendor.isVerified,
-      vendorContact: result.vendor.vendorContact,
-      vendorEmail: result.vendor.email,
-      isFavorited: isFavoritedArray[0]
+      _id: tempProduct._id,
+      name: tempProduct.name,
+      price: tempProduct.price,
+      rating: tempProduct.rating,
+      imageUrls: tempProduct.imageUrls,
+      discount: tempProduct.discount,
+      category: tempProduct.categoryName,
+      description: tempProduct.description,
+      vendorId: tempProduct.vendor._id,
+      vendorName: tempProduct.vendor.vendorName,
+      isVendorVerified: tempProduct.vendor.isVerified,
+      contact: tempProduct.vendor.contact,
+      email: tempProduct.vendor.email,
+      isFavorited: isFavoritedArray[0],
+      reviews
     }
     return res.status(200).json(product)
   } catch (error) {
@@ -213,7 +262,7 @@ export const getFavoriteProducts = async (req, res) => {
 
     const favorites = await Product.find({
       _id: { $in: user.favourites }
-    }).populate('vendor', 'name')
+    }).populate('vendor')
 
     res.status(200).json(favorites)
   } catch (error) {
@@ -247,12 +296,12 @@ export const filterProducts = async (req, res) => {
     }
 
     if (category) {
-      query.category = category
+      query.categoryName = category
     }
 
     if (searchTerm) {
       const users = await User.find({
-        name: { $regex: searchTerm, $options: 'i' }
+        vendorName: { $regex: searchTerm, $options: 'i' }
       })
 
       const userIds = users.map(user => user._id)
@@ -261,7 +310,7 @@ export const filterProducts = async (req, res) => {
     }
 
     const products = await Product.find(query)
-      .populate('vendor', 'name')
+      .populate('vendor')
       .sort(sort)
       .skip(startIndex)
       .limit(limit)
@@ -278,10 +327,10 @@ export const deleteProduct = async (req, res) => {
 
   try {
     const prod = await Product.findById(id).populate('vendor')
-    if (prod.vendor.name !== req.user.name && req.user.role !== 'admin') {
+    if (prod.vendor.contact !== req.user.contact && req.user.role !== 'admin') {
       return res
         .status(403)
-        .json({ message: 'You can only delete your product!' })
+        .json({ message: 'You are not authorized to delete this product!' })
     }
 
     await Product.findByIdAndDelete(id)

@@ -43,7 +43,7 @@ const VendorCard = ({ initialVendor }) => {
 
 	return (
 		<div className="bg-white shadow-md rounded-lg p-4 mb-4">
-			<h3 className="text-lg font-semibold mb-2">{vendor.name}</h3>
+			<h3 className="text-lg font-semibold mb-2">{vendor.vendorName}</h3>
 			<p className="text-gray-600 mb-1">
 				Contact: {vendor.vendorContact}
 			</p>
@@ -75,7 +75,7 @@ const VendorCard = ({ initialVendor }) => {
 				<Link
 					to={`/profile/${vendor._id}`}
 					className="bg-blue-500 text-white py-2 px-4 rounded hover:opacity-85"
-					title={`View ${vendor.name}'s profile`}
+					title={`View ${vendor.vendorName}'s profile`}
 				>
 					View Profile
 				</Link>

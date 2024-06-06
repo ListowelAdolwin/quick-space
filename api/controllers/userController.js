@@ -15,6 +15,7 @@ export const userProfile = async (req, res) => {
 
 
 export const updateProfile = async (req, res) => {
+    console.log(req.body)
 	const { id } = req.params;
 	if (id !== req.user.id) {
 		return res
@@ -29,6 +30,7 @@ export const updateProfile = async (req, res) => {
 		const { password: pass, ...rest } = userProfile._doc;
 		return res.status(200).json(rest);
 	} catch (error) {
+        console.log(error)
 		return res.status(400).json({ message: error.message });
 	}
 };
@@ -61,7 +63,7 @@ export const verifyUnverifyVendor = async (req, res) => {
 
         const status = vendor.isVerified ? 'verified' : 'unverified';
 
-        return res.status(200).json({ message: `Vendor ${vendor.name} successfully ${status}` });
+        return res.status(200).json({ message: `Vendor ${vendor.vendorName} successfully ${status}` });
     } catch (error) {
         console.error('Error verifying/unverifying vendor:', error);
         return res.status(500).json({ message: 'Internal server error' });

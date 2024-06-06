@@ -5,39 +5,50 @@ import User from '../models/User.js'
 export const register = async (req, res) => {
   console.log(req.body)
   const {
-    name,
+    vendorName,
     email,
     password,
     isVendor,
     school,
-    vendorContact,
+    contact,
     vendorAddress,
-    vendorCategory
+    vendorCategory,
+    vendorFlyerUrl
   } = req.body
-  if (!name || !email || !password) {
+
+  if (!contact || !email || !password) {
     return res.status(400).json({ message: 'All fields are required!' })
   }
   try {
-    const duplicateName = await User.findOne({ name }).exec()
-    if (duplicateName) {
-      return res.status(409).json({ message: `The name ${name} already exist` })
+    const duplicateContact = await User.findOne({ contact }).exec()
+    if (duplicateContact) {
+      return res.status(409).json({ message: `The contact ${contact} already exist` })
     }
     const duplicateEmail = await User.findOne({ email }).exec()
     if (duplicateEmail) {
       return res.status(409).json({ message: `Email ${email} already exist` })
     }
+    if (isVendor){
+      const duplicateVendorName = await User.findOne({ vendorName }).exec()
+    if (duplicateVendorName) {
+      return res.status(409).json({ message: `The name ${vendorName} already exist` })
+    }
+    }
+
     const hashedP = bcrypt.hashSync(password, 10)
     const newUser = new User({
-      name,
+      contact,
       email,
       password: hashedP,
       isVendor,
-      school
     })
     if (isVendor) {
-      newUser.vendorContact = vendorContact
+      newUser.vendorName = vendorName
+      newUser.school = school
       newUser.vendorAddress = vendorAddress
       newUser.vendorCategory = vendorCategory
+      newUser.vendorFlyerUrl = vendorFlyerUrl
+      newUser.role = 'vendor'
     }
     await newUser.save()
     const { password: pass, ...rest } = newUser._doc
@@ -55,11 +66,11 @@ export const register = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-  const { name, password } = req.body
-  if (!name || !password) {
-    return res.status(400).json({ message: 'Name and password required!' })
+  const { contact, password } = req.body
+  if (!contact || !password) {
+    return res.status(400).json({ message: 'Contact and password required!' })
   }
-  const foundUser = await User.findOne({ name }).exec()
+  const foundUser = await User.findOne({ contact }).exec()
   if (!foundUser) {
     return res
       .status(401)
@@ -76,7 +87,7 @@ export const login = async (req, res) => {
 
     const accessToken = jwt.sign(
       {
-        name,
+        contact,
         isVendor: foundUser.isVendor,
         _id: foundUser._id,
         role: foundUser.role
@@ -88,7 +99,7 @@ export const login = async (req, res) => {
     const { password: pass, ...rest } = foundUser._doc
 
     return res.status(200).json({
-      message: `User ${name} successfully logged in!`,
+      message: `User ${contact} successfully logged in!`,
       user: { ...rest, accessToken },
       ok: true
     })
@@ -114,7 +125,7 @@ export const verifyToken = (req, res, next) => {
         .status(401)
         .json({ expired: true, message: 'Token expired', ok: false })
     }
-    req.user = await User.findOne({ name: decoded.name })
+    req.user = await User.findOne({ contact: decoded.contact })
     next()
   })
 }
@@ -138,7 +149,7 @@ export const verifyRole = roles => async (req, res, next) => {
           .status(401)
           .json({ expired: true, message: 'Token expired', ok: false })
       }
-      const user = await User.findOne({ name: decoded.name })
+      const user = await User.findOne({ contact: decoded.contact })
       if (!user || !roles.includes(user.role)) {
         return res.status(403).json({ message: 'Access denied.' })
       }

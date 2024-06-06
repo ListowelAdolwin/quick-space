@@ -85,7 +85,7 @@ const CategoryItems = () => {
 										<p className="pb-3 flex items-center text-xs font-extralight">
 											<MdOutlinePerson3 />
 
-											{product.vendor.name}
+											{product.vendor.vendorName}
 										</p>
 										<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-700 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
 											<CiViewList className="text-xl font-bold" />

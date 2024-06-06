@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
 import { useSelector, useDispatch } from "react-redux";
-import { logoutUser } from "../redux/features/user/userSlice";
+//import { logoutUser } from "../redux/features/user/userSlice";
 import { categories } from "../data/categories";
 
 function UpdateProfile() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [formData, setFormData] = useState({
-		name: "",
+		vendorName: "",
+		vendorFlyer: "",
 		email: "",
-		vendorContact: "",
+		contact: "",
 		vendorCategory: "",
 	});
 
@@ -21,8 +24,11 @@ function UpdateProfile() {
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 	const params = useParams();
 	const { id } = params;
-	const dispatch = useDispatch();
+	//const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const cloudName = import.meta.env.VITE_CLOUDINARY_NAME;
+	const apiKey = import.meta.env.VITE_CLOUDINARY_SECRET;
+	const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 	useEffect(() => {
 		const getUserProfile = async () => {
@@ -32,9 +38,10 @@ function UpdateProfile() {
 			if (response.status === 200) {
 				const data = response.data;
 				setFormData({
-					name: data.name,
+					vendorName: data.vendorName,
+					vendorFlyer: data.vendorFlyer,
 					email: data.email,
-					vendorContact: data.vendorContact,
+					contact: data.contact,
 					vendorCategory: data.vendorCategory,
 				});
 			} else {
@@ -56,10 +63,39 @@ function UpdateProfile() {
 		setIsLoading(true);
 		setErrorMessage("");
 
+		// Upload Flyer
+		let vendorFlyerUrl;
+		if (formData.vendorFlyer) {
+		const fileData = new FormData();
+		fileData.append("file", formData.vendorFlyer);
+		fileData.append("upload_preset", uploadPreset);
+		fileData.append("api_key", apiKey);
+		fileData.append("timestamp", (Date.now() / 1000) | 0);
+
+		const response = await axios.post(
+			`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+			fileData,
+			{
+				headers: {
+					"X-Requested-With": "XMLHttpRequest",
+				},
+			}
+		);
+
+		if (response.status !== 200) {
+			toast.error("Failed to upload image. Please retry");
+			setIsLoading(false);
+			return;
+		}
+
+		vendorFlyerUrl = response.data.secure_url;
+	}
+
 		const userPayload = {
-			name: formData.name,
+			vendorName: formData.vendorName,
+			vendorFlyerUrl: vendorFlyerUrl,
 			email: formData.email,
-			vendorContact: formData.vendorContact,
+			contact: formData.contact,
 			vendorCategory: formData.vendorCategory,
 		};
 
@@ -74,12 +110,11 @@ function UpdateProfile() {
 					},
 				}
 			);
-			console.log("Profile Updated successfully:", response);
 			if (response.status === 200) {
-				dispatch(logoutUser());
-				navigate("/login");
+				//dispatch(logoutUser());
+				navigate(`/profile/${id}`);
 			} else if (response.status === 401) {
-				navigate("/login");
+				navigate("/login", {state: "Your session has expired, please relogin "});
 			} else {
 				setErrorMessage(response.data.message);
 			}
@@ -95,6 +130,7 @@ function UpdateProfile() {
 	return (
 		<div className="flex flex-col min-h-screen">
 			<main className="flex-grow">
+				<ToastContainer />
 				<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 					<h1 className="text-3xl font-bold text-blue-800 mb-4">
 						Update Profile
@@ -107,18 +143,18 @@ function UpdateProfile() {
 							<div className="mb-4">
 								<label
 									className="block text-gray-700 font-bold mb-2"
-									htmlFor="name"
+									htmlFor="vendorName"
 								>
-									Name
+									Business Name
 								</label>
 								<input
 									type="text"
-									name="name"
-									id="name"
-									value={formData.name}
+									name="vendorName"
+									id="vendorName"
+									value={formData.vendorName}
 									onChange={handleChange}
 									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-									placeholder="Enter name"
+									placeholder="Enter business name"
 									required
 								/>
 							</div>
@@ -140,53 +176,76 @@ function UpdateProfile() {
 									required
 								/>
 							</div>
-							<>
-								<div className="mb-4">
-									<label
-										className="block text-gray-700 font-bold mb-2"
-										htmlFor="contact"
-									>
-										Phone Number
-									</label>
-									<input
-										type="text"
-										name="vendorContact"
-										id="contvendorContactact"
-										value={formData.vendorContact}
-										onChange={handleChange}
-										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-										placeholder="Enter your contact number"
-										required
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										className="block text-gray-700 font-bold mb-2"
-										htmlFor="vendorCategory"
-									>
-										Category
-									</label>
-									<select
-										name="vendorCategory"
-										id="vendorCategory"
-										value={formData.vendorCategory}
-										onChange={handleChange}
-										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-										required
-									>
-										<option value="">
-											Select Category
-										</option>
-										{Object.entries(categories).map(
-											([key, category]) => (
-												<option key={key} value={key}>
-													{category.name}
-												</option>
-											)
-										)}
-									</select>
-								</div>
-							</>
+							<div className="mb-4">
+								<label
+									className="block text-gray-700 font-bold mb-2"
+									htmlFor="contact"
+								>
+									Phone Number
+								</label>
+								<input
+									type="text"
+									name="contact"
+									id="contact"
+									value={formData.contact}
+									onChange={handleChange}
+									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+									placeholder="Enter your contact number"
+									required
+								/>
+							</div>
+							<div className="mb-4">
+								<label
+									className="block text-gray-700 font-bold mb-2"
+									htmlFor="vendorCategory"
+								>
+									Category
+								</label>
+								<select
+									name="vendorCategory"
+									id="vendorCategory"
+									value={formData.vendorCategory}
+									onChange={handleChange}
+									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+									required
+								>
+									<option value="">Select Category</option>
+									{Object.entries(categories).map(
+										([key, category]) => (
+											<option key={key} value={key}>
+												{category.name}
+											</option>
+										)
+									)}
+								</select>
+							</div>
+							<div className="mb-4">
+								<label
+									className="block text-gray-700 font-bold mb-2"
+									htmlFor="image"
+								>
+									Business Flyer
+									<div className="text-xs italic font-light py-1">
+										Upload your business flyer. Do not worry
+										if it is not available now, you can
+										always add it later.
+									</div>
+								</label>
+								<input
+									type="file"
+									name="vendorFlyer"
+									id="vendorFlyer"
+									accept="image/*"
+									onChange={(e) => {
+										setFormData({
+											...formData,
+											vendorFlyer: e.target.files[0],
+										});
+									}}
+									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+									placeholder="Upload business flyer"
+								/>
+							</div>
 
 							{isLoading ? (
 								<Spinner />

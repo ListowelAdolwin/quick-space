@@ -38,6 +38,7 @@ const AddProduct = () => {
 	const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 	const handleChange = (e) => {
+		setIsLoading(false);
 		const { name, value } = e.target;
 		setFormData({ ...formData, [name]: value });
 	};
@@ -50,7 +51,7 @@ const AddProduct = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (formData.discount > formData.price){
+		if (Number(formData.discount) > Number(formData.price)){
 			setErrowMessage("Discont cannot be greater than price")
 			return
 		}

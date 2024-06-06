@@ -14,7 +14,7 @@ const Login = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [formData, setFormData] = useState({
-		name: "",
+		contact: "",
 		password: "",
 	});
 
@@ -22,7 +22,6 @@ const Login = () => {
 	const dispatch = useDispatch();
 
 	const { state } = useLocation();
-	console.log(state);
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -47,7 +46,11 @@ const Login = () => {
 				const data = response.data;
 				console.log(data);
 				dispatch(loginUser(data.user));
-				navigate("/");
+				if (data.user.isVendor) {
+					navigate(`/profile/${data.user._id}`);
+				} else {
+					navigate("/");
+				}
 			} else {
 				setErrorMessage(response.data.message);
 			}
@@ -83,18 +86,18 @@ const Login = () => {
 								<div className="mb-4">
 									<label
 										className="block text-gray-700 font-bold mb-2"
-										htmlFor="name"
+										htmlFor="contact"
 									>
-										Business or user name
+										Contact Number
 									</label>
 									<input
 										type="text"
-										name="name"
-										id="name"
-										value={formData.name}
+										name="contact"
+										id="contact"
+										value={formData.contact}
 										onChange={handleChange}
 										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-										placeholder="Enter name"
+										placeholder="Enter contact"
 										required
 									/>
 								</div>

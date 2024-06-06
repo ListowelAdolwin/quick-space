@@ -52,7 +52,7 @@ const AddCategory = () => {
 				{
 					displayName,
 					val,
-					image: url,
+					imageUrl: url,
 				},
 				{
 					headers: {

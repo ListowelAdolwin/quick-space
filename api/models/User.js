@@ -1,11 +1,22 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    vendorName: {
       type: String,
-      required: [true, 'Name required!'],
-      unique: [true, 'Name already exists!']
+      unique: [true, 'Name already exists!'],
+      validate: {
+        validator: function(v) {
+          return this.isVendor ? v && v.length > 0 : true;
+        },
+        message: props => 'Vendor name is required for vendors!'
+      }
+    },
+    vendorFlyerUrl: String,
+    contact: {
+      type: String,
+      required: false,
+      unique: true
     },
     email: {
       type: String,
@@ -21,7 +32,7 @@ const userSchema = new mongoose.Schema(
       default: []
     },
     school: {
-      type: String,
+      type: String
     },
     isVendor: {
       type: Boolean,
@@ -37,13 +48,13 @@ const userSchema = new mongoose.Schema(
       default: 'user',
       required: true
     },
-    vendorContact: String,
     vendorAddress: String,
-    vendorCategory: String
+    vendorCategory: String,
+    token: String,
   },
   { timestamps: true }
-)
+);
 
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model('User', userSchema);
 
-export default User
+export default User;

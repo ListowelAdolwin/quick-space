@@ -11,13 +11,13 @@ export const getCategoryProductCounts = async (req, res) => {
 
 
 export const addCategory = async (req, res) => {
-    const { displayName, val, image } = req.body;
+    const { displayName, val, imageUrl } = req.body;
 
     try {
         const newCategory = new Category({
             displayName,
             val,
-            image,
+            imageUrl,
         });
 
         await newCategory.save();

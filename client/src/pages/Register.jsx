@@ -3,6 +3,8 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { IoMdEye } from "react-icons/io";
 import { FaRegEyeSlash } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
 import { schools } from "../data/schools";
@@ -15,10 +17,11 @@ const Register = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [userType, setUserType] = useState("normal");
 	const [formData, setFormData] = useState({
-		name: "",
+		vendorName: "",
+		vendorFlyer: "",
 		email: "",
 		password: "",
-		vendorContact: "",
+		contact: "",
 		vendorCategory: "",
 		vendorAddress: "",
 		school: "",
@@ -28,7 +31,9 @@ const Register = () => {
 	const navigate = useNavigate();
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
-
+	const cloudName = import.meta.env.VITE_CLOUDINARY_NAME;
+	const apiKey = import.meta.env.VITE_CLOUDINARY_SECRET;
+	const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 	const toggleShowPassword = () => {
 		setShowPassword((prevState) => !prevState);
@@ -55,22 +60,48 @@ const Register = () => {
 		setIsLoading(true);
 		setErrorMessage("");
 
+		// Upload Flyer
+		const fileData = new FormData();
+		fileData.append("file", formData.vendorFlyer);
+		fileData.append("upload_preset", uploadPreset);
+		fileData.append("api_key", apiKey);
+		fileData.append("timestamp", (Date.now() / 1000) | 0);
+
+		const response = await axios.post(
+			`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+			fileData,
+			{
+				headers: {
+					"X-Requested-With": "XMLHttpRequest",
+				},
+			}
+		);
+
+		if (response.status !== 200) {
+			toast.error("Failed to upload image. Please retry");
+			setIsLoading(false);
+			return;
+		}
+
+		const vendorFlyerUrl = response.data.secure_url;
+
 		let userPayload = {
-			name: formData.name,
+			contact: formData.contact,
 			email: formData.email,
 			password: formData.password,
 			isVendor: userType === "vendor",
-			school: formData.otherSchool
-				? formData.otherSchool
-				: formData.school,
 		};
 
 		if (userType === "vendor") {
 			userPayload = {
 				...userPayload,
-				vendorContact: formData.vendorContact,
+				vendorName: formData.vendorName,
+				school: formData.otherSchool
+					? formData.otherSchool
+					: formData.school,
 				vendorCategory: formData.vendorCategory,
-				vendorAddressa: formData.vendorAddress,
+				vendorAddress: formData.vendorAddress,
+				vendorFlyerUrl: vendorFlyerUrl,
 			};
 		}
 		console.log(userPayload);
@@ -100,6 +131,7 @@ const Register = () => {
 	return (
 		<div className="flex flex-col min-h-screen">
 			<main className="flex-grow">
+				<ToastContainer />
 				<div className="max-w-3xl mx-auto px-0 sm:px-6 lg:px-8 py-8">
 					<h1 className="text-3xl font-bold text-blue-800 mb-4 px-4">
 						Register
@@ -132,161 +164,193 @@ const Register = () => {
 						)}
 						<form onSubmit={handleSubmit}>
 							{userType === "normal" ? (
-								<div className="mb-4">
-									<label
-										className="block text-gray-700 font-bold mb-2"
-										htmlFor="name"
-									>
-										Name
-									</label>
-									<input
-										type="text"
-										name="name"
-										id="name"
-										value={formData.name}
-										onChange={handleChange}
-										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-										placeholder="Enter name"
-										required
-									/>
-								</div>
-							) : (
-								<div className="mb-4">
-									<label
-										className="block text-gray-700 font-bold mb-2"
-										htmlFor="vendorName"
-									>
-										Business Name
-									</label>
-									<input
-										type="text"
-										name="name"
-										id="name"
-										value={formData.name}
-										onChange={handleChange}
-										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-										placeholder="Enter business name here"
-										required
-									/>
-								</div>
-							)}
-							<div className="mb-4">
-								<label
-									className="block text-gray-700 font-bold mb-2"
-									htmlFor="email"
-								>
-									Email
-								</label>
-								<input
-									type="email"
-									name="email"
-									id="email"
-									value={formData.email}
-									onChange={handleChange}
-									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-									placeholder="Enter email address"
-									required
-								/>
-							</div>
-							<div className="mb-4">
-								<label
-									className="block text-gray-700 font-bold mb-2"
-									htmlFor="school"
-								>
-									School
-								</label>
-								<select
-									name="school"
-									id="school"
-									value={formData.school}
-									onChange={handleChange}
-									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-									required
-								>
-									<option value="">Select school</option>
-									{Object.entries(schools).map(
-										([key, school]) => (
-											<option key={key} value={key}>
-												{school}
-											</option>
-										)
-									)}
-								</select>
-							</div>
-							{otherSchool && (
-								<div className="mb-4 ms-5">
-									<label
-										className="block text-gray-700 font-bold mb-2"
-										htmlFor="other-school"
-									>
-										Please enter school name here
-									</label>
-									<input
-										type="text"
-										name="otherSchool"
-										id="other-school"
-										value={formData.otherSchool}
-										onChange={handleChange}
-										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-										placeholder="Enter your school name here (Abbreviated)"
-										required
-									/>
-								</div>
-							)}
-							<div className="mb-4">
-								<label
-									className="block text-gray-700 font-bold mb-2"
-									htmlFor="password"
-								>
-									Password
-								</label>
-								<div className="relative">
-									<input
-										type={
-											showPassword ? "text" : "password"
-										}
-										name="password"
-										id="password"
-										value={formData.password}
-										onChange={handleChange}
-										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-										placeholder="Enter password"
-										required
-									/>
-									<button
-										type="button"
-										onClick={toggleShowPassword}
-										className="absolute inset-y-0 right-0 px-4 py-2 text-gray-700"
-									>
-										{showPassword ? (
-											<FaRegEyeSlash size={20} />
-										) : (
-											<IoMdEye size={20} />
-										)}
-									</button>
-								</div>
-							</div>
-
-							{userType === "vendor" && (
-								<>
+								<div>
 									<div className="mb-4">
 										<label
 											className="block text-gray-700 font-bold mb-2"
-											htmlFor="vendorContact"
+											htmlFor="contact"
 										>
 											Phone Number
+											<p className="font-light text-xs italic">
+												Please keep this number safe,
+												you will need it to login
+											</p>
 										</label>
 										<input
 											type="text"
-											name="vendorContact"
-											id="vendorContact"
-											value={formData.vendorContact}
+											name="contact"
+											id="contact"
+											value={formData.contact}
 											onChange={handleChange}
 											className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
-											placeholder="Enter your vendor contact number"
+											placeholder="Enter contact number"
 											required
 										/>
 									</div>
+									<div className="mb-4">
+										<label
+											className="block text-gray-700 font-bold mb-2"
+											htmlFor="email"
+										>
+											Email
+										</label>
+										<input
+											type="email"
+											name="email"
+											id="email"
+											value={formData.email}
+											onChange={handleChange}
+											className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+											placeholder="Enter email address"
+											required
+										/>
+									</div>
+									<div className="mb-4">
+										<label
+											className="block text-gray-700 font-bold mb-2"
+											htmlFor="password"
+										>
+											Password
+										</label>
+										<div className="relative">
+											<input
+												type={
+													showPassword
+														? "text"
+														: "password"
+												}
+												name="password"
+												id="password"
+												value={formData.password}
+												onChange={handleChange}
+												className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+												placeholder="Enter password"
+												required
+											/>
+											<button
+												type="button"
+												onClick={toggleShowPassword}
+												className="absolute inset-y-0 right-0 px-4 py-2 text-gray-700"
+											>
+												{showPassword ? (
+													<FaRegEyeSlash size={20} />
+												) : (
+													<IoMdEye size={20} />
+												)}
+											</button>
+										</div>
+									</div>
+								</div>
+							) : (
+								<div>
+									<div className="mb-4">
+										<label
+											className="block text-gray-700 font-bold mb-2"
+											htmlFor="vendorName"
+										>
+											Business Name
+										</label>
+										<input
+											type="text"
+											name="vendorName"
+											id="vendorName"
+											value={formData.vendorName}
+											onChange={handleChange}
+											className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+											placeholder="Enter business name here"
+											required
+										/>
+									</div>
+									<div className="mb-4">
+										<label
+											className="block text-gray-700 font-bold mb-2"
+											htmlFor="contact"
+										>
+											Phone Number
+											<p className="font-light text-xs italic">
+												Please keep this number safe,
+												you will need it to login
+											</p>
+										</label>
+										<input
+											type="text"
+											name="contact"
+											id="contact"
+											value={formData.contact}
+											onChange={handleChange}
+											className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+											placeholder="Enter your business contact number"
+											required
+										/>
+									</div>
+									<div className="mb-4">
+										<label
+											className="block text-gray-700 font-bold mb-2"
+											htmlFor="email"
+										>
+											Email
+										</label>
+										<input
+											type="email"
+											name="email"
+											id="email"
+											value={formData.email}
+											onChange={handleChange}
+											className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+											placeholder="Enter email address"
+											required
+										/>
+									</div>
+									<div className="mb-4">
+										<label
+											className="block text-gray-700 font-bold mb-2"
+											htmlFor="school"
+										>
+											School
+										</label>
+										<select
+											name="school"
+											id="school"
+											value={formData.school}
+											onChange={handleChange}
+											className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+											required
+										>
+											<option value="">
+												Select school
+											</option>
+											{Object.entries(schools).map(
+												([key, school]) => (
+													<option
+														key={key}
+														value={key}
+													>
+														{school}
+													</option>
+												)
+											)}
+										</select>
+									</div>
+									{otherSchool && (
+										<div className="mb-4 ms-5">
+											<label
+												className="block text-gray-700 font-bold mb-2"
+												htmlFor="other-school"
+											>
+												Please enter school name here
+											</label>
+											<input
+												type="text"
+												name="otherSchool"
+												id="other-school"
+												value={formData.otherSchool}
+												onChange={handleChange}
+												className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+												placeholder="Enter your school name here (Abbreviated)"
+												required
+											/>
+										</div>
+									)}
 									<div className="mb-4">
 										<label
 											className="block text-gray-700 font-bold mb-2"
@@ -321,9 +385,72 @@ const Register = () => {
 											)}
 										</select>
 									</div>
-								</>
+									<div className="mb-4">
+										<label
+											className="block text-gray-700 font-bold mb-2"
+											htmlFor="image"
+										>
+											Business Flyer
+											<div className="text-xs italic font-light py-1">
+												Upload your business flyer. Do
+												not worry if it is not available
+												now, you can always add it
+												later.
+											</div>
+										</label>
+										<input
+											type="file"
+											name="vendorFlyer"
+											id="vendorFlyer"
+											accept="image/*"
+											onChange={(e) => {
+												setFormData({
+													...formData,
+													vendorFlyer:
+														e.target.files[0],
+												});
+											}}
+											className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+											placeholder="Upload business flyer"
+										/>
+									</div>
+									<div className="mb-4">
+										<label
+											className="block text-gray-700 font-bold mb-2"
+											htmlFor="password"
+										>
+											Password
+										</label>
+										<div className="relative">
+											<input
+												type={
+													showPassword
+														? "text"
+														: "password"
+												}
+												name="password"
+												id="password"
+												value={formData.password}
+												onChange={handleChange}
+												className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+												placeholder="Enter password"
+												required
+											/>
+											<button
+												type="button"
+												onClick={toggleShowPassword}
+												className="absolute inset-y-0 right-0 px-4 py-2 text-gray-700"
+											>
+												{showPassword ? (
+													<FaRegEyeSlash size={20} />
+												) : (
+													<IoMdEye size={20} />
+												)}
+											</button>
+										</div>
+									</div>
+								</div>
 							)}
-
 							{isLoading ? (
 								<Spinner />
 							) : (

@@ -26,12 +26,12 @@ import AdminNavbar from "./components/admin/AdminNavbar";
 import MakeAdmin from "./pages/admin/MakeAdmin";
 import ProtectedAdminRoutes from "./components/admin/ProtectedAdminRoutes";
 import ProtectedVendorRoute from "./components/ProtectedVendorRoute";
+import ManageFeaturedProducts from "./pages/admin/ManageFeaturedProducts";
 
 function App() {
 	const { currentUser } = useSelector((state) => state.user);
 	const path = window.location.pathname;
-	const admin = path.startsWith("/admin");
-
+	const admin = path.startsWith("/admin") && currentUser?.role === "admin";
 	return (
 		<>
 			<BrowserRouter>
@@ -58,19 +58,19 @@ function App() {
 					{/**Login Required Routes */}
 					<Route element={<PrivateRoute />}>
 						<Route
+							path="/update-profile/:id"
+							element={<UpdateProfile />}
+						/>
+						<Route
 							path="/update-product/:id"
 							element={<UpdateProduct />}
 						/>
 						<Route path="/favourites" element={<Favourites />} />
 					</Route>
 
-					{/**Admin Routes */}
+					{/**Vendor Routes */}
 					<Route element={<ProtectedVendorRoute />}>
 						<Route path="/add-product" element={<AddProduct />} />
-						<Route
-							path="/update-profile/:id"
-							element={<UpdateProfile />}
-						/>
 					</Route>
 
 					{/**Admin Routes */}
@@ -91,6 +91,10 @@ function App() {
 						<Route
 							path="/admin/make-admin"
 							element={<MakeAdmin />}
+						/>
+						<Route
+							path="/admin/featured"
+							element={<ManageFeaturedProducts />}
 						/>
 					</Route>
 				</Routes>

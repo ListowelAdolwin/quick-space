@@ -1,6 +1,6 @@
 // routes/productRoutes.js
 import express from "express";
-import { addProduct, getCategoryProducts, getFeaturedProducts, getProduct, getProducts, addToFavorites, removeFromFavorites, getFavoriteProducts, filterProducts, updateProduct, deleteProduct } from "../controllers/productController.js";
+import { addProduct, getCategoryProducts, getFeaturedProducts, getProduct, getProducts, addToFavorites, removeFromFavorites, getFavoriteProducts, filterProducts, updateProduct, deleteProduct, featureProduct, unfeatureProduct } from "../controllers/productController.js";
 import { verifyRole, verifyToken } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -8,6 +8,8 @@ const router = express.Router();
 router.post("/add", verifyRole(["vendor", "admin"]), addProduct);
 router.get("/delete/:id", verifyToken, deleteProduct);
 router.post("/update/:id", verifyToken, updateProduct);
+router.get("/feature/:id", featureProduct);
+router.get("/unfeature/:id", unfeatureProduct);
 router.get("/featured", getFeaturedProducts);
 router.get("/favorites/:id", verifyToken, getFavoriteProducts);
 router.post("/favorites/add", verifyToken, addToFavorites)

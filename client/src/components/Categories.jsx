@@ -12,7 +12,6 @@ const Categories = () => {
 		setPageLoading(true);
 		const getCategoryCounts = async () => {
 			const res = await axios(`${BASE_URL}/api/categories/counts`);
-			console.log(res.data.health_and_beauty);
 			if (res.status === 200) {
 				setCategoryCounts(res.data);
 				setPageLoading(false);

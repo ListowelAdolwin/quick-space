@@ -11,21 +11,30 @@ const productSchema = new mongoose.Schema(
       required: [true, 'Product price required!']
     },
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
       required: [true, 'Product category required!']
+    },
+    categoryName: {
+      type: String,
+      required: true
     },
     imageUrls: {
       type: [String],
       required: [true, 'Product image(s) required!']
     },
+    videoUrls: {
+      type: [String]
+    },
     school: {
-        type: String,
+      type: String
     },
     vendor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
     },
+    vendorName: { type: String, required: true },
     description: {
       type: String,
       required: false
@@ -34,10 +43,27 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
-    rating: {
+    status: {
+      type: String,
+      enum: ['draft', 'published', 'hidden', 'out of stock'],
+      default: 'published',
+      required: true
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false
+    },
+    // reviews:[
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Review'
+    //   }
+    // ],
+    totalReviews: {
       type: Number,
       default: 0
     },
+    averageRating: { type: Number, min: 0, max: 5, default: 0 }
   },
   { timestamps: true }
 )

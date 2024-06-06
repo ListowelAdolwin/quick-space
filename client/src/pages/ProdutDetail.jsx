@@ -189,23 +189,23 @@ const ProductDetail = () => {
 												Email:
 											</span>{" "}
 											<a
-												href={`mailto:${product.vendorEmail}`}
+												href={`mailto:${product.email}`}
 												className="text-blue-500"
 											>
-												{product.vendorEmail}
+												{product.email}
 											</a>
 										</p>
 										<p className="mt-1 text-gray-600">
 											<span className="font-bold">
 												Phone:
 											</span>{" "}
-											{product.vendorContact}
+											{product.contact}
 										</p>
 									</div>
 
 									<div className="w-full flex items-center mt-6 space-x-2 sm:space-x-4 overflow-hidden text-xs sm:text-sm">
 										<a
-											href={`tel:${product.vendorContact}`}
+											href={`tel:${product.contact}`}
 											className="basis-1/2 border border-blue-600 hover:bg-blue-600 hover:text-white text-blue-600 font-bold py-2 px-1 sm:px-2 rounded transition-colors duration-300 flex items-center justify-center"
 										>
 											<FaPhone className="mr-1 sm:mr-2" />{" "}

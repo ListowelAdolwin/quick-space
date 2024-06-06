@@ -19,6 +19,7 @@ const FeaturedProducts = () => {
 				);
 				if (response.status === 200) {
 					setProducts(response.data);
+					setPageLoading(false);
 				} else {
 					console.error(
 						"Failed to fetch featured products:",
@@ -28,7 +29,6 @@ const FeaturedProducts = () => {
 			} catch (error) {
 				console.error("Error fetching featured products:", error);
 			}
-			setPageLoading(false);
 		};
 
 		getFeaturedProducts();

@@ -170,7 +170,7 @@ export const getProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' })
     }
 
-    const reviews = await Review.find({ product: tempProduct._id })
+    const reviews = await Review.find({ product: tempProduct._id }).populate("user").sort({createdAt: -1});
 
     const product = {
       _id: tempProduct._id,
@@ -189,7 +189,7 @@ export const getProduct = async (req, res) => {
       isFavorited: isFavoritedArray[0],
       reviews
     }
-    return res.status(200).json(product)
+    return res.status(200).json({product, reviews})
   } catch (error) {
     return res.status(500).json({ message: error.message })
   }

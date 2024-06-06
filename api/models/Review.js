@@ -2,17 +2,17 @@ import mongoose from 'mongoose'
 
 const reviewSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true
-    },
+    // title: {
+    //   type: String,
+    //   required: true
+    // },
     rating: {
       type: Number,
       min: 1,
       max: 5,
       required: true
     },
-    coment: {
+    comment: {
       type: String,
       required: [true, 'Review comment required!']
     },

@@ -187,6 +187,7 @@ export const getProduct = async (req, res) => {
       contact: tempProduct.vendor.contact,
       email: tempProduct.vendor.email,
       isFavorited: isFavoritedArray[0],
+      averageRating: tempProduct.averageRating,
       reviews
     }
     return res.status(200).json({product, reviews})

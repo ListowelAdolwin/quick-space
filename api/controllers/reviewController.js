@@ -1,31 +1,46 @@
-import Review from '../models/Review.js';
-import Product from '../models/Product.js';
+import Review from '../models/Review.js'
+import Product from '../models/Product.js'
 
 export const addReview = async (req, res) => {
-  const { rating, comment } = req.body;
-  const { id } = req.params;
-    console.log("Add review controller, ", req.user)
+  const { rating, comment } = req.body
+  const { id } = req.params
+  console.log('Add review controller, ', req.user)
 
   try {
-    const product = await Product.findById(id);
+    const product = await Product.findById(id)
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: 'Product not found' })
     }
 
     const review = new Review({
       user: req.user._id,
       product: id,
       rating,
-      comment,
-    });
+      comment
+    })
 
-    await review.save();
-    res.status(201).json({review, message: 'Review added successfully' });
+    await review.save()
+
+    const newReview = await Review.findById(review._id).populate('user')
+
+    product.totalReviews = product.totalReviews + 1
+
+    if (product.totalReviews === 1) {
+      product.averageRating = rating
+    } else {
+      product.averageRating =
+        (product.averageRating * (product.totalReviews - 1) + rating) /
+        product.totalReviews
+    }
+
+    await product.save()
+
+    res.status(201).json({ review: newReview, message: 'Review added successfully' })
   } catch (error) {
     console.log(error)
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message })
   }
-};
+}
 
 // export const getReviews = async (req, res) => {
 //   const { productId } = req.params;

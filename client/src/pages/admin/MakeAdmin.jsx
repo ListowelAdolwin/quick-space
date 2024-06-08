@@ -26,7 +26,6 @@ const MakeAdmin = () => {
 			);
 			setMessage(response.data.message);
 			setError("");
-			console.log(response.data);
 			setIsLoading(false);
 		} catch (error) {
 			if (error.response?.status === 404) {

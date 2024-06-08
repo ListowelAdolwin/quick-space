@@ -188,6 +188,7 @@ export const getProduct = async (req, res) => {
       email: tempProduct.vendor.email,
       isFavorited: isFavoritedArray[0],
       averageRating: tempProduct.averageRating,
+      totalReviews: tempProduct.totalReviews,
       reviews
     }
     return res.status(200).json({product, reviews})

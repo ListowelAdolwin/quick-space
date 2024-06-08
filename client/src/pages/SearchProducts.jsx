@@ -47,7 +47,6 @@ export default function SearchProducts() {
 				`${BASE_URL}/api/products/search?${searchQuery}`
 			);
 			const data = res.data;
-			console.log(data);
 			if (data.length > 8) {
 				setShowMore(true);
 			} else {

@@ -17,7 +17,6 @@ const UserProfile = () => {
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 	const location = useLocation();
-	console.log(location);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -38,7 +37,6 @@ const UserProfile = () => {
 			if (response.status === 200) {
 				setUserData(response.data);
 				setIsVendor(response.data.role === "vendor");
-				console.log("Profile response: ", response.data);
 			} else {
 				console.log("Profile response: ", response.data);
 			}

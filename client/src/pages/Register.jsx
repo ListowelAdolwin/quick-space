@@ -104,7 +104,6 @@ const Register = () => {
 				vendorFlyerUrl: vendorFlyerUrl,
 			};
 		}
-		console.log(userPayload);
 
 		try {
 			setIsLoading(true);
@@ -117,7 +116,6 @@ const Register = () => {
 			} else {
 				setErrorMessage(response.data.message);
 			}
-			console.log("User registered successfully:", response.data);
 		} catch (error) {
 			setErrorMessage(
 				error.response?.data?.message || "An error occurred"

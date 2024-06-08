@@ -43,7 +43,6 @@ const UpdateProduct = () => {
 			const response = await axios.get(`${BASE_URL}/api/products/${id}`);
 			if (response.status === 200) {
 				const data = response.data;
-				console.log(data);
 				setFormData({
 					itemName: data.name,
 					price: data.price,
@@ -116,8 +115,6 @@ const UpdateProduct = () => {
 				imageUrls: formData.imageUrls.concat(urls),
 				vendor: currentUser._id,
 			};
-
-			console.log(productData);
 
 			const saveProductResponse = await axios.post(
 				`${BASE_URL}/api/products/update/${id}`,

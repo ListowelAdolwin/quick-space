@@ -19,7 +19,6 @@ const ManageProducts = () => {
 			try {
 				const response = await axios.get(`${BASE_URL}/api/products`);
 				setProducts(response.data);
-				console.log(response.data)
 			} catch (error) {
 				toast.error("Error fetching products");
 			} finally {

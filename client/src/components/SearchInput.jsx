@@ -43,7 +43,6 @@ function SearchInput() {
 			school: searchData.school,
 		});
 		const searchQuery = urlParams.toString();
-		console.log(searchQuery);
 		navigate(`/search?${searchQuery}`);
 	};
 

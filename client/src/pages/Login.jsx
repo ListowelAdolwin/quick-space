@@ -44,7 +44,6 @@ const Login = () => {
 			);
 			if (response.status === 200) {
 				const data = response.data;
-				console.log(data);
 				dispatch(loginUser(data.user));
 				if (data.user.isVendor) {
 					navigate(`/profile/${data.user._id}`);
@@ -54,7 +53,6 @@ const Login = () => {
 			} else {
 				setErrorMessage(response.data.message);
 			}
-			console.log("User login successfully:", response.data);
 		} catch (error) {
 			setErrorMessage(
 				error.response?.data?.message || "An error occurred"

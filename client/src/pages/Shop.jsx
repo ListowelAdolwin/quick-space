@@ -23,7 +23,6 @@ const Shop = () => {
 				setProducts(response.data);
 				setShowMore(response.data.length >= limit)
 				setPageLoading(false);
-				console.log("Products response: ", response);
 			} else {
 				console.log("Products response: ", response);
 			}

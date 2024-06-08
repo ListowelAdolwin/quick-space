@@ -60,7 +60,6 @@ const AddCategory = () => {
 					},
 				}
 			);
-      console.log(res.data);
       if (res.status !== 201){
         toast.error("Sever error: Could not add category. Please retry")
         setIsLoading(false);

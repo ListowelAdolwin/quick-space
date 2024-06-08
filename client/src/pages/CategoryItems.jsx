@@ -23,7 +23,6 @@ const CategoryItems = () => {
 			);
 			if (response.status === 200) {
 				setProducts(response.data);
-				console.log("Category response: ", response);
 			} else {
 				console.log("Category response: ", response);
 			}

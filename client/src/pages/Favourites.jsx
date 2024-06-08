@@ -25,7 +25,6 @@ const Favourites = () => {
 					},
 				}
 			);
-			console.log("Favorite response: ", response);
 			if (response.status === 200) {
 				setFavorites(response.data);
 			} else {

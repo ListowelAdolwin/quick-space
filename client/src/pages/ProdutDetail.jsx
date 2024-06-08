@@ -12,22 +12,27 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PageLoader from "../components/PageLoader";
 import useFavorites from "../hooks/useFavorites";
-import { FaHeart, FaPhone } from "react-icons/fa";
+import { FaHeart, FaPhone, FaSpinner } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Hearts } from "react-loader-spinner";
+import StarRating from "../components/StarRating";
+import ReviewForm from "../components/ReviewForm";
 
 const ProductDetail = () => {
 	const { addToFavorites, removeFromFavorites } = useFavorites();
 	const [isFavorited, setIsFavorited] = useState(false);
 	const [product, setProduct] = useState(null);
-	const [reviews, setReviews] = useState([])
+	const [reviews, setReviews] = useState([]);
 	const [pageLoading, setPageLoading] = useState(true);
 	const [likeLoading, setLikeLoading] = useState(false);
 	const [showReviewForm, setShowReviewForm] = useState(false);
 	const [rating, setRating] = useState(0);
 	const [comment, setComment] = useState("");
 	const [reviewLoading, setReviewLoading] = useState(false);
+	const [reviewDeleteLoading, setReviewDeleteLoading] = useState(false);
+	const [showEditForm, setShowEditForm] = useState(false);
+	const [editData, setEditData] = useState(false);
 
 	const params = useParams();
 	const id = params.id;
@@ -51,11 +56,14 @@ const ProductDetail = () => {
 				}
 			);
 			if (response.status === 201) {
-				console.log(response.data)
 				setReviews([response.data.review, ...reviews]);
 				setComment("");
 				setRating(0);
 				setShowReviewForm(false);
+				setProduct({
+					...product,
+					averageRating: response.data.averageRating,
+				});
 				toast.success("Review added successfully");
 			}
 		} catch (error) {
@@ -72,10 +80,9 @@ const ProductDetail = () => {
 					userId: currentUser?._id,
 				},
 			});
-			console.log(response.data);
 			if (response.status === 200) {
 				setProduct(response.data.product);
-				setReviews(response.data.reviews)
+				setReviews(response.data.reviews);
 				setIsFavorited(response.data.isFavorited);
 			} else {
 				console.log("Category response: ", response);
@@ -88,18 +95,65 @@ const ProductDetail = () => {
 
 	const handleFavorite = async () => {
 		setLikeLoading(true);
-		const response = await addToFavorites(product._id);
+		await addToFavorites(product._id);
 		setIsFavorited(true);
 		setLikeLoading(false);
-		console.log("Favorite results: ", response);
 	};
 
 	const handleUnfavorite = async () => {
 		setLikeLoading(true);
-		const response = await removeFromFavorites(product._id);
+		await removeFromFavorites(product._id);
 		setIsFavorited(false);
 		setLikeLoading(false);
-		console.log("Unfavorite results: ", response);
+	};
+
+	const deleteReview = async (reviewId) => {
+		try {
+			setReviewDeleteLoading(true);
+			const res = await axios.post(
+				`${BASE_URL}/api/reviews/delete/${reviewId}`,
+				{ productId: id },
+				{
+					headers: {
+						Authorization: `Bearer ${currentUser?.accessToken}`,
+					},
+				}
+			);
+			if (res.status === 200) {
+				setProduct({
+					...product,
+					averageRating: res.data.averageRating,
+				});
+
+				const updatedReviews = reviews.filter(
+					(review) => review._id !== reviewId
+				);
+				setReviews(updatedReviews);
+
+				toast("Review deleted");
+			} else {
+				toast.error("Failed to delete review, retry");
+			}
+			setReviewDeleteLoading(false);
+		} catch (error) {
+			toast.error("Failed to delete review, retry");
+			setReviewDeleteLoading(false);
+		}
+	};
+
+	const editReview = (rating_, comment_, id_) => {
+		setShowEditForm(true);
+		setEditData({
+			rating: rating_,
+			comment: comment_,
+			reviewId: id_,
+			productId: id,
+			setShowEditForm,
+			setProduct,
+			product,
+			reviews,
+			setReviews,
+		});
 	};
 
 	return (
@@ -112,8 +166,8 @@ const ProductDetail = () => {
 					<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 						{product && (
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-								<div className="swipper-image w-full rounded-md">
-									<div className="bg-white rounded-xl py-1 sm:py-3 text-blue-900 flex flex-col space-y-0 sm:space-y-4 h-full">
+								<div className="swipper-image w-full rounded-md max-h-screen">
+									<div className="max-h-screen bg-white rounded-xl py-1 sm:py-3 text-blue-900 flex flex-col space-y-0 sm:space-y-4 h-full">
 										<Swiper
 											pagination={{
 												type: "fraction",
@@ -155,30 +209,9 @@ const ProductDetail = () => {
 											</span>
 										</div>
 										<div className="font-bold flex items-center mt-4 px-3">
-											<div className="flex items-center">
-												<svg
-													aria-hidden="true"
-													className="h-5 w-5 text-yellow-500"
-													fill="currentColor"
-													viewBox="0 0 20 20"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-												</svg>
-												<svg
-													aria-hidden="true"
-													className="h-5 w-5 text-yellow-500"
-													fill="currentColor"
-													viewBox="0 0 20 20"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-												</svg>
-												{/* Repeat the above SVG for the stars */}
-												<span className="text-white mr-2 ml-3 rounded bg-yellow-600 px-2.5 py-0.5 text-xs font-semibold">
-													{product.averageRating}
-												</span>
-											</div>
+											<StarRating
+												rating={product.averageRating}
+											/>
 										</div>
 									</div>
 									<div className="py-3 mt-3">
@@ -315,6 +348,7 @@ const ProductDetail = () => {
 																e.target.value
 															)
 														}
+														required
 														className="shadow border border-gray-400 rounded w-full py-2 px-3 text-gray-700  focus:outline-none"
 													>
 														<option value="">
@@ -326,20 +360,11 @@ const ProductDetail = () => {
 														<option value="2">
 															2 - Fair
 														</option>
-														<option value="2.5">
-															2.5 - Very Fair
-														</option>
 														<option value="3">
 															3 - Good
 														</option>
-														<option value="3.5">
-															3.5 - Very Good
-														</option>
 														<option value="4">
 															4 - Great
-														</option>
-														<option value="4.5">
-															4.5 - Very Great
 														</option>
 														<option value="5">
 															5 - Excellent
@@ -357,12 +382,16 @@ const ProductDetail = () => {
 																e.target.value
 															)
 														}
+														required
 														cols="5"
 														className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-gray-200"
 													/>
 												</div>
 												{reviewLoading ? (
-													<p>loading</p>
+													<FaSpinner
+														size={20}
+														className="text-blue-700"
+													/>
 												) : (
 													<button
 														type="submit"
@@ -374,6 +403,15 @@ const ProductDetail = () => {
 											</form>
 										)}
 										<div className="mt-4 space-y-4">
+											{product.reviews.length !== 0 && (
+												<p className="underline">
+													{product.totalReviews}{" "}
+													reviews
+												</p>
+											)}
+											{showEditForm && (
+												<ReviewForm data={editData} />
+											)}
 											{reviews.map((review) => (
 												<div
 													key={review._id}
@@ -386,13 +424,46 @@ const ProductDetail = () => {
 														<span className="ml-2 text-gray-600">
 															/ 5.0
 														</span>
-														<span className="ml-4 text-blue-800 font-bold">
+														<span className="ml-4 text-blue-500 font-bold">
 															{review.user.email}
 														</span>
 													</div>
 													<p className="mt-2 text-gray-600">
 														{review.comment}
 													</p>
+													{currentUser?._id ===
+														review.user._id && (
+														<div className="flex gap-3 mt-2 text-xs">
+															{reviewDeleteLoading ? (
+																<p className="px-2 py-1 bg-red-500 rounded text-white hover:opacity-85">
+																	Deleting
+																</p>
+															) : (
+																<button
+																	onClick={() => {
+																		deleteReview(
+																			review._id
+																		);
+																	}}
+																	className="px-2 py-1 bg-red-500 rounded text-white hover:opacity-85"
+																>
+																	Delete
+																</button>
+															)}
+															<button
+																onClick={() => {
+																	editReview(
+																		review.rating,
+																		review.comment,
+																		review._id
+																	);
+																}}
+																className="px-2 py-1 bg-blue-500 rounded text-white hover:opacity-85"
+															>
+																Edit
+															</button>
+														</div>
+													)}
 												</div>
 											))}
 										</div>

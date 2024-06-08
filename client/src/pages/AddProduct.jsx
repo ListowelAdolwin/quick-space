@@ -120,7 +120,6 @@ const AddProduct = () => {
 				setErrowMessage(saveProductResponse.message);
 			}
 			setIsLoading(false);
-			console.log("Product saved:", saveProductResponse.data);
 		} catch (error) {
 			setErrowMessage("Error uploading images. Please retry");
 			setIsLoading(false)

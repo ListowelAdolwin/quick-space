@@ -14,9 +14,14 @@ const userSchema = new mongoose.Schema(
     },
     vendorFlyerUrl: String,
     contact: {
-      type: String,
-      required: false,
-      unique: true
+        type: String,
+        required: [true, 'Phone number is required'],
+        validate: {
+            validator: function(v) {
+                return /^0\d{9}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid contact number! It must start with a 0 and be exactly 10 digits long.`
+        }
     },
     email: {
       type: String,

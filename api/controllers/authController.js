@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose'
 import User from '../models/User.js'
 
 export const register = async (req, res) => {
@@ -21,17 +22,21 @@ export const register = async (req, res) => {
   try {
     const duplicateContact = await User.findOne({ contact }).exec()
     if (duplicateContact) {
-      return res.status(409).json({ message: `The contact ${contact} already exist` })
+      return res
+        .status(409)
+        .json({ message: `The contact ${contact} already exist` })
     }
     const duplicateEmail = await User.findOne({ email }).exec()
     if (duplicateEmail) {
       return res.status(409).json({ message: `Email ${email} already exist` })
     }
-    if (isVendor){
+    if (isVendor) {
       const duplicateVendorName = await User.findOne({ vendorName }).exec()
-    if (duplicateVendorName) {
-      return res.status(409).json({ message: `The name ${vendorName} already exist` })
-    }
+      if (duplicateVendorName) {
+        return res
+          .status(409)
+          .json({ message: `The name ${vendorName} already exist` })
+      }
     }
 
     const hashedP = bcrypt.hashSync(password, 10)
@@ -39,7 +44,7 @@ export const register = async (req, res) => {
       contact,
       email,
       password: hashedP,
-      isVendor,
+      isVendor
     })
     if (isVendor) {
       newUser.vendorName = vendorName
@@ -53,14 +58,12 @@ export const register = async (req, res) => {
     const { password: pass, ...rest } = newUser._doc
     res.status(201).json(rest)
   } catch (error) {
-    let errMsg
-    if (error.code == 11000) {
-      errMsg = Object.keys(error.keyValue)[0] + ` already exists.`
+    if (error instanceof mongoose.Error.ValidationError) {
+      const messages = Object.values(error.errors).map(err => err.message)
+      res.status(400).json({ message: messages[0] })
     } else {
-      errMsg = error.message
+      res.status(500).json({ error: 'An unexpected error occurred while registring. Please retry' })
     }
-    console.log(error)
-    res.status(400).json({ message: errMsg })
   }
 }
 

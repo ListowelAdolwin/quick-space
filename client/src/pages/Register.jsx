@@ -47,6 +47,16 @@ const Register = () => {
 		} else if (name !== "otherSchool") {
 			setOtherSchool(false);
 		}
+		// if (name === "contact") {
+		// 	const contactRegex = /^0\d{9}$/;
+		// 	if (!contactRegex.test(value)) {
+		// 		setErrorMessage(
+		// 			"Phone number must start with a 0 and be exactly 10 digits long."
+		// 		);
+		// 	} else {
+		// 		setErrorMessage("");
+		// 	}
+		// }
 		setFormData({ ...formData, [name]: value });
 	};
 
@@ -57,33 +67,18 @@ const Register = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setIsLoading(true);
-		setErrorMessage("");
 
-		// Upload Flyer
-		const fileData = new FormData();
-		fileData.append("file", formData.vendorFlyer);
-		fileData.append("upload_preset", uploadPreset);
-		fileData.append("api_key", apiKey);
-		fileData.append("timestamp", (Date.now() / 1000) | 0);
-
-		const response = await axios.post(
-			`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-			fileData,
-			{
-				headers: {
-					"X-Requested-With": "XMLHttpRequest",
-				},
-			}
-		);
-
-		if (response.status !== 200) {
-			toast.error("Failed to upload image. Please retry");
-			setIsLoading(false);
-			return;
+		//validate contact
+		const contactRegex = /^0\d{9}$/;
+		if (!contactRegex.test(formData.contact)) {
+			setErrorMessage(
+				"Phone number must start with a 0 and be exactly 10 digits long."
+			);
+			return
 		}
 
-		const vendorFlyerUrl = response.data.secure_url;
+		setIsLoading(true);
+		setErrorMessage("");
 
 		let userPayload = {
 			contact: formData.contact,
@@ -92,18 +87,46 @@ const Register = () => {
 			isVendor: userType === "vendor",
 		};
 
-		if (userType === "vendor") {
-			userPayload = {
-				...userPayload,
-				vendorName: formData.vendorName,
-				school: formData.otherSchool
-					? formData.otherSchool
-					: formData.school,
-				vendorCategory: formData.vendorCategory,
-				vendorAddress: formData.vendorAddress,
-				vendorFlyerUrl: vendorFlyerUrl,
-			};
+		// Upload Flyer
+		if (formData.vendorFlyer) {
+			const fileData = new FormData();
+			fileData.append("file", formData.vendorFlyer);
+			fileData.append("upload_preset", uploadPreset);
+			fileData.append("api_key", apiKey);
+			fileData.append("timestamp", (Date.now() / 1000) | 0);
+
+			const response = await axios.post(
+				`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+				fileData,
+				{
+					headers: {
+						"X-Requested-With": "XMLHttpRequest",
+					},
+				}
+			);
+
+			if (response.status !== 200) {
+				toast.error("Failed to upload image. Please retry");
+				setIsLoading(false);
+				return;
+			}
+
+			const vendorFlyerUrl = response.data.secure_url;
+
+			if (userType === "vendor") {
+				userPayload = {
+					...userPayload,
+					vendorName: formData.vendorName,
+					school: formData.otherSchool
+						? formData.otherSchool
+						: formData.school,
+					vendorCategory: formData.vendorCategory,
+					vendorAddress: formData.vendorAddress,
+					vendorFlyerUrl: vendorFlyerUrl,
+				};
+			}
 		}
+
 
 		try {
 			setIsLoading(true);

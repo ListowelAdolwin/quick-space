@@ -55,6 +55,11 @@ const AddProduct = () => {
 			setErrowMessage("Discont cannot be greater than price")
 			return
 		}
+		
+		if (currentUser?.role !== 'vendor'){
+			setErrowMessage("Please login as a vendor to be able to add products");
+			return;
+		}
 		setErrowMessage("");
 		setIsLoading(true);
 
@@ -161,8 +166,9 @@ const AddProduct = () => {
 						</label>
 						<input
 							type="number"
+							step=".01"
 							name="price"
-							min={0}
+							min='0'
 							id="price"
 							value={formData.price}
 							onChange={handleChange}
@@ -244,7 +250,9 @@ const AddProduct = () => {
 							htmlFor="images"
 						>
 							Images
-							<p className="italic text-xs">You can upload multiple images.</p>
+							<p className="italic text-xs">
+								You can upload multiple images.
+							</p>
 						</label>
 						<input
 							type="file"

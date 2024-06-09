@@ -63,7 +63,7 @@ const UserProfile = () => {
 							<span className="text-base text-gray-800">
 								<MdOutlineDoubleArrow />
 							</span>
-							{userData.vendorName}
+							{userData.vendorName || userData.email}
 						</h1>
 						{userData && (
 							<div className="flex flex-wrap items-start justify-start gap-5">
@@ -120,14 +120,14 @@ const UserProfile = () => {
 										<div className="flex gap-2">
 											<button
 												onClick={logout}
-												className="mt-4 bg-red-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+												className="mt-4 border border-red-600 hover:bg-red-700 text-red-600 hover:text-white py-2 px-4 rounded"
 											>
 												Logout
 											</button>
 											{currentUser.isVendor && (
 												<Link
 													to={`/update-profile/${userData._id}`}
-													className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+													className="mt-4 border border-blue-600 hover:bg-blue-700 text-blue-600 hover:text-white py-2 px-4 rounded"
 												>
 													Update Profile
 												</Link>
@@ -137,14 +137,25 @@ const UserProfile = () => {
 								</div>
 
 								<div className="w-full lg:-mt-3 lg:basis-8/12">
-									<h2 className="text-2xl font-semibold text-blue-800 mb-4">
-										Catalogue
-									</h2>
+									<div className="flex items-center justify-between mb-4">
+										<h2 className="text-2xl font-semibold text-blue-800">
+											Catalogue
+										</h2>
+										<Link
+											to="/add-product"
+											className="border bg-blue-700 hover:bg-blue-800 px-3 py-2 text-white font-bold"
+										>
+											Add Product
+										</Link>
+									</div>
 									{userData.products.length === 0 && (
-										<p>
-											No items in user catalogue at this
-											time. Come back later and shop
-										</p>
+										<div>
+											<p>
+												No items in user catalogue at
+												this time. Come back later and
+												shop
+											</p>
+										</div>
 									)}
 									<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2">
 										{userData.products.map((product) => (

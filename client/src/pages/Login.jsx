@@ -87,6 +87,9 @@ const Login = () => {
 										htmlFor="contact"
 									>
 										Contact Number
+										<p className="font-light text-xs italic">
+											Enter the number you used to register. Number should start with 0
+										</p>
 									</label>
 									<input
 										type="text"

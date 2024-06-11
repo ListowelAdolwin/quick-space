@@ -26,25 +26,37 @@ const UserProfile = () => {
 	useEffect(() => {
 		const getUserProfile = async () => {
 			setPageLoading(true);
-			const response = await axios.get(
-				`${BASE_URL}/api/users/profile/${id}`,
-				{
-					headers: {
-						Authorization: `Bearer ${currentUser?.accessToken}`,
-					},
+			try {
+				const response = await axios.get(
+					`${BASE_URL}/api/users/profile/${id}`,
+					{
+						headers: {
+							Authorization: `Bearer ${currentUser?.accessToken}`,
+						},
+					}
+				);
+				if (response.status === 200) {
+					setUserData(response.data);
+					setIsVendor(response.data.role === "vendor");
 				}
-			);
-			if (response.status === 200) {
-				setUserData(response.data);
-				setIsVendor(response.data.role === "vendor");
-			} else if (response.status === 401 || response.status === 404) {
-				navigate("/login", {
-					state: "Your session expired. Please re-login",
-				});
-			} else {
-				console.log("Profile response: ", response.data);
+			} catch (error) {
+				if (
+					error.response &&
+					(error.response.status === 401 ||
+						error.response.status === 404)
+				) {
+					navigate("/login", {
+						state: "Your session expired. Please re-login",
+					});
+				} else {
+					console.log(
+						"Profile response error: ",
+						error.response ? error.response.data : error.message
+					);
+				}
+			} finally {
+				setPageLoading(false);
 			}
-			setPageLoading(false);
 		};
 
 		getUserProfile();

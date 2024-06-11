@@ -74,7 +74,7 @@ const Register = () => {
 			setErrorMessage(
 				"Phone number must start with a 0 and be exactly 10 digits long."
 			);
-			return
+			return;
 		}
 
 		setIsLoading(true);
@@ -88,6 +88,7 @@ const Register = () => {
 		};
 
 		// Upload Flyer
+		let vendorFlyerUrl;
 		if (formData.vendorFlyer) {
 			const fileData = new FormData();
 			fileData.append("file", formData.vendorFlyer);
@@ -111,22 +112,21 @@ const Register = () => {
 				return;
 			}
 
-			const vendorFlyerUrl = response.data.secure_url;
-
-			if (userType === "vendor") {
-				userPayload = {
-					...userPayload,
-					vendorName: formData.vendorName,
-					school: formData.otherSchool
-						? formData.otherSchool
-						: formData.school,
-					vendorCategory: formData.vendorCategory,
-					vendorAddress: formData.vendorAddress,
-					vendorFlyerUrl: vendorFlyerUrl,
-				};
-			}
+			vendorFlyerUrl = response.data.secure_url;
 		}
 
+		if (userType === "vendor") {
+			userPayload = {
+				...userPayload,
+				vendorName: formData.vendorName,
+				school: formData.otherSchool
+					? formData.otherSchool
+					: formData.school,
+				vendorCategory: formData.vendorCategory,
+				vendorAddress: formData.vendorAddress,
+				vendorFlyerUrl: vendorFlyerUrl,
+			};
+		}
 
 		try {
 			setIsLoading(true);

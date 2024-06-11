@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { CiViewList } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PageLoader from "../components/PageLoader";
 import { MdOutlinePerson3 } from "react-icons/md";
@@ -13,6 +13,7 @@ const Favourites = () => {
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 	const { currentUser } = useSelector((state) => state.user);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const getFavoriteProducts = async () => {
@@ -27,6 +28,10 @@ const Favourites = () => {
 			);
 			if (response.status === 200) {
 				setFavorites(response.data);
+			} else if (response.status === 401) {
+				navigate("/login", {
+					state: "Your session expired. Please re-login",
+				});
 			} else {
 				console.log("Favorite response: ", response);
 			}

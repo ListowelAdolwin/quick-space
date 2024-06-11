@@ -37,6 +37,10 @@ const UserProfile = () => {
 			if (response.status === 200) {
 				setUserData(response.data);
 				setIsVendor(response.data.role === "vendor");
+			} else if (response.status === 401) {
+				navigate("/login", {
+					state: "Your session expired. Please re-login",
+				});
 			} else {
 				console.log("Profile response: ", response.data);
 			}
@@ -79,7 +83,7 @@ const UserProfile = () => {
 											className="mx-auto sm:mx-0 lg:mx-auto -mt-4 relative block"
 										>
 											<img
-												src={userData.vendorFlyerUrl}
+												src={userData?.vendorFlyerUrl}
 												alt="Business flyer"
 												className="h-56 w-56 rounded-full object-center object-cover shadow-lg transition-opacity duration-300 hover:opacity-90"
 											/>
@@ -88,7 +92,7 @@ const UserProfile = () => {
 											</span>
 										</Link>
 									)}
-									{isVendor && !userData.vendorFlyerUrl && (
+									{isVendor && !userData?.vendorFlyerUrl && (
 										<p className="mx-auto sm:mx-0 lg:mx-auto -mt-4 relative block">
 											<img
 												src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png?20200912122019"
@@ -157,7 +161,7 @@ const UserProfile = () => {
 											Add Product
 										</Link>
 									</div>
-									{userData.products.length === 0 && (
+									{userData?.products?.length === 0 && (
 										<div>
 											<p>
 												No items in user catalogue at

@@ -37,7 +37,7 @@ const UserProfile = () => {
 			if (response.status === 200) {
 				setUserData(response.data);
 				setIsVendor(response.data.role === "vendor");
-			} else if (response.status === 401) {
+			} else if (response.status === 401 || response.status === 404) {
 				navigate("/login", {
 					state: "Your session expired. Please re-login",
 				});

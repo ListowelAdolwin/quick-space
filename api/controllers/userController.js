@@ -5,6 +5,9 @@ export const userProfile = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const userProfile = await User.findById(id);
+        if (!userProfile){
+            return res.status(404).json({message: "User not found"});
+        }
 		const userProducts = await Product.find({vendor: userProfile})
 		const { password: pass, ...rest } = userProfile._doc;
 		return res.status(200).json({...rest, products: userProducts});

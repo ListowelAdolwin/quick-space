@@ -72,7 +72,7 @@ const UserProfile = () => {
 										!isVendor ? "pt-6" : ""
 									} px-6 pb-6 rounded-lg shadow-md mt-6`}
 								>
-									{isVendor && (
+									{isVendor && userData.vendorFlyerUrl && (
 										<Link
 											to={userData.vendorFlyerUrl}
 											target="_blank"
@@ -87,6 +87,15 @@ const UserProfile = () => {
 												View Flyer
 											</span>
 										</Link>
+									)}
+									{isVendor && !userData.vendorFlyerUrl && (
+										<p className="mx-auto sm:mx-0 lg:mx-auto -mt-4 relative block">
+											<img
+												src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png?20200912122019"
+												alt="Business flyer"
+												className="h-56 w-56 rounded-full object-center object-cover shadow-lg transition-opacity duration-300 hover:opacity-90"
+											/>
+										</p>
 									)}
 
 									{isVendor && (

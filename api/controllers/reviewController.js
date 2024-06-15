@@ -1,14 +1,14 @@
-import Review from '../models/Review.js'
-import Product from '../models/Product.js'
+const Review = require('../models/Review.js');
+const Product = require('../models/Product.js');
 
-export const addReview = async (req, res) => {
-  const { rating, comment } = req.body
-  const { id } = req.params
+const addReview = async (req, res) => {
+  const { rating, comment } = req.body;
+  const { id } = req.params;
 
   try {
-    const product = await Product.findById(id)
+    const product = await Product.findById(id);
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' })
+      return res.status(404).json({ message: 'Product not found' });
     }
 
     const review = new Review({
@@ -16,123 +16,118 @@ export const addReview = async (req, res) => {
       product: id,
       rating,
       comment
-    })
+    });
 
-    await review.save()
+    await review.save();
 
-    const newReview = await Review.findById(review._id).populate('user')
+    const newReview = await Review.findById(review._id).populate('user');
 
-    product.totalReviews = product.totalReviews + 1
+    product.totalReviews = product.totalReviews + 1;
     if (product.totalReviews === 1) {
-      product.averageRating = Number(rating)
+      product.averageRating = Number(rating);
     } else {
       product.averageRating =
         (product.averageRating * (product.totalReviews - 1) + Number(rating)) /
-        product.totalReviews
+        product.totalReviews;
     }
-    await product.save()
+    await product.save();
 
     res.status(201).json({
       review: newReview,
       averageRating: product.averageRating,
       message: 'Review added successfully'
-    })
+    });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: error.message })
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-// export const getReviews = async (req, res) => {
-//   const { productId } = req.params;
-
-//   try {
-//     const reviews = await Review.find({ product: productId }).populate('user', 'name').sort({createdAt: -1});
-//     res.status(200).json(reviews);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-export const deleteReview = async (req, res) => {
+const deleteReview = async (req, res) => {
   try {
-    const { id } = req.params
-    const { productId } = req.body
+    const { id } = req.params;
+    const { productId } = req.body;
 
-    const review = await Review.findById(id)
+    const review = await Review.findById(id);
     if (!review) {
-      return res.status(404).json({ message: 'Review not found' })
+      return res.status(404).json({ message: 'Review not found' });
     }
 
-    const product = await Product.findById(productId)
+    const product = await Product.findById(productId);
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' })
+      return res.status(404).json({ message: 'Product not found' });
     }
 
-    const newReviewCount = product.totalReviews - 1
+    const newReviewCount = product.totalReviews - 1;
 
     if (newReviewCount > 0) {
       const newAverageRating =
         (product.averageRating * product.totalReviews - review.rating) /
-        newReviewCount
-      product.averageRating = newAverageRating
+        newReviewCount;
+      product.averageRating = newAverageRating;
     } else {
-      product.averageRating = 0
+      product.averageRating = 0;
     }
 
-    product.totalReviews = newReviewCount
-    await product.save()
+    product.totalReviews = newReviewCount;
+    await product.save();
 
-    await Review.findByIdAndDelete(id)
+    await Review.findByIdAndDelete(id);
 
     res
       .status(200)
       .json({
         averageRating: product.averageRating,
         message: 'Review deleted successfully'
-      })
+      });
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: 'Failed to delete review' })
+    console.error(error);
+    res.status(500).json({ message: 'Failed to delete review' });
   }
-}
+};
 
-export const editReview = async (req, res) => {
+const editReview = async (req, res) => {
   try {
-    const { id } = req.params
-    const { rating, comment, productId } = req.body
+    const { id } = req.params;
+    const { rating, comment, productId } = req.body;
 
-    const review = await Review.findById(id)
+    const review = await Review.findById(id);
     if (!review) {
-      return res.status(404).json({ message: 'Review not found' })
+      return res.status(404).json({ message: 'Review not found' });
     }
 
-    const product = await Product.findById(productId)
+    const product = await Product.findById(productId);
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' })
+      return res.status(404).json({ message: 'Product not found' });
     }
 
     const newAverageRating =
       (product.averageRating * product.totalReviews -
         review.rating +
         Number(rating)) /
-      product.totalReviews
+      product.totalReviews;
 
-    review.rating = Number(rating)
-    review.comment = comment
-    await review.save()
+    review.rating = Number(rating);
+    review.comment = comment;
+    await review.save();
 
-    product.averageRating = newAverageRating
-    await product.save()
+    product.averageRating = newAverageRating;
+    await product.save();
 
     res.status(200).json({
       review,
       averageRating: newAverageRating,
       message: 'Review updated successfully',
       review
-    })
+    });
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: 'Failed to edit review' })
+    console.error(error);
+    res.status(500).json({ message: 'Failed to edit review' });
   }
-}
+};
+
+module.exports = {
+  addReview,
+  deleteReview,
+  editReview
+};

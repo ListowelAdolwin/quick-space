@@ -1,21 +1,21 @@
-import Product from '../models/Product.js'
-import User from '../models/User.js'
-import Category from '../models/Category.js'
-import Review from '../models/Review.js'
+const Product = require('../models/Product');
+const User = require('../models/User');
+const Category = require('../models/Category');
+const Review = require('../models/Review');
 
-export const addProduct = async (req, res) => {
+const addProduct = async (req, res) => {
   try {
-    const { name, price, category, imageUrls, discount, description } = req.body
-    const vendor = req.user
-    const vendorName = vendor.vendorName
-    const school = vendor.school
-    const prodCategory = await Category.findOne({ val: category })
-    const categoryName = prodCategory.val
+    const { name, price, category, imageUrls, discount, description } = req.body;
+    const vendor = req.user;
+    const vendorName = vendor.vendorName;
+    const school = vendor.school;
+    const prodCategory = await Category.findOne({ val: category });
+    const categoryName = prodCategory.val;
 
     if (Number(discount) > Number(price)) {
       return res
         .status(400)
-        .json({ message: 'Discount cannot be greater than product price' })
+        .json({ message: 'Discount cannot be greater than product price' });
     }
 
     const newProduct = new Product({
@@ -28,149 +28,176 @@ export const addProduct = async (req, res) => {
       vendor,
       school,
       discount,
-      description
-    })
+      description,
+    });
 
-    await newProduct.save()
+    await newProduct.save();
     // Increment product category count by one
-    prodCategory.count = prodCategory.count + 1
-    await prodCategory.save()
+    prodCategory.count = prodCategory.count + 1;
+    await prodCategory.save();
 
     res.status(201).json({
       message: 'Product added successfully',
-      product: newProduct
-    })
+      product: newProduct,
+    });
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: 'Server error' })
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
-}
+};
 
-export const updateProduct = async (req, res) => {
-  const { id } = req.params
+const updateProduct = async (req, res) => {
+  const { id } = req.params;
   try {
-    const prod = await Product.findById(id).populate('vendor')
+    const prod = await Product.findById(id).populate('vendor');
     if (prod.vendor.contact !== req.user.contact) {
       return res
         .status(403)
-        .json({ message: 'You can only update your product!' })
+        .json({ message: 'You can only update your product!' });
     }
 
     try {
       const newProduct = await Product.findByIdAndUpdate(
         id,
         {
-          $set: req.body
+          $set: req.body,
         },
         { new: true }
-      )
-      return res.status(200).json(newProduct)
+      );
+      return res.status(200).json(newProduct);
     } catch (error) {
       return res
         .status(400)
-        .json({ message: 'Server error: failed to update product!' })
+        .json({ message: 'Server error: failed to update product!' });
     }
   } catch (error) {
     return res.json({
-      message: 'Server error while trying to retrieve product!'
-    })
+      message: 'Server error while trying to retrieve product!',
+    });
   }
-}
+};
 
-export const getProducts = async (req, res) => {
-  const startIndex = req.query.startIndex || 0
-  const limit = req.query.limit || 20
+const getProducts = async (req, res) => {
+  const startIndex = parseInt(req.query.startIndex) || 0;
+  const limit = parseInt(req.query.limit) || 20;
+  const school = req.query.school;
+
   try {
-    const products = await Product.find()
+    const query = {};
+
+    if (school) {
+      query.school = { $regex: school, $options: 'i' };
+    }
+
+    const products = await Product.find(query)
       .populate('vendor')
       .sort({ createdAt: -1 })
       .skip(startIndex)
-      .limit(limit)
-    res.status(200).json(products)
+      .limit(limit);
+      
+    res.status(200).json(products);
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-export const getFeaturedProducts = async (req, res) => {
+
+const getFeaturedProducts = async (req, res) => {
+  const school = req.query.school;
+
   try {
-    const products = await Product.find({isFeatured: true})
+    const query = { isFeatured: true };
+    
+    if (school) {
+      query.school = { $regex: school, $options: 'i' };
+    }
+
+    const products = await Product.find(query)
       .populate('vendor')
       .sort({ createdAt: -1 })
-      .limit(10)
-    res.status(200).json(products)
+      .limit(10);
+    
+    res.status(200).json(products);
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-export const featureProduct = async (req, res) => {
-  const {id} = req.params
+const featureProduct = async (req, res) => {
+  const { id } = req.params;
   try {
-    const product = await Product.findById(id)
+    const product = await Product.findById(id);
 
-    if (!product){
-      return res.status(404).json({message: "Product not found"})
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
     }
     product.isFeatured = true;
-    await product.save()
+    await product.save();
 
-    res.status(200).json(product)
+    res.status(200).json(product);
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-export const unfeatureProduct = async (req, res) => {
-  const {id} = req.params
+const unfeatureProduct = async (req, res) => {
+  const { id } = req.params;
   try {
-    const product = await Product.findById(id)
+    const product = await Product.findById(id);
 
-    if (!product){
-      return res.status(404).json({message: "Product not found"})
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
     }
     product.isFeatured = false;
-    await product.save()
+    await product.save();
 
-    res.status(200).json(product)
+    res.status(200).json(product);
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-export const getCategoryProducts = async (req, res) => {
-  const categoryName = req.params.category
+const getCategoryProducts = async (req, res) => {
+  const categoryName = req.params.category;
+  const school = req.query.school
   try {
-    const products = await Product.find({ categoryName })
+    const query = { categoryName };
+    
+    if (school) {
+      query.school = { $regex: school, $options: 'i' };
+    }
+    const products = await Product.find(query)
       .populate('vendor')
       .sort({
-        createdAt: -1
-      })
-    res.status(200).json(products)
+        createdAt: -1,
+      });
+    res.status(200).json(products);
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
 // Get Product by ID
-export const getProduct = async (req, res) => {
-  const currentUserId = req.headers?.userid || req.headers.userId
-  const id = req.params.id
-  const isFavoritedArray = [false]
+const getProduct = async (req, res) => {
+  const currentUserId = req.headers?.userid || req.headers.userId;
+  const id = req.params.id;
+  const isFavoritedArray = [false];
   try {
-    const currentUser = await User.findById(currentUserId)
+    const currentUser = await User.findById(currentUserId);
     if (currentUser.favourites.includes(id)) {
-      isFavoritedArray[0] = true
+      isFavoritedArray[0] = true;
     }
   } catch (error) {}
 
   try {
-    const tempProduct = await Product.findById(id).populate('vendor')
+    const tempProduct = await Product.findById(id).populate('vendor');
     if (!tempProduct) {
-      return res.status(404).json({ message: 'Product not found' })
+      return res.status(404).json({ message: 'Product not found' });
     }
 
-    const reviews = await Review.find({ product: tempProduct._id }).populate("user").sort({createdAt: -1});
+    const reviews = await Review.find({ product: tempProduct._id })
+      .populate('user')
+      .sort({ createdAt: -1 });
 
     const product = {
       _id: tempProduct._id,
@@ -189,160 +216,177 @@ export const getProduct = async (req, res) => {
       isFavorited: isFavoritedArray[0],
       averageRating: tempProduct.averageRating,
       totalReviews: tempProduct.totalReviews,
-      reviews
-    }
-    return res.status(200).json({product, reviews})
+      reviews,
+    };
+    return res.status(200).json({ product, reviews });
   } catch (error) {
-    return res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message });
   }
-}
+};
 
-export const addToFavorites = async (req, res) => {
-  const { productId } = req.body
-  const userId = req.user._id
+const addToFavorites = async (req, res) => {
+  const { productId } = req.body;
+  const userId = req.user._id;
 
   try {
-    const user = await User.findById(userId)
+    const user = await User.findById(userId);
 
     if (!user) {
       return res
         .status(404)
-        .json({ message: 'Please login to favourite product' })
+        .json({ message: 'Please login to favourite product' });
     }
 
     if (user.favourites.includes(productId)) {
-      return res.status(400).json({ message: 'Product already in favorites' })
+      return res.status(400).json({ message: 'Product already in favorites' });
     }
 
-    user.favourites.push(productId)
-    await user.save()
+    user.favourites.push(productId);
+    await user.save();
 
-    res.status(200).json({ message: 'Added to favorites' })
+    res.status(200).json({ message: 'Added to favorites' });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding to favorites', error })
+    console.log(error)
+    res.status(500).json({ message: 'Error adding to favorites', error });
   }
-}
+};
 
 // Remove from favorites
-export const removeFromFavorites = async (req, res) => {
-  const { productId } = req.body
-  const userId = req.user._id
+const removeFromFavorites = async (req, res) => {
+  const { productId } = req.body;
+  const userId = req.user._id;
 
   try {
-    const user = await User.findById(userId)
+    const user = await User.findById(userId);
 
     if (!user) {
       return res
         .status(404)
-        .json({ message: 'Please login to unfavorite product' })
+        .json({ message: 'Please login to unfavorite product' });
     }
 
     if (!user.favourites.includes(productId)) {
-      return res.status(400).json({ message: 'Product not in favorites' })
+      return res.status(400).json({ message: 'Product not in favorites' });
     }
 
-    user.favourites = user.favourites.filter(fav => fav !== productId)
-    await user.save()
+    user.favourites = user.favourites.filter(fav => fav !== productId);
+    await user.save();
 
-    res.status(200).json({ message: 'Removed from favorites' })
+    res.status(200).json({ message: 'Removed from favorites' });
   } catch (error) {
     res.status(500).json({
       message: 'Error removing from favorites',
-      error
-    })
+      error,
+    });
   }
-}
+};
 
-export const getFavoriteProducts = async (req, res) => {
+const getFavoriteProducts = async (req, res) => {
   try {
-    const userId = req.params.id
+    const userId = req.params.id;
 
-    const user = await User.findById(userId)
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found!' })
+      return res.status(404).json({ message: 'User not found!' });
     }
 
     const favorites = await Product.find({
-      _id: { $in: user.favourites }
-    }).populate('vendor')
+      _id: { $in: user.favourites },
+    }).populate('vendor');
 
-    res.status(200).json(favorites)
+    res.status(200).json(favorites);
   } catch (error) {
     res.status(500).json({
       message: 'An error occurred retrieving favorite products',
-      error: error.message
-    })
+      error: error.message,
+    });
   }
-}
+};
 
-export const filterProducts = async (req, res) => {
+const filterProducts = async (req, res) => {
   try {
-    const searchTerm = req.query.searchTerm || ''
-    const price = req.query.price || ''
-    const category = req.query.category || ''
-    const school = req.query.school || ''
-    const limit = Number(req.query.limit) || 10
-    const startIndex = Number(req.query.startIndex) || 0
+    const searchTerm = req.query.searchTerm || '';
+    const price = req.query.price || '';
+    const category = req.query.category || '';
+    const school = req.query.school || '';
+    const limit = Number(req.query.limit) || 10;
+    const startIndex = Number(req.query.startIndex) || 0;
 
-    let sort = {}
+    let sort = {};
     if (price) {
-      sort.price = price === 'asc' ? 1 : -1
+      sort.price = price === 'asc' ? 1 : -1;
     }
 
     let query = {
-      $or: [{ name: { $regex: searchTerm, $options: 'i' } }]
-    }
+      $or: [{ name: { $regex: searchTerm, $options: 'i' } }],
+    };
 
     if (school) {
-      query.school = school
+      query.school = school;
     }
 
     if (category) {
-      query.categoryName = category
+      query.categoryName = category;
     }
 
     if (searchTerm) {
       const users = await User.find({
-        vendorName: { $regex: searchTerm, $options: 'i' }
-      })
+        vendorName: { $regex: searchTerm, $options: 'i' },
+      });
 
-      const userIds = users.map(user => user._id)
+      const userIds = users.map(user => user._id);
 
-      query.$or.push({ vendor: { $in: userIds } })
+      query.$or.push({ vendor: { $in: userIds } });
     }
 
     const products = await Product.find(query)
       .populate('vendor')
       .sort(sort)
       .skip(startIndex)
-      .limit(limit)
+      .limit(limit);
 
-    res.status(200).json(products)
+    res.status(200).json(products);
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: 'Server error in over' })
+    console.error(error);
+    res.status(500).json({ message: 'Server error in over' });
   }
-}
+};
 
-export const deleteProduct = async (req, res) => {
-  const { id } = req.params
+const deleteProduct = async (req, res) => {
+  const { id } = req.params;
 
   try {
-    const prod = await Product.findById(id).populate('vendor')
+    const prod = await Product.findById(id).populate('vendor');
     if (prod.vendor.contact !== req.user.contact && req.user.role !== 'admin') {
       return res
         .status(403)
-        .json({ message: 'You are not authorized to delete this product!' })
+        .json({ message: 'You are not authorized to delete this product!' });
     }
 
-    await Product.findByIdAndDelete(id)
+    await Product.findByIdAndDelete(id);
     // Decrement product category count by one
-    const prodCategory = await Category.findOne({ val: prod.category })
-    prodCategory.count = prodCategory.count - 1
-    await prodCategory.save()
+    const prodCategory = await Category.findOne({ val: prod.category });
+    prodCategory.count = prodCategory.count - 1;
+    await prodCategory.save();
 
-    return res.status(204)
+    return res.status(204);
   } catch (error) {
-    return res.status(400).json({ message: 'Failed to delete product' })
+    return res.status(400).json({ message: 'Failed to delete product' });
   }
-}
+};
+
+module.exports = {
+  addProduct,
+  updateProduct,
+  getProducts,
+  getFeaturedProducts,
+  featureProduct,
+  unfeatureProduct,
+  getCategoryProducts,
+  getProduct,
+  addToFavorites,
+  removeFromFavorites,
+  getFavoriteProducts,
+  filterProducts,
+  deleteProduct,
+};

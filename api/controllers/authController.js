@@ -1,9 +1,9 @@
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import mongoose from 'mongoose'
-import User from '../models/User.js'
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+const User = require('../models/User.js');
 
-export const register = async (req, res) => {
+const register = async (req, res) => {
   const {
     vendorName,
     email,
@@ -67,7 +67,7 @@ export const register = async (req, res) => {
   }
 }
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
   const { contact, password } = req.body
   if (!contact || !password) {
     return res.status(400).json({ message: 'Contact and password required!' })
@@ -113,7 +113,7 @@ export const login = async (req, res) => {
   }
 }
 
-export const verifyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => {
   const header = req.headers.Authorization || req.headers.authorization
 
   if (!header?.startsWith('Bearer ')) {
@@ -132,7 +132,7 @@ export const verifyToken = (req, res, next) => {
   })
 }
 
-export const verifyRole = roles => async (req, res, next) => {
+const verifyRole = roles => async (req, res, next) => {
   try {
     const header = req.headers.Authorization || req.headers.authorization
 
@@ -163,3 +163,5 @@ export const verifyRole = roles => async (req, res, next) => {
     res.status(401).json({ message: 'Please authenticate.' })
   }
 }
+
+module.exports = { register, login, verifyToken, verifyRole };

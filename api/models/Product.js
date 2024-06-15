@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema(
   {
@@ -34,7 +34,10 @@ const productSchema = new mongoose.Schema(
       ref: 'User',
       required: true
     },
-    vendorName: { type: String, required: true },
+    vendorName: { 
+      type: String, 
+      required: true 
+    },
     description: {
       type: String,
       required: false
@@ -53,21 +56,20 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    // reviews:[
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Review'
-    //   }
-    // ],
     totalReviews: {
       type: Number,
       default: 0
     },
-    averageRating: { type: Number, min: 0, max: 5, default: 0 }
+    averageRating: { 
+      type: Number, 
+      min: 0, 
+      max: 5, 
+      default: 0 
+    }
   },
   { timestamps: true }
-)
+);
 
-const Product = mongoose.model('Product', productSchema)
+const Product = mongoose.model('Product', productSchema);
 
-export default Product
+module.exports = Product;

@@ -1,10 +1,10 @@
-import express from 'express'
-import { getCategoryProductCounts, addCategory } from '../controllers/categoryController.js';
-import { verifyRole } from '../controllers/authController.js';
+const express = require('express');
+const { getCategoryProductCounts, addCategory } = require('../controllers/categoryController.js');
+const { verifyRole } = require('../controllers/authController.js');
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/counts', getCategoryProductCounts)
-router.post('/add', verifyRole(['admin']), addCategory)
+router.get('/counts', getCategoryProductCounts);
+router.post('/add', verifyRole(['admin']), addCategory);
 
-export default router
+module.exports = router;

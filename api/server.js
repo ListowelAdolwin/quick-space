@@ -1,12 +1,13 @@
-import express from "express"
-import dotenv from "dotenv"
-import cors from 'cors'
-import connectDB from "./config/db.js";
-import userRoutes from './routes/userRoutes.js'
-import authRoutes from './routes/authRoutes.js'
-import productRoutes from './routes/productRoutes.js'
-import categoryRoutes from './routes/categoryRoutes.js'
-import reviewRoutes from "./routes/reviewRoutes.js"
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./config/db.js");
+const userRoutes = require("./routes/userRoutes.js");
+const authRoutes = require("./routes/authRoutes.js");
+const productRoutes = require("./routes/productRoutes.js");
+const categoryRoutes = require("./routes/categoryRoutes.js");
+const reviewRoutes = require("./routes/reviewRoutes.js");
+
 
 dotenv.config();
 
@@ -27,7 +28,7 @@ app.use(
 		],
 		methods: ["GET", "POST", "PUT", "DELETE"],
 		credentials: true,
-	}),
+	})
 );
 
 app.use('/api/auth', authRoutes)

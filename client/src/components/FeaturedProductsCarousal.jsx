@@ -3,19 +3,21 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { CiViewList } from "react-icons/ci";
 import { MdOutlinePerson3 } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 const FeaturedProducts = () => {
 	const [products, setProducts] = useState([]);
 	const [pageLoading, setPageLoading] = useState(true);
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
+	const { currentSchool } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		const getFeaturedProducts = async () => {
 			setPageLoading(true);
 			try {
 				const response = await axios.get(
-					`${BASE_URL}/api/products/featured`
+					`${BASE_URL}/api/products/featured?school=${currentSchool}`
 				);
 				if (response.status === 200) {
 					setProducts(response.data);

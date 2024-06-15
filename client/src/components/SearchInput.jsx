@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function SearchInput() {
+	const { currentSchool } = useSelector((state) => state.user);
+
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchData, setSearchData] = useState({
 		searchTerm: "",
 		price: "",
 		category: "",
-		school: "",
+		school: currentSchool,
 	});
 
 	const location = useLocation();
@@ -18,7 +21,7 @@ function SearchInput() {
 		const searchTermFromUrl = urlParams.get("searchTerm") || "";
 		const categoryFromUrl = urlParams.get("category") || "";
 		const priceFromUrl = urlParams.get("price") || "";
-		const schoolFromUrl = urlParams.get("school") || "";
+		const schoolFromUrl = currentSchool || "";
 		if (schoolFromUrl === "all") {
 			urlParams.set("school", "");
 		}

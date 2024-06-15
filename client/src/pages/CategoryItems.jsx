@@ -1,5 +1,6 @@
 import { CiViewList } from "react-icons/ci";
 import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 //import { products } from "../data/products";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -14,12 +15,13 @@ const CategoryItems = () => {
 	const category = params.category;
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
+	const {currentSchool} = useSelector((state) => state.user);
 
 	useEffect(() => {
 		const getCategoryProducts = async () => {
 			setPageLoading(true);
 			const response = await axios.get(
-				`${BASE_URL}/api/products/category/${category}`
+				`${BASE_URL}/api/products/category/${category}?school=${currentSchool}`
 			);
 			if (response.status === 200) {
 				setProducts(response.data);

@@ -83,7 +83,7 @@ const ProductDetail = () => {
 			if (response.status === 200) {
 				setProduct(response.data.product);
 				setReviews(response.data.reviews);
-				setIsFavorited(response.data.isFavorited);
+				setIsFavorited(response.data.product.isFavorited);
 			} else {
 				console.log("Category response: ", response);
 			}

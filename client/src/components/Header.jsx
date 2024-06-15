@@ -6,8 +6,9 @@ import { BsPersonPlus } from "react-icons/bs";
 import { IoInformationCircleOutline, IoHomeOutline } from "react-icons/io5";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { CiShoppingTag } from "react-icons/ci";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import { updateSchool } from "../redux/features/user/userSlice";
 
 const schools = [
 	{ value: "", label: "ALL" },
@@ -22,10 +23,17 @@ const schools = [
 ];
 
 const Header = () => {
+	const { currentSchool } = useSelector((state) => state.user);
+
 	const [isOpen, setIsOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
-	const [selectedSchool, setSelectedSchool] = useState("");
-	const [school, setSchool] = useState("");
+	const [selectedSchool, setSelectedSchool] = useState({
+		value: currentSchool,
+		label: currentSchool? currentSchool.toUpperCase() : "ALL",
+	});
+	const [school, setSchool] = useState(currentSchool);
+
+	const dispatch = useDispatch();
 
 	const { currentUser } = useSelector((state) => state.user);
 	const navigate = useNavigate();
@@ -44,9 +52,11 @@ const Header = () => {
 	const handleSchoolChange = (selectedOption) => {
 		setSelectedSchool(selectedOption);
 		setSchool(selectedOption.value);
-		navigate(
-			`/search?school=${selectedOption.value}&&searchTerm=${searchTerm}`
-		);
+		dispatch(updateSchool({ school: selectedOption.value }));
+		window.location.reload();
+		// navigate(
+		// 	`/search?school=${selectedOption.value}&&searchTerm=${searchTerm}`
+		// );
 	};
 
 	const handleSearchChange = (e) => {
@@ -101,7 +111,7 @@ const Header = () => {
 							className="min-w-40"
 							styles={customStyles}
 							options={schools}
-							value={selectedSchool}
+							defaultValue={selectedSchool}
 							onChange={handleSchoolChange}
 							placeholder="Select school"
 						/>

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import PageLoader from "../components/PageLoader";
 import { MdOutlinePerson3 } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 const Shop = () => {
 	const [products, setProducts] = useState([]);
@@ -14,11 +15,12 @@ const Shop = () => {
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 	const limit = 10;
+	const { currentSchool } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		const getProducts = async () => {
 			setPageLoading(true);
-			const response = await axios.get(`${BASE_URL}/api/products/?limit=${limit}`);
+			const response = await axios.get(`${BASE_URL}/api/products/?limit=${limit}&&school=${currentSchool}`);
 			if (response.status === 200) {
 				setProducts(response.data);
 				setShowMore(response.data.length >= limit)

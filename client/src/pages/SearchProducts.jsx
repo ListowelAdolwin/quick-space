@@ -2,18 +2,21 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import axios from "axios";
 import { categories } from "../data/categories";
-import { schools } from "../data/schools";
+//import { schools } from "../data/schools";
 import { CiViewList } from "react-icons/ci";
 import { MdOutlinePerson3 } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 export default function SearchProducts() {
+	const { currentSchool } = useSelector((state) => state.user);
+
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [searchData, setSearchData] = useState({
 		searchTerm: "",
 		price: "",
 		category: "",
-		school: "",
+		school: currentSchool,
 	});
 
 	const [loading, setLoading] = useState(false);
@@ -24,10 +27,11 @@ export default function SearchProducts() {
 
 	useEffect(() => {
 		const urlParams = new URLSearchParams(location.search);
+		urlParams.set("school", currentSchool);
 		const searchTermFromUrl = urlParams.get("searchTerm") || "";
 		const categoryFromUrl = urlParams.get("category") || "";
 		const priceFromUrl = urlParams.get("price") || "";
-		const schoolFromUrl = urlParams.get("school") || "";
+		const schoolFromUrl = currentSchool || "";
 		if (schoolFromUrl === "all") {
 			urlParams.set("school", "");
 		}
@@ -72,7 +76,7 @@ export default function SearchProducts() {
 				searchTerm: updatedData.searchTerm,
 				price: updatedData.price,
 				category: updatedData.category,
-				school: updatedData.school,
+				school: currentSchool,
 			});
 			const searchQuery = urlParams.toString();
 
@@ -148,7 +152,7 @@ export default function SearchProducts() {
 							)}
 						</select>
 					</div>
-					<div className="flex items-center gap-2">
+					{/* <div className="flex items-center gap-2">
 						<label className="font-semibold">School:</label>
 						<select
 							onChange={handleSubmit}
@@ -164,7 +168,7 @@ export default function SearchProducts() {
 								</option>
 							))}
 						</select>
-					</div>
+					</div> */}
 					<button className="flex items-center justify-center text-blue-800 w-full px-4 py-3 text-md font-bold leading-6 capitalize duration-100 transform border-2 rounded-sm cursor-pointer border-blue-800 focus:ring-1 focus:ring-blue-900 focus:ring-opacity-90 focus:outline-none sm:w-auto sm:px-6 border-text  hover:shadow-lg hover:-translate-y-1">
 						See filtered products
 					</button>

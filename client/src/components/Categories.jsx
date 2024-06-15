@@ -1,17 +1,21 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const Categories = () => {
 	const [categoryCounts, setCategoryCounts] = useState([]);
 	const [pageLoading, setPageLoading] = useState(true);
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
+	const { currentSchool } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		setPageLoading(true);
 		const getCategoryCounts = async () => {
-			const res = await axios(`${BASE_URL}/api/categories/counts`);
+			const res = await axios(
+				`${BASE_URL}/api/categories/counts?school=${currentSchool}`
+			);
 			if (res.status === 200) {
 				setCategoryCounts(res.data);
 				setPageLoading(false);

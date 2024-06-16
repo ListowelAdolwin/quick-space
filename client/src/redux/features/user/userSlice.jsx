@@ -3,6 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
 	currentUser: null,
 	currentSchool: null,
+	cautionAlert: {
+		hasBeenDisplayed: false,
+		lastDisplayed: null,
+	},
 };
 
 const userSlice = createSlice({
@@ -21,9 +25,18 @@ const userSlice = createSlice({
 		updateSchool: (state, action) => {
 			state.currentSchool = action.payload.school;
 		},
+		updateCautionAlert: (state, action) => {
+			state.cautionAlert = action.payload;
+		},
 	},
 });
 
-export const { registerUser, logoutUser, loginUser, updateSchool } = userSlice.actions;
+export const {
+	registerUser,
+	logoutUser,
+	loginUser,
+	updateSchool,
+	updateCautionAlert,
+} = userSlice.actions;
 
 export default userSlice.reducer;

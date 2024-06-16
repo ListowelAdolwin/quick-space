@@ -29,7 +29,7 @@ const Header = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedSchool, setSelectedSchool] = useState({
 		value: currentSchool,
-		label: currentSchool? currentSchool.toUpperCase() : "ALL",
+		label: currentSchool ? currentSchool.toUpperCase() : "ALL",
 	});
 	const [school, setSchool] = useState(currentSchool);
 
@@ -94,7 +94,7 @@ const Header = () => {
 		<nav className="bg-white shadow-md w-full z-50">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex items-center justify-between h-16">
-					<Link to="/" className="flex items-center">
+					<a href="/" className="flex items-center">
 						<img
 							className="hidden sm:inline-block sm:w-32 sm:h-auto md:w-40 md:h-16"
 							src="/logo-desktop.png"
@@ -105,7 +105,7 @@ const Header = () => {
 							src="/logo-mobile.png"
 							alt="Logo"
 						/>
-					</Link>
+					</a>
 					<div className="flex items-center text-gray-800 font-medium border border-blue-300 text-sm rounded-lg z-20">
 						<Select
 							className="min-w-40"
@@ -267,8 +267,8 @@ const Header = () => {
 									Admin Panel
 								</a>
 							)}
-							<Link
-								to="/"
+							<a
+								href="/"
 								className={`${
 									path === "/" ? "bg-gray-200" : ""
 								} flex items-center gap-2 text-blue-800 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium`}
@@ -278,7 +278,7 @@ const Header = () => {
 									size={20}
 								/>
 								Home
-							</Link>
+							</a>
 							<Link
 								to="/shop"
 								className={`${

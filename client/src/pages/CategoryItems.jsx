@@ -7,6 +7,7 @@ import axios from "axios";
 import { categories } from "../data/categories";
 import PageLoader from "../components/PageLoader";
 import { MdOutlinePerson3 } from "react-icons/md";
+import { FaCircleChevronLeft } from "react-icons/fa6";
 
 const CategoryItems = () => {
 	const [products, setProducts] = useState([]);
@@ -15,7 +16,7 @@ const CategoryItems = () => {
 	const category = params.category;
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
-	const {currentSchool} = useSelector((state) => state.user);
+	const { currentSchool } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		const getCategoryProducts = async () => {
@@ -40,7 +41,17 @@ const CategoryItems = () => {
 				<PageLoader />
 			) : (
 				<main className="flex-grow">
-					<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+					<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+						<a
+							href="/"
+							className="text-base flex items-center gap-1 text-blue-800 underline"
+						>
+							<FaCircleChevronLeft
+								className="inline-block"
+								size={12}
+							/>
+							Home
+						</a>
 						<h1 className="text-3xl font-bold text-blue-700 mb-4">
 							{categories[category].name}
 						</h1>

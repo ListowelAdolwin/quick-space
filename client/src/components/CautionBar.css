@@ -1,0 +1,18 @@
+@keyframes swipe {
+  0%, 33.33% { transform: translateX(0); }
+  33.34%, 66.66% { transform: translateX(-100%); }
+  66.67%, 100% { transform: translateX(-200%); }
+}
+
+.caution-bar-inner {
+  display: flex;
+  width: 300%;
+  animation: swipe 9s linear infinite;
+}
+
+.caution-bar-alert {
+  flex: 1 0 100%;
+  padding: 0.5rem 0;
+  box-sizing: border-box;
+  text-align: center;
+}

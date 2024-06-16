@@ -19,6 +19,7 @@ const schools = [
 	{ value: "uew", label: "UEW" },
 	{ value: "uhas", label: "UHAS" },
 	{ value: "umat", label: "UMAT" },
+	{ value: "htu", label: "HTU" },
 	{ value: "other", label: "Other" },
 ];
 

@@ -42,7 +42,7 @@ const UpdateProduct = () => {
 		const getOldProduct = async () => {
 			const response = await axios.get(`${BASE_URL}/api/products/${id}`);
 			if (response.status === 200) {
-				const data = response.data;
+				const data = response.data.product;
 				setFormData({
 					itemName: data.name,
 					price: data.price,
@@ -52,6 +52,7 @@ const UpdateProduct = () => {
 					images: [],
 					imageUrls: data.imageUrls,
 				});
+				console.log(data);
 			} else {
 				setErrowMessage("Product not found");
 				console.log("Profile response error: ", response.data);
@@ -74,7 +75,7 @@ const UpdateProduct = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (formData.discount > formData.price) {
+		if (Number(formData.discount) > Number(formData.price)) {
 			setErrowMessage("Discont cannot be greater than price");
 			return;
 		}
@@ -82,27 +83,31 @@ const UpdateProduct = () => {
 		setIsLoading(true);
 
 		try {
-			const uploaders = formData.images.map((image) => {
-				const fileData = new FormData();
-				fileData.append("file", image);
-				fileData.append("upload_preset", uploadPreset);
-				fileData.append("api_key", apiKey);
-				fileData.append("timestamp", (Date.now() / 1000) | 0);
+			let urls;
+			if (formData.images) {
+				const uploaders = formData.images.map((image) => {
+					const fileData = new FormData();
+					fileData.append("file", image);
+					fileData.append("upload_preset", uploadPreset);
+					fileData.append("api_key", apiKey);
+					fileData.append("timestamp", (Date.now() / 1000) | 0);
 
-				return axios
-					.post(
-						`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-						fileData,
-						{
-							headers: {
-								"X-Requested-With": "XMLHttpRequest",
-							},
-						}
-					)
-					.then((response) => response.data.secure_url);
-			});
+					return axios
+						.post(
+							`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+							fileData,
+							{
+								headers: {
+									"X-Requested-With": "XMLHttpRequest",
+								},
+							}
+						)
+						.then((response) => response.data.secure_url);
+				});
 
-			const urls = await axios.all(uploaders);
+				urls = await axios.all(uploaders);
+			}
+			console.log(urls);
 
 			setFormData({ ...formData, imageUrls: urls });
 

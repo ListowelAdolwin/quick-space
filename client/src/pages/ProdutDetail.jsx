@@ -94,6 +94,10 @@ const ProductDetail = () => {
 	}, []);
 
 	const handleFavorite = async () => {
+		if (!currentUser) {
+			alert("Please login to add product to favorites");
+			return;
+		}
 		setLikeLoading(true);
 		await addToFavorites(product._id);
 		setIsFavorited(true);
@@ -101,6 +105,10 @@ const ProductDetail = () => {
 	};
 
 	const handleUnfavorite = async () => {
+		if (!currentUser) {
+			alert("Please login to remove product to favorites");
+			return;
+		}
 		setLikeLoading(true);
 		await removeFromFavorites(product._id);
 		setIsFavorited(false);
@@ -307,12 +315,21 @@ const ProductDetail = () => {
 											)}
 										</button>
 									</div>
-									<Link
-										to={`/profile/${product.vendorId}`}
-										className="basis-1/3 border border-blue-600 hover:opacity-75 text-blue-700 font-bold py-2 mt-3 px-1 sm:px-2 rounded flex items-center justify-center"
-									>
-										See more products from this seller
-									</Link>
+									{product.vendorId === currentUser?._id ? (
+										<Link
+											to={`/update-product/${product._id}`}
+											className="basis-1/3 border border-blue-600 hover:opacity-75 text-blue-700 font-bold py-2 mt-3 px-1 sm:px-2 rounded flex items-center justify-center"
+										>
+											Update Product
+										</Link>
+									) : (
+										<Link
+											to={`/profile/${product.vendorId}`}
+											className="basis-1/3 border border-blue-600 hover:opacity-75 text-blue-700 font-bold py-2 mt-3 px-1 sm:px-2 rounded flex items-center justify-center"
+										>
+											See more products from this seller
+										</Link>
+									)}
 									<div className="mt-8">
 										<h2 className="text-xl font-semibold text-blue-900 mb-3">
 											Reviews

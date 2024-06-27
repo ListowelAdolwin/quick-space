@@ -27,6 +27,7 @@ app.use(
       "https://quickspace.tertiaryguide.com",
       "https://quickspacegh.com",
       "http://quickspacegh.com",
+			'https://www.quickspacegh.com'
 		],
 		methods: ["GET", "POST", "PUT", "DELETE"],
 		credentials: true,

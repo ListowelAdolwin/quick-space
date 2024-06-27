@@ -7,11 +7,15 @@ import { CiViewList } from "react-icons/ci";
 import PageLoader from "../components/PageLoader";
 import { FaPhone } from "react-icons/fa";
 import { MdOutlineDoubleArrow } from "react-icons/md";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { RotatingLines } from "react-loader-spinner";
 
 const UserProfile = () => {
 	const [userData, setUserData] = useState(null);
 	const [isVendor, setIsVendor] = useState(false);
 	const [pageLoading, setPageLoading] = useState(true);
+	const [isDeleteLoading, setIsDeleteLoading] = useState(null);
 
 	const { currentUser } = useSelector((state) => state.user);
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -67,8 +71,33 @@ const UserProfile = () => {
 		navigate("/");
 	};
 
+	const handleDeleteProduct = async (id) => {
+		setIsDeleteLoading(id);
+		try {
+			await axios.get(`${BASE_URL}/api/products/delete/${id}`, {
+				headers: {
+					Authorization: `Bearer ${currentUser?.accessToken}`,
+				},
+			});
+			setUserData((prevUserData) => ({
+				...prevUserData,
+				products: prevUserData.products.filter(
+					(product) => product._id !== id
+				),
+			}));
+			setIsDeleteLoading(null);
+			toast.success("Product deleted successfully");
+		} catch (error) {
+			toast.error("Error deleting product");
+			console.error(error); // Changed console.log to console.error for better error logging
+		} finally {
+			setIsDeleteLoading(null);
+		}
+	};
+
 	return (
 		<div className="flex flex-col min-h-screen">
+			<ToastContainer />
 			{pageLoading ? (
 				<PageLoader />
 			) : (
@@ -184,12 +213,14 @@ const UserProfile = () => {
 									)}
 									<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2">
 										{userData.products.map((product) => (
-											<Link
-												to={`/product/${product._id}`}
+											<p
 												key={product._id}
 												className="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
 											>
-												<div className="flex items-center justify-center">
+												<Link
+													to={`/product/${product._id}`}
+													className="flex items-center justify-center"
+												>
 													<p className="mx-0 sm:mx-0 mt-3 flex h-36 sm:h-40 overflow-hidden rounded-xl">
 														<img
 															className="object-cover"
@@ -200,7 +231,7 @@ const UserProfile = () => {
 															alt="product image"
 														/>
 													</p>
-												</div>
+												</Link>
 												<div className="mt-4 px-2 sm:px-4 pb-3 sm:pb-5">
 													<h5 className="text-lg sm:text-xl tracking-tight text-slate-900 line-clamp-1">
 														{product.name}
@@ -222,10 +253,54 @@ const UserProfile = () => {
 															</span>
 														</p>
 													</div>
-													<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-700 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
-														<CiViewList className="text-xl font-bold" />
-														View details
-													</button>
+													<div className="flex justify-between gap-1">
+														<Link
+															to={`/product/${product._id}`}
+															className="w-full flex items-center justify-center gap-1 rounded-md bg-blue-700 px-2 sm:px-2 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300"
+														>
+															<CiViewList className="text-xl font-bold" />
+															Details
+														</Link>
+														{currentUser?._id ===
+														userData._id ? (
+															<>
+																{isDeleteLoading === product._id ? (
+																	<div
+																		key={
+																			product._id
+																		}
+																	>
+																		<RotatingLines
+																			visible={
+																				true
+																			}
+																			height="32"
+																			width="32"
+																			color="red"
+																			strokeWidth="5"
+																			animationDuration="0.75"
+																			ariaLabel="rotating-lines-loading"
+																			wrapperStyle={{}}
+																			wrapperClass=""
+																		/>
+																	</div>
+																) : (
+																	<button
+																		onClick={() => {
+																			handleDeleteProduct(
+																				product._id
+																			);
+																		}}
+																		className="w-full flex items-center justify-center gap-1 rounded-md bg-red-700 px-2 sm:px-2 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300"
+																	>
+																		Delete
+																	</button>
+																)}
+															</>
+														) : (
+															""
+														)}
+													</div>
 													{currentUser?._id ===
 														userData._id && (
 														<Link
@@ -236,7 +311,7 @@ const UserProfile = () => {
 														</Link>
 													)}
 												</div>
-											</Link>
+											</p>
 										))}
 									</div>
 								</div>

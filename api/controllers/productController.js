@@ -48,6 +48,8 @@ const addProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   const { id } = req.params;
+  const {name, price, discount, description, category, imageUrls} = req.body
+  const prodCategory = await Category.findOne({val: category})
   try {
     const prod = await Product.findById(id).populate('vendor');
     if (prod.vendor.contact !== req.user.contact) {
@@ -60,12 +62,13 @@ const updateProduct = async (req, res) => {
       const newProduct = await Product.findByIdAndUpdate(
         id,
         {
-          $set: req.body,
+          $set: {name, price, discount, description, imageUrls, category: prodCategory},
         },
         { new: true }
       );
       return res.status(200).json(newProduct);
     } catch (error) {
+      console.log(error)
       return res
         .status(400)
         .json({ message: 'Server error: failed to update product!' });
@@ -365,13 +368,14 @@ const deleteProduct = async (req, res) => {
 
     await Product.findByIdAndDelete(id);
     // Decrement product category count by one
-    const prodCategory = await Category.findOne({ val: prod.category });
+
+    const prodCategory = await Category.findById(prod.category._id);
     prodCategory.count = prodCategory.count - 1;
     await prodCategory.save();
 
-    return res.status(204);
+    return res.status(201).json({message: "Product deleted!"});
   } catch (error) {
-    return res.status(400).json({ message: 'Failed to delete product' });
+    return res.status(400).json({ message: 'Failed to delete product!!' });
   }
 };
 

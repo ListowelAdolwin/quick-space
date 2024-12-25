@@ -4,8 +4,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Spinner from "../../components/Spinner";
 import { useSelector } from "react-redux";
+import ReactGA from "react-ga4";
 
 const AddCategory = () => {
+		ReactGA.send({
+			hitType: "pageview",
+			page: "/admin/add-category",
+			title: "Add Category Page",
+		});
 	const [isLoading, setIsLoading] = useState(false);
 	const [displayName, setDisplayName] = useState("");
 	const [val, setVal] = useState("");

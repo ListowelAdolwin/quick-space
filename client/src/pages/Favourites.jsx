@@ -6,8 +6,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PageLoader from "../components/PageLoader";
 import { MdOutlinePerson3 } from "react-icons/md";
+import ReactGA from "react-ga4";
 
 const Favourites = () => {
+	ReactGA.send({
+		hitType: "pageview",
+		page: "/favorites",
+		title: "Favorites Page",
+	});
 	const [favorites, setFavorites] = useState([]);
 	const [pageLoading, setPageLoading] = useState(true);
 

@@ -31,14 +31,14 @@ const Footer = () => {
 									About
 								</Link>
 							</li>
-							<li>
+							{/* <li>
 								<Link
 									to="/contact"
 									className="hover:text-blue-600"
 								>
 									Contact
 								</Link>
-							</li>
+							</li> */}
 						</ul>
 					</div>
 					<div>

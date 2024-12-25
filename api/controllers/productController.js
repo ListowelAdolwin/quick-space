@@ -109,7 +109,8 @@ const getFeaturedProducts = async (req, res) => {
   const school = req.query.school;
 
   try {
-    const query = { isFeatured: true };
+    //const query = { isFeatured: true };
+    const query = {};
     
     if (school) {
       query.school = { $regex: school, $options: 'i' };
@@ -379,6 +380,54 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+// Hide product controller
+const hideProduct = async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const product = await Product.findById(productId);
+    
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    product.status = 'hidden';
+    await product.save();
+
+    res.status(200).json({ message: 'Product status set to hidden', product });
+  } catch (error) {
+    console.error('Error hiding product:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+// Suspend vendor controller
+const suspendVendor = async (req, res) => {
+  const { vendorId } = req.params;
+
+  try {
+    const vendor = await User.findById(vendorId);
+    
+    if (!vendor) {
+      return res.status(404).json({ message: 'Vendor not found' });
+    }
+
+    vendor.status = 'suspended';
+    await vendor.save();
+
+    await Product.updateMany({ vendor: vendorId }, { status: 'hidden' });
+
+    res.status(200).json({ message: 'Vendor suspended and all products set to hidden' });
+  } catch (error) {
+    console.error('Error suspending vendor:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+
+
 module.exports = {
   addProduct,
   updateProduct,
@@ -393,4 +442,6 @@ module.exports = {
   getFavoriteProducts,
   filterProducts,
   deleteProduct,
+  hideProduct,
+  suspendVendor,
 };

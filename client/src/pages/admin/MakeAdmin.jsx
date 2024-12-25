@@ -2,8 +2,14 @@ import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Spinner from "../../components/Spinner";
+import ReactGA from "react-ga4";
 
 const MakeAdmin = () => {
+		ReactGA.send({
+			hitType: "pageview",
+			page: "/admin/make-admin",
+			title: "Make Admin Page",
+		});
 	const [email, setEmail] = useState("");
 	const [message, setMessage] = useState("");
 	const [error, setError] = useState("");

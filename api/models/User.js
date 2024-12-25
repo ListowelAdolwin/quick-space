@@ -4,7 +4,6 @@ const userSchema = new mongoose.Schema(
   {
     vendorName: {
       type: String,
-      unique: [true, 'Name already exists!'],
       validate: {
         validator: function(v) {
           return this.isVendor ? v && v.length > 0 : true;
@@ -12,6 +11,7 @@ const userSchema = new mongoose.Schema(
         message: props => 'Vendor name is required for vendors!'
       }
     },
+    vendorDescription: String,
     vendorFlyerUrl: String,
     contact: {
       type: String,
@@ -52,6 +52,11 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'vendor', 'admin', 'superadmin'],
       default: 'user',
       required: true
+    },
+    status: {
+      type: String,
+      enum: ['active', 'suspended', 'inactive'],
+      default: 'active',
     },
     vendorAddress: String,
     vendorCategory: String,

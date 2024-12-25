@@ -1,9 +1,17 @@
-const express = require("express");
-const { register, login } = require("../controllers/authController.js");
+const express = require('express')
+const {
+  register,
+  login,
+  generateSendOTP,
+  verifyToken,
+  resetPassword
+} = require('../controllers/authController.js')
 
-const router = express.Router();
+const router = express.Router()
 
-router.post('/register', register);
-router.post('/login', login);
+router.post('/register', register)
+router.post('/login', login)
+router.post('/send-otp-code', generateSendOTP)
+router.post('reset-password', resetPassword)
 
-module.exports = router;
+module.exports = router

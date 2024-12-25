@@ -13,6 +13,8 @@ const VendorCard = ({ initialVendor }) => {
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 	const { currentUser } = useSelector((state) => state.user);
 
+	console.log(initialVendor)
+
 	const handleVerifyVendor = async (id) => {
 		setIsLoading(true);
 		try {
@@ -45,7 +47,7 @@ const VendorCard = ({ initialVendor }) => {
 		<div className="bg-white shadow-md rounded-lg p-4 mb-4">
 			<h3 className="text-lg font-semibold mb-2">{vendor.vendorName}</h3>
 			<p className="text-gray-600 mb-1">
-				Contact: {vendor.vendorContact}
+				Contact: {vendor.contact}
 			</p>
 			<p className="text-gray-600 mb-2">Email: {vendor.email}</p>
 			<p className="text-gray-600 mb-4 font-bold">

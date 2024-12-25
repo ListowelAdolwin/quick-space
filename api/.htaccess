@@ -1,0 +1,13 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/tertiary/public_html/api.tertiaryguide.com"
+PassengerBaseURI "/"
+PassengerNodejs "/home/tertiary/nodevenv/public_html/api.tertiaryguide.com/20/bin/node"
+PassengerAppType node
+PassengerStartupFile server.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+<IfModule Litespeed>
+SetEnv MONGO_URI mongodb+srv://listoweladolwin:b4PVX0BAEuFiHCQo@cluster0.va6kupi.mongodb.net/quickspace_db?retryWrites=true&w=majority&appName=Cluster0
+SetEnv JWT_SECRET fbc0147c6b7af17eec8e7b56795556b5c9b61f76a6c37d446cb78e3e7c5f023d
+</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END

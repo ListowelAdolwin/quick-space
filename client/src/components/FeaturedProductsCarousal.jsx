@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { CiViewList } from "react-icons/ci";
-import { MdOutlinePerson3 } from "react-icons/md";
+import { MdOutlinePerson3, MdVerified } from "react-icons/md";
 import { useSelector } from "react-redux";
 
 const FeaturedProducts = () => {
@@ -53,7 +53,7 @@ const FeaturedProducts = () => {
 						seconds...
 					</p>
 				</div>
-			) : (
+			) : products.length > 0 ? (
 				<>
 					<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-x-1 gap-y-2 sm:gap-x-4 sm-gap-y-4">
 						{products.map((product) => (
@@ -94,6 +94,12 @@ const FeaturedProducts = () => {
 									<p className="flex items-center text-xs font-light">
 										<MdOutlinePerson3 className="mr-1" />
 										{product.vendorName}
+										{product.vendor.isVerified && (
+												<MdVerified
+													className=" text-blue-600"
+													size={16}
+												/>
+										)}
 									</p>
 									<button className="w-full mt-3 flex items-center justify-center gap-2 rounded-md bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
 										<CiViewList className="text-xl font-bold" />
@@ -117,7 +123,7 @@ const FeaturedProducts = () => {
 						</svg>
 					</Link>
 				</>
-			)}
+			) : <p> No featured products for selected school</p>}
 		</div>
 	);
 };

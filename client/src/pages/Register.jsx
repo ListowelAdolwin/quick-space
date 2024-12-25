@@ -9,8 +9,14 @@ import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
 import { schools } from "../data/schools";
 import { categories } from "../data/categories";
+import ReactGA from "react-ga4";
 
 const Register = () => {
+		ReactGA.send({
+			hitType: "pageview",
+			page: "/register",
+			title: "Register Page",
+		});
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [otherSchool, setOtherSchool] = useState(false);
@@ -140,6 +146,7 @@ const Register = () => {
 				setErrorMessage(response.data.message);
 			}
 		} catch (error) {
+			console.log(error)
 			setErrorMessage(
 				error.response?.data?.message || "An error occurred"
 			);
@@ -160,7 +167,7 @@ const Register = () => {
 					<div className="bg-white p-6 rounded-lg shadow-md">
 						<div className="mb-6">
 							<button
-								className={`mr-4 py-2 px-4 rounded ${
+								className={`mr-4 py-2 px-2 rounded ${
 									userType === "normal"
 										? "bg-blue-600 text-white"
 										: "bg-gray-200 text-gray-800"
@@ -170,7 +177,7 @@ const Register = () => {
 								Register as buyer
 							</button>
 							<button
-								className={`py-2 px-4 rounded ${
+								className={`py-2 px-2 rounded ${
 									userType === "vendor"
 										? "bg-blue-600 text-white"
 										: "bg-gray-200 text-gray-800"

@@ -11,7 +11,7 @@ function RegisterAlert() {
 	return (
 		<Link
 			to="/register"
-			className={`w-full max-w-7xl mx-auto py-4 ${
+			className={`block sm:hidden w-full max-w-7xl mx-auto py-2 ${
 				fadeOut
 					? "opacity-0 transition-opacity duration-500 ease-out"
 					: "opacity-100"
@@ -20,7 +20,7 @@ function RegisterAlert() {
 		>
 			<div
 				id="alert-border-1"
-				className="flex items-center p-3 text-white border-t-4 border-blue-600 bg-blue-600 transition-all ease-out duration-500"
+				className="flex items-center p-2 text-white border-blue-600 bg-blue-600 transition-all ease-out duration-500"
 				role="alert"
 			>
 				<svg
@@ -33,7 +33,7 @@ function RegisterAlert() {
 					<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
 				</svg>
 				<div className="ms-3 font-bold text-xl">
-					Register as a vendor
+					Register to sell products
 				</div>
 				<button
 					onClick={handleClick}

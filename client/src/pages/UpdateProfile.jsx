@@ -5,11 +5,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Spinner from "../components/Spinner";
 import ErrorMessage from "../components/ErrorMessage";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 //import { logoutUser } from "../redux/features/user/userSlice";
 import { categories } from "../data/categories";
+import ReactGA from "react-ga4";
 
 function UpdateProfile() {
+	ReactGA.send({
+		hitType: "pageview",
+		page: "/update-profile/:userId",
+		title: "Product Update Page",
+	});
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [formData, setFormData] = useState({
@@ -18,6 +24,7 @@ function UpdateProfile() {
 		email: "",
 		contact: "",
 		vendorCategory: "",
+		vendorDescription: "",
 	});
 
 	const { currentUser } = useSelector((state) => state.user);
@@ -43,6 +50,7 @@ function UpdateProfile() {
 					email: data.email,
 					contact: data.contact,
 					vendorCategory: data.vendorCategory,
+					vendorDescription: data.vendorDescription,
 				});
 			} else {
 				console.log("Profile response: ", response.data);
@@ -66,30 +74,30 @@ function UpdateProfile() {
 		// Upload Flyer
 		let vendorFlyerUrl;
 		if (formData.vendorFlyer) {
-		const fileData = new FormData();
-		fileData.append("file", formData.vendorFlyer);
-		fileData.append("upload_preset", uploadPreset);
-		fileData.append("api_key", apiKey);
-		fileData.append("timestamp", (Date.now() / 1000) | 0);
+			const fileData = new FormData();
+			fileData.append("file", formData.vendorFlyer);
+			fileData.append("upload_preset", uploadPreset);
+			fileData.append("api_key", apiKey);
+			fileData.append("timestamp", (Date.now() / 1000) | 0);
 
-		const response = await axios.post(
-			`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-			fileData,
-			{
-				headers: {
-					"X-Requested-With": "XMLHttpRequest",
-				},
+			const response = await axios.post(
+				`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+				fileData,
+				{
+					headers: {
+						"X-Requested-With": "XMLHttpRequest",
+					},
+				}
+			);
+
+			if (response.status !== 200) {
+				toast.error("Failed to upload image. Please retry");
+				setIsLoading(false);
+				return;
 			}
-		);
 
-		if (response.status !== 200) {
-			toast.error("Failed to upload image. Please retry");
-			setIsLoading(false);
-			return;
+			vendorFlyerUrl = response.data.secure_url;
 		}
-
-		vendorFlyerUrl = response.data.secure_url;
-	}
 
 		const userPayload = {
 			vendorName: formData.vendorName,
@@ -97,6 +105,7 @@ function UpdateProfile() {
 			email: formData.email,
 			contact: formData.contact,
 			vendorCategory: formData.vendorCategory,
+			vendorDescription: formData.vendorDescription,
 		};
 
 		try {
@@ -114,7 +123,9 @@ function UpdateProfile() {
 				//dispatch(logoutUser());
 				navigate(`/profile/${id}`);
 			} else if (response.status === 401) {
-				navigate("/login", {state: "Your session has expired, please relogin "});
+				navigate("/login", {
+					state: "Your session has expired, please relogin ",
+				});
 			} else {
 				setErrorMessage(response.data.message);
 			}
@@ -245,6 +256,28 @@ function UpdateProfile() {
 									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
 									placeholder="Upload business flyer"
 								/>
+							</div>
+
+							<div className="mb-4">
+								<label
+									className="block text-gray-700 font-bold mb-2"
+									htmlFor="vendorDescription"
+								>
+									Business description
+									<div className="text-xs italic font-light py-1">
+										Add some description to help buyers
+										better understand the kind of products
+										you sell
+									</div>
+								</label>
+								<textarea
+									name="vendorDescription"
+									id="vendorDescription"
+									value={formData.vendorDescription}
+									onChange={handleChange}
+									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+									placeholder="Enter business description"
+								></textarea>
 							</div>
 
 							{isLoading ? (

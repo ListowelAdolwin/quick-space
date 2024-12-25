@@ -5,13 +5,20 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Spinner from "../../components/Spinner";
 import { useSelector } from "react-redux";
+import ReactGA from "react-ga4";
 
 const ManageProducts = () => {
+	ReactGA.send({
+		hitType: "pageview",
+		page: "/admin/manage-products",
+		title: "Manage Products Page",
+	});
 	const [products, setProducts] = useState([]);
+	const [searchTerm, setSearchTerm] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
-	const {currentUser} = useSelector((state) => state.user)
+	const { currentUser } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		const fetchProducts = async () => {
@@ -32,7 +39,7 @@ const ManageProducts = () => {
 	const handleDeleteProduct = async (id) => {
 		setIsDeleteLoading(true);
 		try {
-			await axios.get(`${BASE_URL}/api/products/delete/${id}`, {
+			await axios.delete(`${BASE_URL}/api/products/delete/${id}`, {
 				headers: {
 					Authorization: `Bearer ${currentUser?.accessToken}`,
 				},
@@ -46,15 +53,32 @@ const ManageProducts = () => {
 		}
 	};
 
+	const handleSearchChange = (event) => {
+		setSearchTerm(event.target.value);
+	};
+
+	const filteredProducts = products.filter((product) =>
+		product.name.toLowerCase().includes(searchTerm.toLowerCase())
+	);
+
 	return (
-		<div className="min-h-screen bg-gray-100 p-8">
-			<h1 className="text-4xl font-bold mb-10">Manage Products</h1>
+		<div className="min-h-screen bg-gray-100 py-8 px-4">
 			<ToastContainer />
+			<h1 className="text-3xl font-bold mb-10">Manage Products</h1>
+			<div className="mb-6">
+				<input
+					type="text"
+					placeholder="Search products..."
+					value={searchTerm}
+					onChange={handleSearchChange}
+					className="p-2 border border-gray-300 rounded w-full"
+				/>
+			</div>
 			{isLoading ? (
 				<Spinner />
 			) : (
 				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-1 gap-y-2 sm:gap-x-4 sm-gap-y-4">
-					{products.map((product) => (
+					{filteredProducts.map((product) => (
 						<div
 							key={product._id}
 							className="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
@@ -93,16 +117,13 @@ const ManageProducts = () => {
 								</div>
 							</Link>
 							<div className="p-2 flex gap-1">
-								{/* <button className="basis-1/2 w-full flex items-center justify-center gap-2 rounded-md bg-blue-900 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
-									Edit
-								</button> */}
 								{isDeleteLoading ? (
 									<Spinner />
 								) : (
 									<button
-										onClick={() => {
-											handleDeleteProduct(product._id);
-										}}
+										onClick={() =>
+											handleDeleteProduct(product._id)
+										}
 										className="w-full flex items-center justify-center gap-2 rounded-md bg-red-600 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-red-500 focus:outline-none focus:ring-4 focus:ring-blue-300"
 									>
 										Delete

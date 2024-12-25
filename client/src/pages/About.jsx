@@ -1,4 +1,11 @@
+import ReactGA from "react-ga4";
+
 const About = () => {
+	ReactGA.send({
+		hitType: "pageview",
+		page: "/about",
+		title: "About Page",
+	});
 	return (
 		<div className="flex flex-col min-h-screen">
 			<main className="flex-grow">

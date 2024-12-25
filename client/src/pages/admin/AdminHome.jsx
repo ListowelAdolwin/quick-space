@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
+import ReactGA from "react-ga4";
 
 const AdminHome = () => {
+	ReactGA.send({
+		hitType: "pageview",
+		page: "/admin/home",
+		title: "Admin HomePage",
+	});
 	return (
 		<div className="min-h-screen bg-gray-100 p-2 sm:p-8">
 			<h1 className="text-4xl font-bold my-8">Admin Dashboard</h1>

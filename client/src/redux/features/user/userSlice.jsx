@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
 	currentUser: null,
-	currentSchool: null,
+	currentSchool: "",
 	cautionAlert: {
 		hasBeenDisplayed: false,
 		lastDisplayed: null,

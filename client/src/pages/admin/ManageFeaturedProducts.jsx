@@ -2,8 +2,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ReactGA from "react-ga4";
 
 const ManageFeaturedProducts = () => {
+	ReactGA.send({
+		hitType: "pageview",
+		page: "/admin/manage-featured",
+		title: "Manage Featured Products Page",
+	});
 	const [products, setProducts] = useState([]);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [loading, setLoading] = useState(true);
@@ -29,7 +35,9 @@ const ManageFeaturedProducts = () => {
 	const handleFeature = async (id, feature) => {
 		try {
 			await axios.get(
-				`${BASE_URL}/api/products/${feature ? "feature" : "unfeature"}/${id}`
+				`${BASE_URL}/api/products/${
+					feature ? "feature" : "unfeature"
+				}/${id}`
 			);
 			fetchProducts();
 			toast.success(

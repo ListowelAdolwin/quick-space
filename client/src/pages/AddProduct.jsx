@@ -5,6 +5,7 @@ import axios from "axios";
 import { categories } from "../data/categories";
 import ErrorMessage from "../components/ErrorMessage";
 import Spinner from "../components/Spinner";
+import ReactGA from "react-ga4";
 
 // check if the image is of the correct type
 // if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
@@ -15,6 +16,11 @@ import Spinner from "../components/Spinner";
 // }
 
 const AddProduct = () => {
+		ReactGA.send({
+			hitType: "pageview",
+			page: "/add-product",
+			title: "Add Product Page",
+		});
 	const [redirect, setRedirect] = useState(true);
 	const [errorMessage, setErrowMessage] = useState("");
 	const [isLoading, setIsLoading] = useState(false);

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #2b2e4a, #535c68);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+        .logo img {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .countdown {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+        .countdown div {
+            font-size: 1.5em;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            min-width: 70px;
+        }
+        .email-link {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 1em;
+            text-decoration: none;
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .email-link:hover {
+            background: white;
+            color: #2b2e4a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://via.placeholder.com/150" alt="Logo">
+        </div>
+        <h1>Coming Soon</h1>
+        <p>We are launching our website on Friday. Stay tuned!</p>
+        <div class="countdown">
+            <div>
+                <span id="days">00</span>
+                <div>Days</div>
+            </div>
+            <div>
+                <span id="hours">00</span>
+                <div>Hours</div>
+            </div>
+            <div>
+                <span id="minutes">00</span>
+                <div>Minutes</div>
+            </div>
+            <div>
+                <span id="seconds">00</span>
+                <div>Seconds</div>
+            </div>
+        </div>
+        <a href="mailto:quickspacegh@gmail.com" class="email-link">
+            <i class="fas fa-envelope"></i> Contact Us
+        </a>
+    </div>
+
+    <script>
+        function getTimeRemaining(endtime) {
+            const total = Date.parse(endtime) - Date.now();
+            const seconds = Math.floor((total / 1000) % 60);
+            const minutes = Math.floor((total / 1000 / 60) % 60);
+            const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(total / (1000 * 60 * 60 * 24));
+            return { total, days, hours, minutes, seconds };
+        }
+
+        function initializeClock(id, endtime) {
+            const clock = document.getElementById(id);
+            const daysSpan = clock.querySelector('#days');
+            const hoursSpan = clock.querySelector('#hours');
+            const minutesSpan = clock.querySelector('#minutes');
+            const secondsSpan = clock.querySelector('#seconds');
+
+            function updateClock() {
+                const t = getTimeRemaining(endtime);
+                daysSpan.innerHTML = ('0' + t.days).slice(-2);
+                hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+                if (t.total <= 0) {
+                    clearInterval(timeinterval);
+                }
+            }
+
+            updateClock();
+            const timeinterval = setInterval(updateClock, 1000);
+        }
+
+        const deadline = new Date(Date.now() + (7 - new Date().getDay()) * 24 * 60 * 60 * 1000 + (24 - new Date().getHours()) * 60 * 60 * 1000 - new Date().getMinutes() * 60 * 1000 - new Date().getSeconds() * 1000);
+        initializeClock('countdown', deadline);
+    </script>
+</body>
+</html>
+

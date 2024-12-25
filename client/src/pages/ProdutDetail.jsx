@@ -18,8 +18,14 @@ import { useSelector } from "react-redux";
 import { Hearts } from "react-loader-spinner";
 import StarRating from "../components/StarRating";
 import ReviewForm from "../components/ReviewForm";
+import ReactGA from "react-ga4";
 
 const ProductDetail = () => {
+	ReactGA.send({
+		hitType: "pageview",
+		page: "/product-detail/:productId",
+		title: "Product Detail Page",
+	});
 	const { addToFavorites, removeFromFavorites } = useFavorites();
 	const [isFavorited, setIsFavorited] = useState(false);
 	const [product, setProduct] = useState(null);

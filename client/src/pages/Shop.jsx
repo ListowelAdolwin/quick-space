@@ -4,17 +4,23 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PageLoader from "../components/PageLoader";
-import { MdOutlinePerson3 } from "react-icons/md";
+import { MdOutlinePerson3, MdVerified } from "react-icons/md";
 import { useSelector } from "react-redux";
+import ReactGA from "react-ga4";
 
 const Shop = () => {
+	ReactGA.send({
+		hitType: "pageview",
+		page: "/shop",
+		title: "Shop Page",
+	});
 	const [products, setProducts] = useState([]);
 	const [pageLoading, setPageLoading] = useState(true);
 	const [showMore, setShowMore] = useState(false);
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-	const limit = 10;
+	const limit = 20;
 	const { currentSchool } = useSelector((state) => state.user);
 
 	useEffect(() => {
@@ -111,10 +117,16 @@ const Shop = () => {
 													)}
 												</p>
 											</div>
-											<p className="pb-3 flex items-center text-xs font-extralight">
+											<p className="pb-3 flex gap-0.5 items-center+ text-xs font-extralight">
 												<MdOutlinePerson3 />
 
 												{product.vendor.vendorName}
+											{product.vendor.isVerified && (
+												<MdVerified
+													className=" text-blue-600"
+													size={16}
+												/>
+											)}
 											</p>
 											<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-700 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
 												<CiViewList className="text-xl font-bold" />

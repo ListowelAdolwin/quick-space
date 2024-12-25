@@ -1,7 +1,9 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
-const User = require('../models/User.js');
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const mongoose = require('mongoose')
+const User = require('../models/User.js')
+const sendOTP = require('../utils/sendOTP.js')
+const OTP = require('../models/OTP.js')
 
 const register = async (req, res) => {
   const {
@@ -58,11 +60,15 @@ const register = async (req, res) => {
     const { password: pass, ...rest } = newUser._doc
     res.status(201).json(rest)
   } catch (error) {
+    console.log('Error', error)
     if (error instanceof mongoose.Error.ValidationError) {
       const messages = Object.values(error.errors).map(err => err.message)
       res.status(400).json({ message: messages[0] })
     } else {
-      res.status(500).json({ error: 'An unexpected error occurred while registring. Please retry' })
+      console.log('Error', error)
+      res.status(500).json({
+        error: 'An unexpected error occurred while registring. Please retry'
+      })
     }
   }
 }
@@ -164,4 +170,61 @@ const verifyRole = roles => async (req, res, next) => {
   }
 }
 
-module.exports = { register, login, verifyToken, verifyRole };
+const generateSendOTP = async (req, res) => {
+  const { contact } = req.body
+
+  const user = await User.findOne({contact})
+  
+  const userContact = user.contact
+
+  try {
+    const otpCode = Math.floor(100000 + Math.random() * 900000)
+    const newOTP = new OTP({ user, code: otpCode })
+    await newOTP.save()
+
+    const from = 'listoweladolwin@gmail.com'
+    const to = user.email
+    const subject = 'Password Reset'
+
+    sendOTP(to, from, subject, otpCode)
+
+    res.status(200).json({ message: `OTP sent to ${to}` })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: `Failed to send OTP to ${to}` })
+  }
+}
+
+const resetPassword = async (req, res) => {
+  const { user } = req
+  const { otpCode } = req.body
+  const { newPassword } = req.body
+
+  try {
+    const otp = await OTP.findOne({ code: otpCode })
+
+    if (!otp) {
+      return res.status(401).json({ message: 'Invalid OTP' })
+    }
+
+    if (new Date(otp.createdAt).getTime() + 600000 < Date.now()) {
+      return res.status(401).json({ message: 'OTP expired' })
+    }
+    const hashedP = bcrypt.hashSync(newPassword, 10)
+    user.password = hashedP
+    await user.save()
+
+    res.status(200).json({ message: 'Password reset successful!' })
+  } catch (error) {
+    res.status(500).json({ message: 'Password reset failed!' })
+  }
+}
+
+module.exports = {
+  register,
+  login,
+  verifyToken,
+  verifyRole,
+  generateSendOTP,
+  resetPassword
+}

@@ -5,6 +5,7 @@ import axios from "axios";
 import { categories } from "../data/categories";
 import ErrorMessage from "../components/ErrorMessage";
 import Spinner from "../components/Spinner";
+import ReactGA from "react-ga4";
 
 // check if the image is of the correct type
 // if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
@@ -15,6 +16,11 @@ import Spinner from "../components/Spinner";
 // }
 
 const UpdateProduct = () => {
+	ReactGA.send({
+		hitType: "pageview",
+		page: "/update-product/:productId",
+		title: "Update Product Page",
+	});
 	const [errorMessage, setErrowMessage] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [formData, setFormData] = useState({

@@ -6,12 +6,18 @@ import axios from "axios";
 import { CiViewList } from "react-icons/ci";
 import PageLoader from "../components/PageLoader";
 import { FaPhone } from "react-icons/fa";
-import { MdOutlineDoubleArrow } from "react-icons/md";
+import { MdOutlineDoubleArrow, MdVerified } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RotatingLines } from "react-loader-spinner";
+import ReactGA from "react-ga4";
 
 const UserProfile = () => {
+		ReactGA.send({
+			hitType: "pageview",
+			page: "/profile/:userId",
+			title: "User Profile Page",
+		});
 	const [userData, setUserData] = useState(null);
 	const [isVendor, setIsVendor] = useState(false);
 	const [pageLoading, setPageLoading] = useState(true);
@@ -144,10 +150,44 @@ const UserProfile = () => {
 									)}
 
 									{isVendor && (
-										<p className="text-md font-semibold text-gray-600">
-											Bussiness Name:{" "}
-											{userData.vendorName}
-										</p>
+										<>
+											<p className="flex items-center text-md font-semibold text-gray-600">
+												Name:{" "}
+												{userData.vendorName}
+												{userData.isVerified && (
+												<MdVerified
+													className=" text-blue-600"
+													size={20}
+												/>
+										)}
+											</p>
+											<p className="text-md text-gray-600">
+												<span className="font-semibold">
+													Description:{" "}
+												</span>
+												{userData.vendorDescription ? (
+													<span>
+														{
+															userData.vendorDescription
+														}
+													</span>
+												) : !userData.vendorDescription &&
+												userData._id ===
+														currentUser._id ? (
+													<Link
+														to={`/update-profile/${userData._id}`}
+														className="underline text-blue-600"
+													>
+														Add business description
+													</Link>
+												) : (
+													<span className="italic">
+														{" "}
+														No description provided{" "}
+													</span>
+												)}
+											</p>
+										</>
 									)}
 									<p className="text-gray-600">
 										Email: {userData.email}
@@ -262,9 +302,12 @@ const UserProfile = () => {
 															Details
 														</Link>
 														{currentUser?._id ===
-														userData._id ? (
+															userData._id ||
+														currentUser?.role ===
+															"admin" ? (
 															<>
-																{isDeleteLoading === product._id ? (
+																{isDeleteLoading ===
+																product._id ? (
 																	<div
 																		key={
 																			product._id

@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const User = require('../models/User.js')
 const sendOTP = require('../utils/sendOTP.js')
 const OTP = require('../models/OTP.js')
+const { sendCustomEmail } = require('../utils/sendCustomEmail.js')
 
 const register = async (req, res) => {
   const {
@@ -173,8 +174,8 @@ const verifyRole = roles => async (req, res, next) => {
 const generateSendOTP = async (req, res) => {
   const { contact } = req.body
 
-  const user = await User.findOne({contact})
-  
+  const user = await User.findOne({ contact })
+
   const userContact = user.contact
 
   try {
@@ -195,7 +196,7 @@ const generateSendOTP = async (req, res) => {
   }
 }
 
-const resetPassword = async (req, res) => {
+const resetPasswordWithOTP = async (req, res) => {
   const { user } = req
   const { otpCode } = req.body
   const { newPassword } = req.body
@@ -220,11 +221,60 @@ const resetPassword = async (req, res) => {
   }
 }
 
+
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) { return res.status(200).json({ message: 'If the email is associated with an account, you will receive a password reset link.' }) }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    const resetURL = `${process.env.CLIENT_URL}/reset-password/${token}`;
+
+    const mailOptions = {
+      to: email,
+      subject: 'Password Reset Request',
+      text: `You requested a password reset. Please use the link below to reset your password:\n\n${resetURL}\n\nIf you did not request this, please ignore this email.`,
+    };
+
+    sendCustomEmail(mailOptions);
+
+    res.status(200).json({ message: 'Password reset link sent to your email.' });
+
+  } catch (error) {
+    console.log("Error: ", error)
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
+const resetPassword = async (req, res) => {
+  const { token, password } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    user.password = bcrypt.hashSync(password, 10);
+    await user.save();
+
+    res.json({ message: 'Password reset successfully' });
+  } catch (error) {
+    console.log("Error: Token not valid")
+    res.status(400).json({ message: 'Invalid or expired token' });
+
+  }
+}
+
 module.exports = {
   register,
   login,
   verifyToken,
   verifyRole,
   generateSendOTP,
-  resetPassword
+  resetPasswordWithOTP,
+  resetPassword,
+  forgotPassword
 }

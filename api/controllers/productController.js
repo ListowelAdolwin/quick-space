@@ -5,7 +5,7 @@ const Review = require('../models/Review');
 
 const addProduct = async (req, res) => {
   try {
-    const { name, price, category, imageUrls, discount, description } = req.body;
+    const { name, price, category, imageUrls, videoUrl, discount, description } = req.body;
     const vendor = req.user;
     const vendorName = vendor.vendorName;
     const school = vendor.school;
@@ -25,6 +25,7 @@ const addProduct = async (req, res) => {
       category: prodCategory,
       categoryName,
       imageUrls,
+      videoUrl,
       vendor,
       school,
       discount,
@@ -48,7 +49,7 @@ const addProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const {name, price, discount, description, category, imageUrls} = req.body
+  const {name, price, discount, description, category, imageUrls, videoUrl} = req.body
   const prodCategory = await Category.findOne({val: category})
   try {
     const prod = await Product.findById(id).populate('vendor');
@@ -62,7 +63,7 @@ const updateProduct = async (req, res) => {
       const newProduct = await Product.findByIdAndUpdate(
         id,
         {
-          $set: {name, price, discount, description, imageUrls, category: prodCategory},
+          $set: {name, price, discount, description, imageUrls, videoUrl, category: prodCategory},
         },
         { new: true }
       );
@@ -100,6 +101,7 @@ const getProducts = async (req, res) => {
       
     res.status(200).json(products);
   } catch (error) {
+    console.log("Error: ", error)
     res.status(500).json({ message: error.message });
   }
 };
@@ -209,6 +211,7 @@ const getProduct = async (req, res) => {
       price: tempProduct.price,
       rating: tempProduct.rating,
       imageUrls: tempProduct.imageUrls,
+      videoUrl: tempProduct.videoUrl,
       discount: tempProduct.discount,
       category: tempProduct.categoryName,
       description: tempProduct.description,
@@ -307,6 +310,55 @@ const getFavoriteProducts = async (req, res) => {
   }
 };
 
+// const filterProducts = async (req, res) => {
+//   try {
+//     const searchTerm = req.query.searchTerm || '';
+//     const price = req.query.price || '';
+//     const category = req.query.category || '';
+//     const school = req.query.school || '';
+//     const limit = Number(req.query.limit) || 10;
+//     const startIndex = Number(req.query.startIndex) || 0;
+
+//     let sort = {};
+//     if (price) {
+//       sort.price = price === 'asc' ? 1 : -1;
+//     }
+
+//     let query = {
+//       $or: [{ name: { $regex: searchTerm, $options: 'i' } }],
+//     };
+
+//     if (school) {
+//       query.school = school;
+//     }
+
+//     if (category) {
+//       query.categoryName = category;
+//     }
+
+//     if (searchTerm) {
+//       const users = await User.find({
+//         vendorName: { $regex: searchTerm, $options: 'i' },
+//       });
+
+//       const userIds = users.map(user => user._id);
+
+//       query.$or.push({ vendor: { $in: userIds } });
+//     }
+
+//     const products = await Product.find(query)
+//       .populate('vendor')
+//       .sort(sort)
+//       .skip(startIndex)
+//       .limit(limit);
+
+//     res.status(200).json(products);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Server error in over' });
+//   }
+// };
+
 const filterProducts = async (req, res) => {
   try {
     const searchTerm = req.query.searchTerm || '';
@@ -316,43 +368,87 @@ const filterProducts = async (req, res) => {
     const limit = Number(req.query.limit) || 10;
     const startIndex = Number(req.query.startIndex) || 0;
 
-    let sort = {};
-    if (price) {
-      sort.price = price === 'asc' ? 1 : -1;
-    }
-
-    let query = {
-      $or: [{ name: { $regex: searchTerm, $options: 'i' } }],
+    let matchStage = {
+      $or: [{ name: { $regex: searchTerm, $options: 'i' } }]
     };
 
     if (school) {
-      query.school = school;
+      matchStage.school = school;
     }
 
     if (category) {
-      query.categoryName = category;
+      matchStage.categoryName = category;
     }
 
     if (searchTerm) {
       const users = await User.find({
-        vendorName: { $regex: searchTerm, $options: 'i' },
+        vendorName: { $regex: searchTerm, $options: 'i' }
       });
 
       const userIds = users.map(user => user._id);
-
-      query.$or.push({ vendor: { $in: userIds } });
+      matchStage.$or.push({ vendor: { $in: userIds } });
     }
 
-    const products = await Product.find(query)
-      .populate('vendor')
-      .sort(sort)
-      .skip(startIndex)
-      .limit(limit);
+    let sort = {};
+    if (price) {
+      sort.price = price === 'asc' ? 1 : -1;
+    } else {
+      sort.isPro = -1;
+    }
+
+    // if (price){
+    //   const priceSort = price === 'asc' ? 1 : -1;
+    // }
+
+    const products = await Product.aggregate([
+      { $match: matchStage },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'vendor',
+          foreignField: '_id',
+          as: 'vendorDetails'
+        }
+      },
+      { $unwind: '$vendorDetails' },
+      {
+        $addFields: {
+          isPro: '$vendorDetails.isPro'
+        }
+      },
+      {
+        $sort: sort
+      },
+      { $skip: startIndex },
+      { $limit: limit },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          price: 1,
+          category: 1,
+          categoryName: 1,
+          imageUrls: 1,
+          videoUrls: 1,
+          school: 1,
+          vendor: '$vendorDetails',
+          vendorName: '$vendorDetails.vendorName',
+          description: 1,
+          discount: 1,
+          status: 1,
+          isFeatured: 1,
+          totalReviews: 1,
+          averageRating: 1,
+          createdAt: 1,
+          updatedAt: 1
+        }
+      }
+    ]);
 
     res.status(200).json(products);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error in over' });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 

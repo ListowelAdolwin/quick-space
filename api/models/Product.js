@@ -23,9 +23,13 @@ const productSchema = new mongoose.Schema(
       type: [String],
       required: [true, 'Product image(s) required!']
     },
-    videoUrls: {
-      type: [String]
+    videoUrl: {
+      type: String,
+      required: false
     },
+    // videoUrls: {
+    //   type: [String]
+    // },
     school: {
       type: String
     },

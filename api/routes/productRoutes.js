@@ -19,7 +19,7 @@ const { verifyRole, verifyToken } = require("../controllers/authController.js");
 const router = express.Router();
 
 router.post("/add", verifyRole(["vendor", "admin"]), addProduct);
-router.get("/delete/:id", verifyToken, deleteProduct);
+router.delete("/delete/:id", verifyToken, deleteProduct);
 router.post("/update/:id", verifyToken, updateProduct);
 router.get("/feature/:id", featureProduct);
 router.get("/unfeature/:id", unfeatureProduct);

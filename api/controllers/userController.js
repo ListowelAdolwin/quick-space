@@ -41,7 +41,7 @@ const updateProfile = async (req, res) => {
 
 const getVendors = async (req, res) => {
     try {
-        const vendors = await User.find({ isVendor: true });
+        const vendors = await User.find({ isVendor: true }).sort({createdAt: -1 });
         res.json(vendors);
     } catch (error) {
         res.status(500).json({ message: "Server error" });
@@ -82,10 +82,57 @@ const makeAdmin = async (req, res) => {
     }
 };
 
+const deleteVendor = async (req, res) => {
+    const { id } = req.params;
+
+  try {
+    const vendor = await User.findById(id);
+
+    if (!vendor) {
+      return res.status(404).json({ message: "Vendor not found" });
+    }
+
+    await User.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Vendor deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting vendor:", error);
+    res.status(500).json({ message: "Server error, could not delete vendor" });
+  }
+
+}
+const getProRequests = async (req, res) => {
+    try {
+        const vendors = await User.find({ isVendor: true, isPro: false }).sort({ createdAt: -1 });
+        res.status(200).json(vendors);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+  }
+
+const makePro = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).send({ message: `User not found` });
+        }
+        user.isPro = true;
+        await user.save();
+        res.status(200).send({ message: `${user.email} has been made a pro` });
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ message: error.message });
+    }
+};
+
 module.exports = {
     userProfile,
     updateProfile,
     getVendors,
     verifyUnverifyVendor,
     makeAdmin,
+    deleteVendor,
+    makePro,
+    getProRequests
 };

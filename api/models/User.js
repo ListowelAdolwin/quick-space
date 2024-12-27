@@ -58,6 +58,12 @@ const userSchema = new mongoose.Schema(
       enum: ['active', 'suspended', 'inactive'],
       default: 'active',
     },
+    isPro: { type: Boolean, default: false },
+    socialMedia: {
+      tiktok: String,
+      facebook: String,
+      instagram: String,
+    },
     vendorAddress: String,
     vendorCategory: String,
     token: String,

@@ -129,7 +129,7 @@ const Login = () => {
                 </div>
                 <div className='text-right'>
                   <Link
-                    to='/send-email-otp'
+                    to='/forgot-password'
                     className=' text-blue-900'
                   >
                     Forgot password?

@@ -7,6 +7,7 @@ import { CiViewList } from "react-icons/ci";
 import { MdOutlinePerson3, MdVerified } from "react-icons/md";
 import { useSelector } from "react-redux";
 import ReactGA from "react-ga4";
+import { FaStar } from "react-icons/fa";
 
 export default function SearchProducts() {
 	ReactGA.send({
@@ -244,12 +245,13 @@ export default function SearchProducts() {
 											<MdOutlinePerson3 />
 
 											{product.vendor.vendorName}
-											{product.vendor.isVerified && (
-												<MdVerified
-													className=" text-blue-600"
-													size={16}
-												/>
-										)}
+											{product.vendor.isPro ? (
+												<FaStar className="text-amber-600 text-bold"
+													size={15} />
+											) : product.vendor.isVerified ? <MdVerified
+												className=" text-blue-600"
+												size={16}
+											/> : <span></span>}
 										</p>
 										<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-700 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
 											<CiViewList className="text-xl font-bold" />

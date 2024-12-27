@@ -48,6 +48,13 @@ const AdminHome = () => {
 					<h2 className="text-2xl font-semibold">Feature Products</h2>
 					<p className="mt-2">Monitor product features. Add new products to Featured Products</p>
 				</Link>
+				<Link
+					to="/admin/pro"
+					className="bg-slate-500 text-white p-6 rounded-lg shadow-md hover:bg-slate-600 transition duration-300"
+				>
+					<h2 className="text-2xl font-semibold">Manage Pro Requests</h2>
+					<p className="mt-2">Upgrade vendors to Pro</p>
+				</Link>
 				{/*<Link
 					to="/admin/settings"
 					className="bg-indigo-500 text-white p-6 rounded-lg shadow-md hover:bg-indigo-600 transition duration-300"

@@ -31,6 +31,8 @@ const UpdateProduct = () => {
 		description: "",
 		images: [],
 		imageUrls: [],
+		video: null,
+		videoUrl: ""
 	});
 
 	const { currentUser } = useSelector((state) => state.user);
@@ -57,8 +59,9 @@ const UpdateProduct = () => {
 					description: data.description,
 					images: [],
 					imageUrls: data.imageUrls,
+					video: null,
+					videoUrl: data.videoUrl
 				});
-				console.log(data);
 			} else {
 				setErrowMessage("Product not found");
 				console.log("Profile response error: ", response.data);
@@ -73,11 +76,24 @@ const UpdateProduct = () => {
 		setFormData({ ...formData, [name]: value });
 	};
 
-	const handleFileChange = (e) => {
+	const handleImagesChange = (e) => {
 		setFormData({ ...formData, images: Array.from(e.target.files) });
 		setIsLoading(false);
 		setErrowMessage("");
 	};
+
+	const handleVideoChange = (e) => {
+			const video = e.target.files[0]
+			const maxSize = 20 * 1024 * 1024;
+			if (video.size > maxSize) {
+				toast.error("The video file size should not exceed 20MB.");
+				e.target.value = "";
+				return;
+			}
+			setFormData({ ...formData, video: video });
+			setIsLoading(false)
+			setErrowMessage("")
+		};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -113,7 +129,31 @@ const UpdateProduct = () => {
 
 				urls = await axios.all(uploaders);
 			}
-			console.log(urls);
+
+			let videoUrl = formData.videoUrl;
+			if (formData.video){
+				const fileData = new FormData();
+				fileData.append("file", formData.video);
+				fileData.append("upload_preset", uploadPreset);
+				fileData.append("api_key", apiKey);
+				fileData.append("timestamp", (Date.now() / 1000) | 0);
+	
+				const response = await axios
+					.post(
+						`https://api.cloudinary.com/v1_1/${cloudName}/upload`,
+						fileData,
+						{
+							headers: {
+								"X-Requested-With": "XMLHttpRequest",
+							},
+						}
+					)
+	
+					videoUrl = response.data.secure_url
+					//setFormData({ ...formData, videoUrl: response.data.secure_url });
+					console.log("Video url: ", response.data.secure_url)
+					//.then((response) => response.data.secure_url);
+		}
 
 			setFormData({ ...formData, imageUrls: urls });
 
@@ -124,6 +164,7 @@ const UpdateProduct = () => {
 				category: formData.category,
 				description: formData.description,
 				imageUrls: formData.imageUrls.concat(urls),
+				videoUrl,
 				vendor: currentUser._id,
 			};
 
@@ -144,7 +185,6 @@ const UpdateProduct = () => {
 				setErrowMessage(saveProductResponse.message);
 			}
 			setIsLoading(false);
-			console.log("Product saved:", saveProductResponse.data);
 		} catch (error) {
 			setErrowMessage("Error uploading images. Please retry");
 			setIsLoading(false);
@@ -274,11 +314,31 @@ const UpdateProduct = () => {
 							id="images"
 							multiple
 							accept="image/*"
-							onChange={handleFileChange}
+							onChange={handleImagesChange}
 							className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
 							placeholder="Upload product images"
 						/>
 					</div>
+					{currentUser?.isPro && <div className="mb-4">
+						<label
+							className="block text-gray-700 font-bold mb-2"
+							htmlFor="video"
+						>
+							Video
+							<p className="italic text-xs">
+								Upload a video of the product
+							</p>
+						</label>
+						<input
+							type="file"
+							name="video"
+							id="video"
+							accept="video/*"
+							onChange={handleVideoChange}
+							className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+							placeholder="Upload short video of product"
+						/>
+					</div>}
 					{isLoading ? (
 						<Spinner />
 					) : (

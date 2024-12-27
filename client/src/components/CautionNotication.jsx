@@ -8,7 +8,6 @@ import { differenceInDays } from "date-fns";
 const CautionNotification = () => {
 	const user = useSelector((state) => state.user);
 	let cautionAlert
-	console.log(user)
 	const dispatch = useDispatch();
 
 	useEffect(() => {

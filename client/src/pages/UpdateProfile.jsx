@@ -8,6 +8,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import { useSelector } from "react-redux";
 //import { logoutUser } from "../redux/features/user/userSlice";
 import { categories } from "../data/categories";
+import { schools } from "../data/schools";
 import ReactGA from "react-ga4";
 
 function UpdateProfile() {
@@ -18,13 +19,20 @@ function UpdateProfile() {
 	});
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+	const [showOtherSchool, setShowOtherSchool] = useState(false);
 	const [formData, setFormData] = useState({
 		vendorName: "",
 		vendorFlyer: "",
 		email: "",
 		contact: "",
+		school: "",
+		otherSchool: "",
 		vendorCategory: "",
 		vendorDescription: "",
+		isPro: false,
+		tiktok: "",
+		instagram: "",
+		facebook: ""
 	});
 
 	const { currentUser } = useSelector((state) => state.user);
@@ -49,8 +57,13 @@ function UpdateProfile() {
 					vendorFlyer: data.vendorFlyer,
 					email: data.email,
 					contact: data.contact,
+					school: data.school,
+					isPro: data.isPro,
 					vendorCategory: data.vendorCategory,
 					vendorDescription: data.vendorDescription,
+					tiktok: data.socialMedia?.tiktok,
+					instagram: data.socialMedia?.instagram,
+					facebook: data.socialMedia?.facebook,
 				});
 			} else {
 				console.log("Profile response: ", response.data);
@@ -63,6 +76,11 @@ function UpdateProfile() {
 	const handleChange = (e) => {
 		setIsLoading(false);
 		const { name, value } = e.target;
+		if (name === "school" && value == "other") {
+			setShowOtherSchool(true);
+		} else if (name !== "otherSchool") {
+			setShowOtherSchool(false);
+		}
 		setFormData({ ...formData, [name]: value });
 	};
 
@@ -104,8 +122,14 @@ function UpdateProfile() {
 			vendorFlyerUrl: vendorFlyerUrl,
 			email: formData.email,
 			contact: formData.contact,
+			school: formData.school ? formData.school : formData.otherSchool,
 			vendorCategory: formData.vendorCategory,
 			vendorDescription: formData.vendorDescription,
+			socialMedia:{
+				tiktok: formData.tiktok,
+				facebook: formData.facebook,
+				instagram: formData.instagram,
+			  }
 		};
 
 		try {
@@ -141,7 +165,6 @@ function UpdateProfile() {
 	return (
 		<div className="flex flex-col min-h-screen">
 			<main className="flex-grow">
-				<ToastContainer />
 				<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 					<h1 className="text-3xl font-bold text-blue-800 mb-4">
 						Update Profile
@@ -279,6 +302,111 @@ function UpdateProfile() {
 									placeholder="Enter business description"
 								></textarea>
 							</div>
+
+							<div className="mb-4">
+								<label
+									className="block text-gray-700 font-bold mb-2"
+									htmlFor="school"
+								>
+									School
+								</label>
+								<select
+									name="school"
+									id="school"
+									value={formData.school}
+									onChange={handleChange}
+									className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+									required
+								>
+									<option value="">
+										Select school
+									</option>
+									{Object.entries(schools).map(
+										([key, school]) => (
+											<option
+												key={key}
+												value={key}
+											>
+												{school}
+											</option>
+										)
+									)}
+								</select>
+							</div>
+							{showOtherSchool && (
+								<div className="mb-4 ms-5">
+									<label
+										className="block text-gray-700 font-bold mb-2"
+										htmlFor="other-school"
+									>
+										Please enter school name here
+									</label>
+									<input
+										type="text"
+										name="otherSchool"
+										id="other-school"
+										value={formData.otherSchool}
+										onChange={handleChange}
+										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+										placeholder="Enter your school name here (Abbreviated)"
+										required
+									/>
+								</div>
+							)}
+
+							{formData.isPro && <div>
+								<div className="mb-4">
+									<label
+										className="block text-gray-700 font-bold mb-2"
+										htmlFor="tiktok"
+									>
+										TikTok URL
+									</label>
+									<input
+										type="text"
+										name="tiktok"
+										id="tiktok"
+										value={formData.tiktok}
+										onChange={handleChange}
+										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+										placeholder="https://tiktok.com/@yourhandle"
+									/>
+								</div>
+								<div className="mb-4">
+									<label
+										className="block text-gray-700 font-bold mb-2"
+										htmlFor="instagram"
+									>
+										Instagram URL
+									</label>
+									<input
+										type="text"
+										name="instagram"
+										id="instagram"
+										value={formData.instagram}
+										onChange={handleChange}
+										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+										placeholder="https://instagram.com/@yourhandle"
+									/>
+								</div>
+								<div className="mb-4">
+									<label
+										className="block text-gray-700 font-bold mb-2"
+										htmlFor="facebook"
+									>
+										Facebook Profile URL
+									</label>
+									<input
+										type="url"
+										name="facebook"
+										id="facebook"
+										value={formData.facebook}
+										onChange={handleChange}
+										className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+										placeholder="https://facebook.com/yourprofile"
+									/>
+								</div>
+							</div>}
 
 							{isLoading ? (
 								<Spinner />

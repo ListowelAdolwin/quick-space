@@ -47,6 +47,10 @@ const ProductDetail = () => {
 
 	const handleRatingSubmit = async (e) => {
 		e.preventDefault();
+		if (!currentUser) {
+			toast.warning("Please login to add a review")
+			return;
+		}
 		setReviewLoading(true);
 		try {
 			const response = await axios.post(
@@ -190,19 +194,35 @@ const ProductDetail = () => {
 											modules={[Pagination, Navigation]}
 											className="mySwiper h-full"
 										>
-											{product.imageUrls.map((url) => (
+											{/* Render video as the first slide if it exists */}
+											{product?.videoUrl && (
+												<SwiperSlide className="flex items-center justify-center h-full">
+													<video
+														autoPlay
+														muted
+														playsInline
+														controls
+														src={product.videoUrl}
+														className="object-cover max-h-screen w-full rounded-md"
+													></video>
+												</SwiperSlide>
+											)}
+
+											{/* Render images */}
+											{product?.imageUrls.map((url) => (
 												<SwiperSlide
 													key={url}
 													className="flex items-center justify-center h-full transition-transform duration-500 ease-in-out transform hover:scale-105"
 												>
 													<img
-														className="object-cover"
+														className="object-cover max-h-screen w-full rounded-md"
 														src={url}
-														alt=""
+														alt="Product image"
 													/>
 												</SwiperSlide>
 											))}
 										</Swiper>
+
 									</div>
 								</div>
 								<div>
@@ -250,6 +270,13 @@ const ProductDetail = () => {
 												Business name:
 											</span>{" "}
 											{product.vendorName}
+											{/* {product.vendor.isPro ? (
+												<FaStar className="text-amber-600 text-bold"
+													size={15} />
+											) : product.vendor.isVerified ? <MdVerified
+												className=" text-blue-600"
+												size={16}
+											/> : <span></span>} */}
 											{product.isVendorVerified && (
 												<MdVerified
 													className=" text-blue-600"
@@ -290,11 +317,10 @@ const ProductDetail = () => {
 													? handleUnfavorite
 													: handleFavorite
 											}
-											className={`relative basis-1/2 border text-blue-600 hover:bg-blue-600 hover:text-white border-blue-600 focus:bg-blue-600 focus:text-white font-bold py-2 px-1 sm:px-2 rounded transition-colors duration-300 flex items-center justify-center ${
-												likeLoading
-													? "cursor-not-allowed"
-													: ""
-											}`}
+											className={`relative basis-1/2 border text-blue-600 hover:bg-blue-600 hover:text-white border-blue-600 focus:bg-blue-600 focus:text-white font-bold py-2 px-1 sm:px-2 rounded transition-colors duration-300 flex items-center justify-center ${likeLoading
+												? "cursor-not-allowed"
+												: ""
+												}`}
 											disabled={likeLoading}
 										>
 											{likeLoading ? (
@@ -456,37 +482,37 @@ const ProductDetail = () => {
 													</p>
 													{currentUser?._id ===
 														review.user._id && (
-														<div className="flex gap-3 mt-2 text-xs">
-															{reviewDeleteLoading ? (
-																<p className="px-2 py-1 bg-red-500 rounded text-white hover:opacity-85">
-																	Deleting
-																</p>
-															) : (
+															<div className="flex gap-3 mt-2 text-xs">
+																{reviewDeleteLoading ? (
+																	<p className="px-2 py-1 bg-red-500 rounded text-white hover:opacity-85">
+																		Deleting
+																	</p>
+																) : (
+																	<button
+																		onClick={() => {
+																			deleteReview(
+																				review._id
+																			);
+																		}}
+																		className="px-2 py-1 bg-red-500 rounded text-white hover:opacity-85"
+																	>
+																		Delete
+																	</button>
+																)}
 																<button
 																	onClick={() => {
-																		deleteReview(
+																		editReview(
+																			review.rating,
+																			review.comment,
 																			review._id
 																		);
 																	}}
-																	className="px-2 py-1 bg-red-500 rounded text-white hover:opacity-85"
+																	className="px-2 py-1 bg-blue-500 rounded text-white hover:opacity-85"
 																>
-																	Delete
+																	Edit
 																</button>
-															)}
-															<button
-																onClick={() => {
-																	editReview(
-																		review.rating,
-																		review.comment,
-																		review._id
-																	);
-																}}
-																className="px-2 py-1 bg-blue-500 rounded text-white hover:opacity-85"
-															>
-																Edit
-															</button>
-														</div>
-													)}
+															</div>
+														)}
 												</div>
 											))}
 										</div>

@@ -16,9 +16,12 @@ const ManageProducts = () => {
 	const [products, setProducts] = useState([]);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+	const [isDeleteLoading, setIsDeleteLoading] = useState(null);
+	const [isShowMoreLoading, setIsShowMoreLoading] = useState(false);
+	const [showMore, setShowMore] = useState(false);
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 	const { currentUser } = useSelector((state) => state.user);
+	const limit = 20;
 
 	useEffect(() => {
 		const fetchProducts = async () => {
@@ -26,6 +29,7 @@ const ManageProducts = () => {
 			try {
 				const response = await axios.get(`${BASE_URL}/api/products`);
 				setProducts(response.data);
+				setShowMore(response.data.length >= limit)
 			} catch (error) {
 				toast.error("Error fetching products");
 			} finally {
@@ -36,8 +40,22 @@ const ManageProducts = () => {
 		fetchProducts();
 	}, []);
 
+	const onShowMoreClick = async () => {
+		setIsShowMoreLoading(true)
+		const numberOfProducts = products.length;
+		const res = await axios.get(
+			`${BASE_URL}/api/products?startIndex=${numberOfProducts}&&limit=${limit}`
+		);
+		const data = res.data;
+		if (data.length < limit) {
+			setShowMore(false);
+		}
+		setProducts([...products, ...data]);
+		setIsShowMoreLoading(false);
+	};
+
 	const handleDeleteProduct = async (id) => {
-		setIsDeleteLoading(true);
+		setIsDeleteLoading(id);
 		try {
 			await axios.delete(`${BASE_URL}/api/products/delete/${id}`, {
 				headers: {
@@ -49,7 +67,7 @@ const ManageProducts = () => {
 		} catch (error) {
 			toast.error("Error deleting product");
 		} finally {
-			setIsDeleteLoading(false);
+			setIsDeleteLoading(null);
 		}
 	};
 
@@ -63,7 +81,6 @@ const ManageProducts = () => {
 
 	return (
 		<div className="min-h-screen bg-gray-100 py-8 px-4">
-			<ToastContainer />
 			<h1 className="text-3xl font-bold mb-10">Manage Products</h1>
 			<div className="mb-6">
 				<input
@@ -117,7 +134,7 @@ const ManageProducts = () => {
 								</div>
 							</Link>
 							<div className="p-2 flex gap-1">
-								{isDeleteLoading ? (
+								{isDeleteLoading == product._id ? (
 									<Spinner />
 								) : (
 									<button
@@ -133,6 +150,29 @@ const ManageProducts = () => {
 						</div>
 					))}
 				</div>
+			)}
+			{showMore && (
+				<button
+					onClick={onShowMoreClick}
+					className="w-full sm:w-60 mt-5 flex flex-row items-center justify-center px-4 py-3 mb-4 text-sm font-bold bg-blue-700 leading-6 duration-100 transform rounded-sm shadow cursor-pointer focus:ring-1 focus:ring-blue-500 focus:ring-opacity-50 focus:outline-none hover:shadow-lg hover:-translate-y-1 text-white"
+				>
+					<h1 className="text-md">
+						{isShowMoreLoading ? "Loading more products..." : "Load more products"}
+					</h1>
+					<span className="">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							data-name="Layer 1"
+							viewBox="0 0 24 24"
+							className="w-5 h-5 fill-current"
+						>
+							<path
+								fill="currentColor"
+								d="M17.92,11.62a1,1,0,0,0-.21-.33l-5-5a1,1,0,0,0-1.42,1.42L14.59,11H7a1,1,0,0,0,0,2h7.59l-3.3,3.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l5-5a1,1,0,0,0,.21-.33A1,1,0,0,0,17.92,11.62Z"
+							></path>
+						</svg>
+					</span>
+				</button>
 			)}
 		</div>
 	);

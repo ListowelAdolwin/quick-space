@@ -7,6 +7,7 @@ import PageLoader from "../components/PageLoader";
 import { MdOutlinePerson3, MdVerified } from "react-icons/md";
 import { useSelector } from "react-redux";
 import ReactGA from "react-ga4";
+import { FaStar } from "react-icons/fa";
 
 const Shop = () => {
 	ReactGA.send({
@@ -17,6 +18,7 @@ const Shop = () => {
 	const [products, setProducts] = useState([]);
 	const [pageLoading, setPageLoading] = useState(true);
 	const [showMore, setShowMore] = useState(false);
+	const [isShowMoreLoading, setIsShowMoreLoading] = useState(false);
 
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -39,17 +41,19 @@ const Shop = () => {
 		getProducts();
 	}, []);
 
-		const onShowMoreClick = async () => {
-			const numberOfProducts = products.length;
-			const res = await axios.get(
-				`${BASE_URL}/api/products?startIndex=${numberOfProducts}&&limit=${limit}`
-			);
-			const data = res.data;
-			if (data.length < limit) {
-				setShowMore(false);
-			}
-			setProducts([...products, ...data]);
-		};
+	const onShowMoreClick = async () => {
+		setIsShowMoreLoading(true)
+		const numberOfProducts = products.length;
+		const res = await axios.get(
+			`${BASE_URL}/api/products?startIndex=${numberOfProducts}&&limit=${limit}`
+		);
+		const data = res.data;
+		if (data.length < limit) {
+			setShowMore(false);
+		}
+		setProducts([...products, ...data]);
+		setIsShowMoreLoading(false);
+	};
 
 	return (
 		<main>
@@ -121,12 +125,13 @@ const Shop = () => {
 												<MdOutlinePerson3 />
 
 												{product.vendor.vendorName}
-											{product.vendor.isVerified && (
-												<MdVerified
+												{product.vendor.isPro ? (
+													<FaStar className="text-amber-600 text-bold"
+														size={15} />
+												) : product.vendor.isVerified ? <MdVerified
 													className=" text-blue-600"
 													size={16}
-												/>
-											)}
+												/> : <span></span>}
 											</p>
 											<button className="w-full flex items-center justify-center gap-2 rounded-md bg-blue-700 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
 												<CiViewList className="text-xl font-bold" />
@@ -142,7 +147,7 @@ const Shop = () => {
 									className="w-full sm:w-60 mt-5 flex flex-row items-center justify-center px-4 py-3 mb-4 text-sm font-bold bg-blue-700 leading-6 duration-100 transform rounded-sm shadow cursor-pointer focus:ring-1 focus:ring-blue-500 focus:ring-opacity-50 focus:outline-none hover:shadow-lg hover:-translate-y-1 text-white"
 								>
 									<h1 className="text-md">
-										Load more products
+										{isShowMoreLoading ? "Loading more products..." : "Load more products"}
 									</h1>
 									<span className="">
 										<svg

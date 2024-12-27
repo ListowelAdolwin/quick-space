@@ -4,6 +4,7 @@ import axios from "axios";
 import { CiViewList } from "react-icons/ci";
 import { MdOutlinePerson3, MdVerified } from "react-icons/md";
 import { useSelector } from "react-redux";
+import { FaStar } from "react-icons/fa";
 
 const FeaturedProducts = () => {
 	const [products, setProducts] = useState([]);
@@ -94,12 +95,13 @@ const FeaturedProducts = () => {
 									<p className="flex items-center text-xs font-light">
 										<MdOutlinePerson3 className="mr-1" />
 										{product.vendorName}
-										{product.vendor.isVerified && (
-												<MdVerified
-													className=" text-blue-600"
-													size={16}
-												/>
-										)}
+										{product.vendor.isPro ? (
+											<FaStar className="text-amber-600 text-bold"
+												size={15} />
+										) : product.vendor.isVerified ? <MdVerified
+											className=" text-blue-600"
+											size={16}
+										/> : <span></span>}
 									</p>
 									<button className="w-full mt-3 flex items-center justify-center gap-2 rounded-md bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
 										<CiViewList className="text-xl font-bold" />

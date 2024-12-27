@@ -95,7 +95,7 @@ const UserProfile = () => {
 			toast.success("Product deleted successfully");
 		} catch (error) {
 			toast.error("Error deleting product");
-			console.error(error); // Changed console.log to console.error for better error logging
+			console.error(error);
 		} finally {
 			setIsDeleteLoading(null);
 		}
@@ -103,7 +103,6 @@ const UserProfile = () => {
 
 	return (
 		<div className="flex flex-col min-h-screen">
-			<ToastContainer />
 			{pageLoading ? (
 				<PageLoader />
 			) : (
@@ -114,7 +113,7 @@ const UserProfile = () => {
 							<span className="text-base text-gray-800">
 								<MdOutlineDoubleArrow />
 							</span>
-							{userData.vendorName || userData.email}
+							{userData?.vendorName || userData?.email}
 						</h1>
 						{userData && (
 							<div className="flex flex-wrap items-start justify-start gap-5">
@@ -123,9 +122,9 @@ const UserProfile = () => {
 										!isVendor ? "pt-6" : ""
 									} px-6 pb-6 rounded-lg shadow-md mt-6`}
 								>
-									{isVendor && userData.vendorFlyerUrl && (
+									{isVendor && userData?.vendorFlyerUrl && (
 										<Link
-											to={userData.vendorFlyerUrl}
+											to={userData?.vendorFlyerUrl}
 											target="_blank"
 											className="mx-auto sm:mx-0 lg:mx-auto -mt-4 relative block"
 										>
@@ -153,8 +152,8 @@ const UserProfile = () => {
 										<>
 											<p className="flex items-center text-md font-semibold text-gray-600">
 												Name:{" "}
-												{userData.vendorName}
-												{userData.isVerified && (
+												{userData?.vendorName}
+												{userData?.isVerified && (
 												<MdVerified
 													className=" text-blue-600"
 													size={20}
@@ -165,17 +164,17 @@ const UserProfile = () => {
 												<span className="font-semibold">
 													Description:{" "}
 												</span>
-												{userData.vendorDescription ? (
+												{userData?.vendorDescription ? (
 													<span>
 														{
-															userData.vendorDescription
+															userData?.vendorDescription
 														}
 													</span>
-												) : !userData.vendorDescription &&
-												userData._id ===
-														currentUser._id ? (
+												) : !userData?.vendorDescription &&
+												userData?._id ===
+														currentUser?._id ? (
 													<Link
-														to={`/update-profile/${userData._id}`}
+														to={`/update-profile/${userData?._id}`}
 														className="underline text-blue-600"
 													>
 														Add business description
@@ -190,7 +189,7 @@ const UserProfile = () => {
 										</>
 									)}
 									<p className="text-gray-600">
-										Email: {userData.email}
+										Email: {userData?.email}
 									</p>
 									<p className="text-gray-600 flex items-center gap-3">
 										Contact Number: {userData?.contact}{" "}
@@ -206,11 +205,31 @@ const UserProfile = () => {
 										<p className="text-gray-600">
 											School:{" "}
 											<span className="uppercase">
-												{userData.school}
+												{userData?.school}
 											</span>
 										</p>
 									)}
-									{currentUser?._id === userData._id && (
+									<div>
+										{userData?.socialMedia?.facebook && <p className="text-gray-600">
+											Facebook:{" "}
+											<a href={userData?.socialMedia?.facebook} target="blank" className="text-blue-600">
+												{userData?.socialMedia?.facebook}
+											</a>
+										</p>}
+										{userData?.socialMedia?.tiktok && <p className="text-gray-600">
+											Tiktok:{" "}
+											<a href={userData?.socialMedia?.tiktok} target="blank" className="text-blue-600">
+												{userData?.socialMedia?.tiktok}
+											</a>
+										</p>}
+										{userData?.socialMedia?.instagram && <p className="text-gray-600">
+											Instagram:{" "}
+											<a href={userData?.socialMedia?.instagram} target="blank" className="text-blue-600">
+												{userData?.socialMedia?.instagram}
+											</a>
+										</p>}
+									</div>
+									{currentUser?._id === userData?._id && (
 										<div className="flex gap-2">
 											<button
 												onClick={logout}
@@ -218,9 +237,9 @@ const UserProfile = () => {
 											>
 												Logout
 											</button>
-											{currentUser.isVendor && (
+											{currentUser?.isVendor && (
 												<Link
-													to={`/update-profile/${userData._id}`}
+													to={`/update-profile/${userData?._id}`}
 													className="mt-4 border border-blue-600 hover:bg-blue-700 text-blue-600 hover:text-white py-2 px-4 rounded"
 												>
 													Update Profile
@@ -252,8 +271,8 @@ const UserProfile = () => {
 										</div>
 									)}
 									<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2">
-										{userData.products.map((product) => (
-											<p
+										{userData?.products?.map((product) => (
+											<div
 												key={product._id}
 												className="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
 											>
@@ -354,7 +373,7 @@ const UserProfile = () => {
 														</Link>
 													)}
 												</div>
-											</p>
+											</div>
 										))}
 									</div>
 								</div>

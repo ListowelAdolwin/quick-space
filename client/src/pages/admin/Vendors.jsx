@@ -43,7 +43,6 @@ const Vendors = () => {
 
 	return (
 		<div className="container mx-auto p-4">
-			<ToastContainer />
 			<h1 className="text-2xl font-bold mb-6">Vendors</h1>
 			<div className="mb-4">
 				<input
@@ -57,7 +56,7 @@ const Vendors = () => {
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 				{filteredVendors &&
 					filteredVendors.map((vendor) => (
-						<VendorCard key={vendor._id} initialVendor={vendor} />
+						<VendorCard key={vendor._id} initialVendor={vendor} vendors={vendors} setVendors={setVendors} />
 					))}
 			</div>
 		</div>

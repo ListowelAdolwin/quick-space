@@ -72,10 +72,10 @@ const AdminNavbar = () => {
 									Add Product
 								</Link>
 								<Link
-									to="/admin/categories/add"
+									to="/admin/pro"
 									className="text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md text-sm font-medium"
 								>
-									Add Category
+									Pro Vendors
 								</Link>
 								<Link
 									to={`/profile/${currentUser._id}`}
@@ -199,14 +199,14 @@ const AdminNavbar = () => {
 								Add Product
 							</Link>
 							<Link
-								to="/admin/categories/add"
+								to="/admin/pro"
 								className="flex items-center  gap-2 text-gray-800 hover:text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-md text-base font-medium"
 							>
 								<MdOutlineDashboardCustomize
 									className="inline-block"
 									size={20}
 								/>
-								Add Category
+								Pro Vendors
 							</Link>
 							<Link
 								to={`/profile/${currentUser._id}`}

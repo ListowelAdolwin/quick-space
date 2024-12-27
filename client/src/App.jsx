@@ -30,8 +30,12 @@ import ProtectedVendorRoute from './components/ProtectedVendorRoute'
 import ManageFeaturedProducts from './pages/admin/ManageFeaturedProducts'
 import ReactGA from 'react-ga4'
 import SendEmailOTP from './pages/sendEmailOTP'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import { ToastContainer } from 'react-toastify'
+import ProRequestsPage from './pages/admin/ProRequests'
 
-function App () {
+function App() {
   const TRACKING_ID = import.meta.env.VITE_TRACKING_ID
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID)
@@ -52,6 +56,7 @@ function App () {
         {!currentUser && <RegisterAlert />}
 
         <ScrollToTop />
+        <ToastContainer />
         <Routes>
           <Route exact path='/' element={<Home />} />
           <Route path='/home' element={<Home />} />
@@ -59,6 +64,8 @@ function App () {
           <Route path='/about' element={<About />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path='/profile/:id' element={<UserProfile />} />
           <Route path='/product/:id' element={<ProductDetail />} />
           <Route path='/search' element={<SearchProducts />} />
@@ -90,6 +97,10 @@ function App () {
               element={<ManageFeaturedProducts />}
             />
           </Route>
+          <Route
+            path="/admin/pro"
+            element={<ProRequestsPage />}
+          />
         </Routes>
 
         <Footer />

@@ -33,7 +33,6 @@ const SendEmailOTP = () => {
         contact: email
       })
 
-      console.log('Response: ', response)
       if (response.status === 200) {
         navigate('/reset-password')
       } else {

@@ -6,6 +6,7 @@ import { categories } from "../data/categories";
 import ErrorMessage from "../components/ErrorMessage";
 import Spinner from "../components/Spinner";
 import ReactGA from "react-ga4";
+import { toast } from "react-toastify";
 
 // check if the image is of the correct type
 // if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
@@ -16,11 +17,11 @@ import ReactGA from "react-ga4";
 // }
 
 const AddProduct = () => {
-		ReactGA.send({
-			hitType: "pageview",
-			page: "/add-product",
-			title: "Add Product Page",
-		});
+	ReactGA.send({
+		hitType: "pageview",
+		page: "/add-product",
+		title: "Add Product Page",
+	});
 	const [redirect, setRedirect] = useState(true);
 	const [errorMessage, setErrowMessage] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +33,8 @@ const AddProduct = () => {
 		description: "",
 		images: [],
 		imageUrls: [],
+		video: null,
+		videoUrl: ""
 	});
 
 	const { currentUser } = useSelector((state) => state.user);
@@ -55,14 +58,27 @@ const AddProduct = () => {
 		setErrowMessage("")
 	};
 
+	const handleVideoChange = (e) => {
+		const video = e.target.files[0]
+		const maxSize = 20 * 1024 * 1024;
+		if (video.size > maxSize) {
+			toast.error("The video file size should not exceed 20MB.");
+			e.target.value = "";
+			return;
+		}
+		setFormData({ ...formData, video: video });
+		setIsLoading(false)
+		setErrowMessage("")
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (Number(formData.discount) > Number(formData.price)){
+		if (Number(formData.discount) > Number(formData.price)) {
 			setErrowMessage("Discont cannot be greater than price")
 			return
 		}
-		
-		if (currentUser?.role !== 'vendor'){
+
+		if (currentUser?.role !== 'vendor') {
 			setErrowMessage("Please login as a vendor to be able to add products");
 			return;
 		}
@@ -70,6 +86,7 @@ const AddProduct = () => {
 		setIsLoading(true);
 
 		try {
+			// Upload images
 			const uploaders = formData.images.map((image) => {
 				const fileData = new FormData();
 				fileData.append("file", image);
@@ -90,6 +107,32 @@ const AddProduct = () => {
 					.then((response) => response.data.secure_url);
 			});
 
+			//Upload videoe
+			let videoUrl = ""
+			if (formData.video){
+				const fileData = new FormData();
+				fileData.append("file", formData.video);
+				fileData.append("upload_preset", uploadPreset);
+				fileData.append("api_key", apiKey);
+				fileData.append("timestamp", (Date.now() / 1000) | 0);
+	
+				const response = await axios
+					.post(
+						`https://api.cloudinary.com/v1_1/${cloudName}/upload`,
+						fileData,
+						{
+							headers: {
+								"X-Requested-With": "XMLHttpRequest",
+							},
+						}
+					)
+	
+					videoUrl = response.data.secure_url
+					//setFormData({ ...formData, videoUrl: response.data.secure_url });
+					console.log("Video url: ", response.data.secure_url)
+					//.then((response) => response.data.secure_url);
+		}
+
 			const urls = await axios.all(uploaders);
 
 			setFormData({ ...formData, imageUrls: urls });
@@ -101,6 +144,7 @@ const AddProduct = () => {
 				category: formData.category,
 				description: formData.description,
 				imageUrls: urls,
+				videoUrl,
 				vendor: currentUser._id,
 			};
 
@@ -125,6 +169,8 @@ const AddProduct = () => {
 						description: "",
 						images: [],
 						imageUrls: [],
+						video: null,
+						videoUrl: ""
 					});
 				}
 			} else {
@@ -272,6 +318,26 @@ const AddProduct = () => {
 							required
 						/>
 					</div>
+					{currentUser?.isPro && <div className="mb-4">
+						<label
+							className="block text-gray-700 font-bold mb-2"
+							htmlFor="video"
+						>
+							Video
+							<p className="italic text-xs">
+								Upload a video of the product
+							</p>
+						</label>
+						<input
+							type="file"
+							name="video"
+							id="video"
+							accept="video/*"
+							onChange={handleVideoChange}
+							className="bg-gray-200 focus:bg-white text-gray-800 p-2 rounded w-full"
+							placeholder="Upload short video of product"
+						/>
+					</div>}
 					{isLoading ? (
 						<Spinner />
 					) : (

@@ -91,7 +91,7 @@ const editReview = async (req, res) => {
     const { id } = req.params;
     const { rating, comment, productId } = req.body;
 
-    const review = await Review.findById(id);
+    const review = await Review.findById(id).populate('user');;
     if (!review) {
       return res.status(404).json({ message: 'Review not found' });
     }

@@ -38,7 +38,7 @@ const ProductDetail = () => {
 	const [reviewLoading, setReviewLoading] = useState(false);
 	const [reviewDeleteLoading, setReviewDeleteLoading] = useState(false);
 	const [showEditForm, setShowEditForm] = useState(false);
-	const [editData, setEditData] = useState(false);
+	const [editData, setEditData] = useState(null);
 
 	const params = useParams();
 	const id = params.id;
@@ -76,8 +76,15 @@ const ProductDetail = () => {
 				});
 				toast.success("Review added successfully");
 			}
+			if (response.status === 401){
+				toast.error("Your session has expired. Relogin to add review")
+			}
 		} catch (error) {
-			toast.error("Failed to add review");
+			if (error.response.status === 401){
+				toast.error("Your session has expired. Relogin to add review")
+			} else {
+			toast.error("Failed to add review. Try again");
+			}
 		}
 		setReviewLoading(false);
 	};

@@ -234,10 +234,27 @@ const forgotPassword = async (req, res) => {
     const resetURL = `${process.env.CLIENT_URL}/reset-password/${token}`;
 
     const mailOptions = {
+      from: '"QuickSpace Support" <support@quickspacegh.com>',
       to: email,
-      subject: 'Password Reset Request',
-      text: `You requested a password reset. Please use the link below to reset your password:\n\n${resetURL}\n\nIf you did not request this, please ignore this email.`,
+      subject: 'Reset Your Password - QuickSpace',
+      html: `
+            <p>Dear User,</p>
+            <p>You have requested to reset your password for your QuickSpace account. Please click the button below to reset your password:</p>
+            <p>
+              <a href="${resetURL}" 
+                style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007BFF; text-decoration: none; border-radius: 5px;">
+                Reset Password
+              </a>
+            </p>
+            <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
+            <p><a href="${resetURL}" style="color: #007BFF;">${resetURL}</a></p>
+            <p>If you did not request this password reset, you can safely ignore this email. Your password will remain unchanged.</p>
+            <p>Thank you,<br>The QuickSpace Team</p>
+            <hr>
+            <p style="font-size: 12px; color: #666;">If you have any questions, contact us at <a href="mailto:support@quickspacegh.com" style="color: #007BFF;">support@quickspacegh.com</a>.</p>
+          `,
     };
+
 
     sendCustomEmail(mailOptions);
 

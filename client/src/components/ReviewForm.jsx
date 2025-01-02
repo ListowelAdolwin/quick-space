@@ -95,7 +95,7 @@ const ReviewForm = ({ data }) => {
 					type="submit"
 					className="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 				>
-					Submit Review
+					Edit Review
 				</button>
 			)}
 		</form>

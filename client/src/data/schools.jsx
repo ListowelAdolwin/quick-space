@@ -1,3 +1,24 @@
+// export const schools = {
+//   knust: 'KNUST',
+//   ucc: 'UCC',
+//   ug: 'UG',
+//   uds: 'UDS',
+//   uew: 'UEW',
+//   uhas: 'UHAS',
+//   umat: 'UMAT',
+//   htu: 'HTU',
+//   ho_ntc: 'HO NTC',
+//   wesco: "WESCO",
+//   ofcoe: "OFCoE",
+//   sedacoe: "SEDACoe",
+//   pce: "PCE",
+//   accoe: "AcCoE",
+//   adcoe: "AdaCoE",
+//   kstu: "KsTU",
+//   other: 'Other'
+// }
+
+
 export const schools = {
   knust: 'KNUST',
   ucc: 'UCC',
@@ -6,7 +27,41 @@ export const schools = {
   uew: 'UEW',
   uhas: 'UHAS',
   umat: 'UMAT',
+  upsa: "UPSA",
+  uenr: "UENR",
   htu: 'HTU',
+  ashesi: "Ashesi",
+  kaaf: "KAAF",
+  gimpa: "GIMPA",
   ho_ntc: 'HO NTC',
-  other: 'Other'
-}
+  ttu: "TTU",
+  academic_city: "Academic City",
+  central_uni: "Central University",
+  wesley_coe: "Wesley CoE",
+  offinso_coe: "Ofinso CoE",
+  sda_coe: "SEDA CoE",
+  pce: "PCE",
+  accra_coe: "Accra CoE",
+  ada_coe: "Ada CoE",
+  kstu: "KsTU",
+
+  atu: 'ATU Accra',
+  ktu: 'KTU Koforidua',
+
+  korle_bu_nmtc: 'NMTC Korle-Bu',
+  pantang_nmtc: 'NMTC Pantang',
+  teshie_nmtc: 'NMTC Teshie',
+  armed_forces_nmtc: '37 NMTC',
+
+  koforidua_nmtc: 'NMTC Koforidua',
+  atibie_nmtc: 'NMTC Atibie',
+  nkawkaw_nmtc: 'NMTC Nkawkaw',
+  holy_family_nmtc: 'NMTC HFN',
+
+  sda_nmtc: 'NMTC Kwadaso',
+  offinso_nmtc: 'NMTC Offinso',
+  kath_nmtc: 'NMTC KATH',
+  tepa_nmtc: 'NMTC Tepa',
+
+  other: 'Other',
+};

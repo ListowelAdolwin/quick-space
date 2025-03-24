@@ -7,7 +7,7 @@ import PageLoader from "../components/PageLoader";
 import { MdOutlinePerson3, MdVerified } from "react-icons/md";
 import { useSelector } from "react-redux";
 import ReactGA from "react-ga4";
-import { FaStar } from "react-icons/fa";
+import { FaImages, FaStar } from "react-icons/fa";
 
 const Shop = () => {
 	ReactGA.send({
@@ -86,6 +86,8 @@ const Shop = () => {
 													src={product.imageUrls[0]}
 													alt="product image"
 												/>
+												<span className="absolute left-1 bottom-1 font-bold text-white px-1 bg-opacity-85 bg-blue-700 flex gap-1 items-center">{product.imageUrls.length} <FaImages /></span>
+
 												{product.discount > 0 && (
 													<span className="absolute top-0 left-0 rounded-full bg-blue-700 px-2 text-sm font-medium text-white">
 														{(

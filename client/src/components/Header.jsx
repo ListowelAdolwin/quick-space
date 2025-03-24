@@ -9,20 +9,15 @@ import { CiShoppingTag } from 'react-icons/ci'
 import { useDispatch, useSelector } from 'react-redux'
 import Select from 'react-select'
 import { updateSchool } from '../redux/features/user/userSlice'
+import { schools } from '../data/schools'
 
-const schools = [
+const formattedSchools = [
   { value: '', label: 'All Schools' },
-  { value: 'knust', label: 'KNUST' },
-  { value: 'ucc', label: 'UCC' },
-  { value: 'ug', label: 'UG' },
-  { value: 'uds', label: 'UDS' },
-  { value: 'uew', label: 'UEW' },
-  { value: 'uhas', label: 'UHAS' },
-  { value: 'umat', label: 'UMAT' },
-  { value: 'htu', label: 'HTU' },
-  { value: 'ho_ntc', label: 'HO NTC' },
-  { value: 'other', label: 'Other' }
-]
+  ...Object.keys(schools).map(key => ({
+    value: key,
+    label: schools[key]
+  }))
+];
 
 const Header = () => {
   const { currentSchool } = useSelector(state => state.user)
@@ -71,7 +66,7 @@ const Header = () => {
 
     const searchTerm = urlParams.get('searchTerm')
     const schoolValue = urlParams.get('school')
-    const selectedSchool = schools.find(school => school.value === schoolValue)
+    const selectedSchool = formattedSchools.find(school => school.value === schoolValue)
 
     setSearchTerm(searchTerm || '')
     setSelectedSchool(selectedSchool || null)
@@ -110,7 +105,7 @@ const Header = () => {
             <Select
               className='min-w-40'
               styles={customStyles}
-              options={schools}
+              options={formattedSchools}
               defaultValue={selectedSchool}
               onChange={handleSchoolChange}
               placeholder='Select school'

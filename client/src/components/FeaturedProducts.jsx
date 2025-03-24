@@ -4,7 +4,7 @@ import axios from "axios";
 import { CiViewList } from "react-icons/ci";
 import { MdOutlinePerson3, MdVerified } from "react-icons/md";
 import { useSelector } from "react-redux";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaImages } from "react-icons/fa";
 
 const FeaturedProducts = () => {
 	const [products, setProducts] = useState([]);
@@ -38,8 +38,8 @@ const FeaturedProducts = () => {
 	}, []);
 
 	return (
-		<div className="w-full max-w-7xl mx-auto py-10 px-1">
-			<h2 className="text-3xl font-bold text-blue-700 mb-6">
+		<div className="w-full max-w-7xl mx-auto py-6 sm:py-10 px-1">
+			<h2 className="text-3xl font-bold text-blue-700 text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-indigo-400 shadow-sm mb-6">
 				Featured Products
 			</h2>
 			{pageLoading ? (
@@ -64,16 +64,17 @@ const FeaturedProducts = () => {
 								className="relative flex flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md transition-transform transform hover:scale-105"
 							>
 								<div className="flex items-center justify-center">
-									<p className="px-1 sm:mx-0 mt-3 flex h-32 sm:h-40 overflow-hidden rounded-xl">
+									<p className="px-1 sm:mx-0 mt-3 flex h-32 sm:h-40 overflow-hidden rounded-xl relative">
 										<img
 											className="object-cover"
 											src={product.imageUrls[0]}
 											alt="product image"
 										/>
+										<span className="absolute left-1 bottom-1 font-bold text-white px-1 bg-blue-700 flex gap-1 items-center">{product.imageUrls.length} <FaImages/></span>
 									</p>
 								</div>
 								<div className="t-4 px-2 sm:px-4 pb-3">
-									<h5 className="text-lg sm:text-xl tracking-tight text-slate-900 truncate">
+									<h5 className="text-md sm:text-xl tracking-tight text-slate-900 truncate">
 										{product.name}
 									</h5>
 									<div className="mt-2 mb-2 flex items-center justify-between">
@@ -94,7 +95,7 @@ const FeaturedProducts = () => {
 									</div>
 									<p className="flex items-center text-xs font-light">
 										<MdOutlinePerson3 className="mr-1" />
-										{product.vendorName}
+										<span className="truncate">{product.vendorName}</span>
 										{product.vendor.isPro ? (
 											<FaStar className="text-amber-600 text-bold"
 												size={15} />

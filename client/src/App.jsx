@@ -34,6 +34,7 @@ import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import { ToastContainer } from 'react-toastify'
 import ProRequestsPage from './pages/admin/ProRequests'
+import ProProducts from './pages/admin/ProProducts'
 
 function App() {
   const TRACKING_ID = import.meta.env.VITE_TRACKING_ID
@@ -96,6 +97,7 @@ function App() {
               path='/admin/featured'
               element={<ManageFeaturedProducts />}
             />
+            <Route path="/admin/pro-products" element={<ProProducts/>} />
           </Route>
           <Route
             path="/admin/pro"

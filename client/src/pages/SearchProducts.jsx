@@ -70,27 +70,40 @@ export default function SearchProducts() {
 		fetchProducts();
 	}, [location.search]);
 
-	const handleSubmit = (e) => {
+	const handleChange = (e) => {
+		e.preventDefault();
+
 		const { id, value } = e.target;
 
-		setSearchData((prevState) => {
-			const updatedData = {
-				...prevState,
-				[id]: value,
-			};
+		setSearchData({
+			...searchData,
+			[id]: value
+		})
+	}
 
-			const urlParams = new URLSearchParams({
-				searchTerm: updatedData.searchTerm,
-				price: updatedData.price,
-				category: updatedData.category,
-				school: currentSchool,
-			});
-			const searchQuery = urlParams.toString();
+	const handleSubmit = (e) => {
+		e.preventDefault();
 
-			navigate(`/search?${searchQuery}`);
+		// const { id, value } = e.target;
 
-			return updatedData;
+		// setSearchData((prevState) => {
+		// 	const updatedData = {
+		// 		...prevState,
+		// 		[id]: value,
+		// 	};
+
+		const urlParams = new URLSearchParams({
+			searchTerm: searchData.searchTerm,
+			price: searchData.price,
+			category: searchData.category,
+			school: currentSchool,
 		});
+		const searchQuery = urlParams.toString();
+
+		navigate(`/search?${searchQuery}`);
+
+		//return updatedData;
+		// });
 	};
 
 	const clearSearch = () => {
@@ -123,14 +136,14 @@ export default function SearchProducts() {
 							placeholder="Search by product or business name"
 							className="bg-gray-50 border border-blue-500 text-white-800 focus:outline-none p-3 rounded-md w-full"
 							value={searchData.searchTerm}
-							onChange={handleSubmit}
+							onChange={handleChange}
 						/>
 					</div>
 
 					<div className="flex items-center gap-2">
 						<label className="font-semibold">Price:</label>
 						<select
-							onChange={handleSubmit}
+							onChange={handleChange}
 							value={searchData.price}
 							id="price"
 							className="w-full bg-gray-200 text-gray-800 focus:outline-none p-2 rounded-md"
@@ -144,7 +157,7 @@ export default function SearchProducts() {
 					<div className="flex items-center gap-2">
 						<label className="font-semibold">Category:</label>
 						<select
-							onChange={handleSubmit}
+							onChange={handleChange}
 							value={searchData.category}
 							id="category"
 							className="w-full bg-gray-200 text-gray-800 focus:outline-none p-2 rounded-md"
@@ -159,24 +172,7 @@ export default function SearchProducts() {
 							)}
 						</select>
 					</div>
-					{/* <div className="flex items-center gap-2">
-						<label className="font-semibold">School:</label>
-						<select
-							onChange={handleSubmit}
-							value={searchData.school}
-							id="school"
-							className="w-full bg-gray-200 text-gray-800 focus:outline-none p-2 rounded-md"
-						>
-							<option value="">Select school</option>
-							<option value="all">All</option>
-							{Object.entries(schools).map(([key, school]) => (
-								<option key={key} value={key}>
-									{school}
-								</option>
-							))}
-						</select>
-					</div> */}
-					<button className="flex items-center justify-center text-blue-800 w-full px-4 py-3 text-md font-bold leading-6 capitalize duration-100 transform border-2 rounded-sm cursor-pointer border-blue-800 focus:ring-1 focus:ring-blue-900 focus:ring-opacity-90 focus:outline-none sm:w-auto sm:px-6 border-text  hover:shadow-lg hover:-translate-y-1">
+					<button type="submit" className="flex items-center justify-center text-blue-800 w-full px-4 py-3 text-md font-bold leading-6 capitalize duration-100 transform border-2 rounded-sm cursor-pointer border-blue-800 focus:ring-1 focus:ring-blue-900 focus:ring-opacity-90 focus:outline-none sm:w-auto sm:px-6 border-text  hover:shadow-lg hover:-translate-y-1">
 						See filtered products
 					</button>
 					<button

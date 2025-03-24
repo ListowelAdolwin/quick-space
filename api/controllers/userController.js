@@ -41,7 +41,7 @@ const updateProfile = async (req, res) => {
 
 const getVendors = async (req, res) => {
     try {
-        const vendors = await User.find({ isVendor: true }).sort({createdAt: -1 });
+        const vendors = await User.find({ isVendor: true }).select('-password').sort({createdAt: -1 });
         res.json(vendors);
     } catch (error) {
         res.status(500).json({ message: "Server error" });
@@ -103,7 +103,7 @@ const deleteVendor = async (req, res) => {
 }
 const getProRequests = async (req, res) => {
     try {
-        const vendors = await User.find({ isVendor: true, isPro: false }).sort({ createdAt: -1 });
+        const vendors = await User.find({ isVendor: true, isPro: false }).select('-password').sort({ createdAt: -1 });
         res.status(200).json(vendors);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });

@@ -110,6 +110,7 @@ const VendorCard = ({ initialVendor, setVendors, vendors }) => {
 				Contact: {vendor.contact}
 			</p>
 			<p className="text-gray-600 mb-2">Email: {vendor.email}</p>
+			<p className="text-gray-600 mb-2">School: {vendor.school}</p>
 			<p className="text-gray-600 mb-4 font-bold">
 				Status:{" "}
 				{vendor.isVerified ? (

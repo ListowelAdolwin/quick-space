@@ -2,6 +2,7 @@ const Product = require('../models/Product');
 const User = require('../models/User');
 const Category = require('../models/Category');
 const Review = require('../models/Review');
+const optimizeImageUrls = require('../utils/optimizeImages');
 
 const addProduct = async (req, res) => {
   try {
@@ -18,13 +19,15 @@ const addProduct = async (req, res) => {
         .json({ message: 'Discount cannot be greater than product price' });
     }
 
+    const optimizedImageUrls = optimizeImageUrls(imageUrls);
+
     const newProduct = new Product({
       name,
       vendorName,
       price,
       category: prodCategory,
       categoryName,
-      imageUrls,
+      imageUrls: optimizedImageUrls,
       videoUrl,
       vendor,
       school,
@@ -52,18 +55,23 @@ const updateProduct = async (req, res) => {
   const {name, price, discount, description, category, imageUrls, videoUrl} = req.body
   const prodCategory = await Category.findOne({val: category})
   try {
-    const prod = await Product.findById(id).populate('vendor');
+    const prod = await Product.findById(id).populate({
+      path: 'vendor',
+      select: '-password'
+    });
     if (prod.vendor.contact !== req.user.contact) {
       return res
         .status(403)
         .json({ message: 'You can only update your product!' });
     }
 
+    const optimizedImageUrls = optimizeImageUrls(imageUrls);
+
     try {
       const newProduct = await Product.findByIdAndUpdate(
         id,
         {
-          $set: {name, price, discount, description, imageUrls, videoUrl, category: prodCategory},
+          $set: {name, price, discount, description, imageUrls: optimizedImageUrls, videoUrl, category: prodCategory},
         },
         { new: true }
       );
@@ -94,7 +102,10 @@ const getProducts = async (req, res) => {
     }
 
     const products = await Product.find(query)
-      .populate('vendor')
+      .populate({
+        path: 'vendor',
+        select: '-password'
+      })
       .sort({ createdAt: -1 })
       .skip(startIndex)
       .limit(limit);
@@ -119,7 +130,10 @@ const getFeaturedProducts = async (req, res) => {
     }
 
     const products = await Product.find(query)
-      .populate('vendor')
+      .populate({
+        path: 'vendor',
+        select: '-password'
+      })
       .sort({ createdAt: -1 })
       .limit(10);
     
@@ -173,7 +187,10 @@ const getCategoryProducts = async (req, res) => {
       query.school = { $regex: school, $options: 'i' };
     }
     const products = await Product.find(query)
-      .populate('vendor')
+      .populate({
+        path: 'vendor',
+        select: '-password'
+      })
       .sort({
         createdAt: -1,
       });
@@ -196,13 +213,19 @@ const getProduct = async (req, res) => {
   } catch (error) {}
 
   try {
-    const tempProduct = await Product.findById(id).populate('vendor');
+    const tempProduct = await Product.findById(id).populate({
+      path: 'vendor',
+      select: '-password'
+    });
     if (!tempProduct) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
     const reviews = await Review.find({ product: tempProduct._id })
-      .populate('user')
+      .populate({
+        path: 'user',
+        select: '-password'
+      })
       .sort({ createdAt: -1 });
 
     const product = {
@@ -299,7 +322,10 @@ const getFavoriteProducts = async (req, res) => {
 
     const favorites = await Product.find({
       _id: { $in: user.favourites },
-    }).populate('vendor');
+    }).populate({
+      path: 'vendor',
+      select: '-password'
+    });
 
     res.status(200).json(favorites);
   } catch (error) {
@@ -456,7 +482,10 @@ const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const prod = await Product.findById(id).populate('vendor');
+    const prod = await Product.findById(id).populate({
+      path: 'vendor',
+      select: '-password'
+    });
     if (prod.vendor.contact !== req.user.contact && req.user.role !== 'admin') {
       return res
         .status(403)
@@ -522,7 +551,107 @@ const suspendVendor = async (req, res) => {
 };
 
 
+const getProProducts = async (req, res) => {
+  const school = req.query.school;
 
+  try {
+    const query = { isPro: true };
+    
+    if (school) {
+      query.school = { $regex: school, $options: 'i' };
+    }
+
+    const products = await Product.find(query)
+      .populate({
+        path: 'vendor',
+        select: '-password'
+      })
+      .sort({ createdAt: -1 })
+      .limit(9);
+    
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const upgradeProduct = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    product.isPro = true;
+    await product.save();
+
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const downgradeProduct = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    product.isPro = false;
+    await product.save();
+
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getRandomProducts = async (req, res) => {
+  const limit = parseInt(req.query.limit) || 20;
+  try {
+    const randomProducts = await Product.aggregate([
+      { $sample: { size: limit } }
+    ]);
+    return res.status(200).json(randomProducts);
+  } catch (error) {
+    console.error('Error fetching random products:', error);
+    return [];
+  }
+};
+
+const addNewField = async(field, defaultValue) => {
+  try {
+    const result = await Product.updateMany({}, { $set: { field: defaultValue } });
+    console.log("result: ", result);
+  } catch (err) {
+    console.error('Error updating products:', err);
+  }
+}
+
+const updateProductImageUrls = async (req, res) => {
+  try {
+    const products = await Product.find();
+
+    products.map(async product => {
+      const optimizedImageUrls = optimizeImageUrls(product.imageUrls);
+      product.imageUrls = optimizedImageUrls;
+      await product.save();
+    })
+
+    return res.status(200).json({
+      message: 'Product image URLs updated successfully!',
+      products
+    });
+
+    
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
 
 module.exports = {
   addProduct,
@@ -540,4 +669,10 @@ module.exports = {
   deleteProduct,
   hideProduct,
   suspendVendor,
+  getProProducts,
+  upgradeProduct,
+  downgradeProduct,
+  getRandomProducts,
+  addNewField,
+  updateProductImageUrls
 };

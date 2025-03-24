@@ -6,12 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Spinner from "../../components/Spinner";
 import { useSelector } from "react-redux";
 import ReactGA from "react-ga4";
-import { MdOutlinePerson3 } from "react-icons/md";
-import { schools } from "../../data/schools";
-import { useAxiosInstance } from "../../../config/axiosInstance";
-import InlineSpinner from "../../components/InlineSpinner";
 
-const ManageProducts = () => {
+const ProProducts = () => {
 	ReactGA.send({
 		hitType: "pageview",
 		page: "/admin/manage-products",
@@ -19,22 +15,19 @@ const ManageProducts = () => {
 	});
 	const [products, setProducts] = useState([]);
 	const [searchTerm, setSearchTerm] = useState("");
-	const [school, setSchool] = useState("all")
 	const [isLoading, setIsLoading] = useState(false);
 	const [isDeleteLoading, setIsDeleteLoading] = useState(null);
-	const [isUpdating, setIsUpdating] = useState(null);
+	const [isShowMoreLoading, setIsShowMoreLoading] = useState(false);
 	const [showMore, setShowMore] = useState(false);
-
 	const BASE_URL = import.meta.env.VITE_BASE_URL;
 	const { currentUser } = useSelector((state) => state.user);
-	const axiosInstance = useAxiosInstance();
-	const limit = 1000;
+	const limit = 20;
 
 	useEffect(() => {
 		const fetchProducts = async () => {
 			setIsLoading(true);
 			try {
-				const response = await axios.get(`${BASE_URL}/api/products?limit=${limit}`);
+				const response = await axios.get(`${BASE_URL}/api/products`);
 				setProducts(response.data);
 				setShowMore(response.data.length >= limit)
 			} catch (error) {
@@ -47,19 +40,19 @@ const ManageProducts = () => {
 		fetchProducts();
 	}, []);
 
-	// const onShowMoreClick = async () => {
-	// 	setIsShowMoreLoading(true)
-	// 	const numberOfProducts = products.length;
-	// 	const res = await axios.get(
-	// 		`${BASE_URL}/api/products?startIndex=${numberOfProducts}&&limit=${limit}`
-	// 	);
-	// 	const data = res.data;
-	// 	if (data.length < limit) {
-	// 		setShowMore(false);
-	// 	}
-	// 	setProducts([...products, ...data]);
-	// 	setIsShowMoreLoading(false);
-	// };
+	const onShowMoreClick = async () => {
+		setIsShowMoreLoading(true)
+		const numberOfProducts = products.length;
+		const res = await axios.get(
+			`${BASE_URL}/api/products?startIndex=${numberOfProducts}&&limit=${limit}`
+		);
+		const data = res.data;
+		if (data.length < limit) {
+			setShowMore(false);
+		}
+		setProducts([...products, ...data]);
+		setIsShowMoreLoading(false);
+	};
 
 	const handleDeleteProduct = async (id) => {
 		setIsDeleteLoading(id);
@@ -78,110 +71,26 @@ const ManageProducts = () => {
 		}
 	};
 
-	const upgradeProduct = async (id) => {
-		setIsUpdating(id);
-		try {
-			const response = await axiosInstance.post(`/api/products/pro-products/${id}`)
-			if (response.status == 200) {
-				const updatedProducts = filteredProducts.map((product) =>
-					product._id === id
-						? { ...product, isPro: true }
-						: product
-				);
-				setProducts(updatedProducts);
-			}
-		} catch (error) {
-			console.log("Error from axios response: ", error)
-		}
-		finally {
-			setIsUpdating(null);
-		}
-
-	}
-
-	const downgradeProduct = async (id) => {
-		setIsUpdating(id)
-		try {
-			const response = await axiosInstance.delete(`/api/products/pro-products/${id}`)
-			if (response.status == 200) {
-				const updatedProducts = filteredProducts.map((product) =>
-					product._id === id
-						? { ...product, isPro: false }
-						: product
-				);
-				setProducts(updatedProducts);
-			}
-		} catch (error) {
-			console.log("Error from axios response: ", error)
-		}
-		finally {
-			setIsUpdating(null);
-		}
-
-	}
-
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
 	};
 
-	const handleSchoolChange = (event) => {
-		setSchool(event.target.value)
-	}
-
-	let filteredProducts = products.filter((product) =>
+	const filteredProducts = products.filter((product) =>
 		product.name.toLowerCase().includes(searchTerm.toLowerCase())
 	);
-
-	filteredProducts = filteredProducts.filter((product) => {
-		if (school === "all") {
-			return true;
-		}
-		if (school === "other") {
-			return !Object.keys(schools).some(key => product.vendor?.school.toLowerCase() === key.toLowerCase());
-		}
-		return product.vendor?.school.toLowerCase().includes(school.toLowerCase());
-	});
 
 	return (
 		<div className="min-h-screen bg-gray-100 py-8 px-4">
 			<h1 className="text-3xl font-bold mb-10">Manage Products</h1>
-			<div className="md:w-1/2 md:flex justify-start gap-2">
-				<div className="mb-4 w-full md:w-1/2">
-					<input
-						type="text"
-						placeholder="Search products..."
-						value={searchTerm}
-						onChange={handleSearchChange}
-						className="p-2 border border-blue-300 text-gray-600 rounded focus:bg-white focus:outline-none w-full"
-					/>
-				</div>
-				<div className="mb-4 w-full md:w-1/2">
-					<select
-						name="school"
-						id="school"
-						value={school}
-						onChange={handleSchoolChange}
-						className="p-2.5 border border-blue-300 text-gray-600 rounded w-full focus:bg-white focus:outline-none"
-						required
-					>
-						<option value="">
-							Select school
-						</option>
-						{Object.entries(schools).map(
-							([key, school]) => (
-								<option
-									key={key}
-									value={key}
-									className="text-sm"
-								>
-									{school}
-								</option>
-							)
-						)}
-					</select>
-				</div>
+			<div className="mb-6">
+				<input
+					type="text"
+					placeholder="Search products..."
+					value={searchTerm}
+					onChange={handleSearchChange}
+					className="p-2 border border-gray-300 rounded w-full"
+				/>
 			</div>
-			<div className="mb-3"><span className="font-bold">{filteredProducts && filteredProducts.length}</span> products found</div>
 			{isLoading ? (
 				<Spinner />
 			) : (
@@ -208,7 +117,6 @@ const ManageProducts = () => {
 									<h5 className="text-lg sm:text-xl tracking-tight text-slate-900 line-clamp-1">
 										{product.name}
 									</h5>
-									<p className="flex items-center"><MdOutlinePerson3 className="mr-1" /> {product.vendorName}</p>
 									<div className="mt-0 sm:mt-2 mb-1 sm:mb-5 flex items-center justify-between">
 										<p>
 											<span className="text-md sm:text-xl lg:text-2xl font-bold text-slate-900">
@@ -227,24 +135,23 @@ const ManageProducts = () => {
 							</Link>
 							<div className="p-2 flex gap-1">
 								{isDeleteLoading == product._id ? (
-									<InlineSpinner />
+									<Spinner />
 								) : (
 									<button
 										onClick={() =>
 											handleDeleteProduct(product._id)
 										}
-										className="w-1/2 flex items-center justify-center gap-2 rounded-md bg-red-600 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-red-500 focus:outline-none focus:ring-4 focus:ring-blue-300"
+										className="w-full flex items-center justify-center gap-2 rounded-md bg-red-600 px-2 sm:px-5 py-2 text-center text-xs sm:text-sm font-medium text-white hover:bg-red-500 focus:outline-none focus:ring-4 focus:ring-blue-300"
 									>
 										Delete
 									</button>
 								)}
-								{isUpdating == product._id ? <InlineSpinner /> : <>{product.isPro ? <button onClick={() => { downgradeProduct(product._id) }} className="w-1/2 bg-green-500 text-white rounded-md px-2 text-xs sm:text-sm">Downgrade</button> : <button onClick={() => { upgradeProduct(product._id) }} className="w-1/2 text-white bg-green-500 rounded-md px-2 text-xs sm:text-sm">Upgrade</button>}</>}
 							</div>
 						</div>
 					))}
 				</div>
 			)}
-			{/* {showMore && (
+			{showMore && (
 				<button
 					onClick={onShowMoreClick}
 					className="w-full sm:w-60 mt-5 flex flex-row items-center justify-center px-4 py-3 mb-4 text-sm font-bold bg-blue-700 leading-6 duration-100 transform rounded-sm shadow cursor-pointer focus:ring-1 focus:ring-blue-500 focus:ring-opacity-50 focus:outline-none hover:shadow-lg hover:-translate-y-1 text-white"
@@ -266,9 +173,9 @@ const ManageProducts = () => {
 						</svg>
 					</span>
 				</button>
-			)} */}
+			)}
 		</div>
 	);
 };
 
-export default ManageProducts;
+export default ProProducts;

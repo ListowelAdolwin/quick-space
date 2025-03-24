@@ -43,6 +43,11 @@ const register = async (req, res) => {
     }
 
     const hashedP = bcrypt.hashSync(password, 10)
+    let optimizedImageUrl
+    if (vendorFlyerUrl){
+      optimizedImageUrl = vendorFlyerUrl.replace('/upload/', '/upload/f_auto,q_auto,p_jpg/');
+    }
+
     const newUser = new User({
       contact,
       email,
@@ -54,7 +59,7 @@ const register = async (req, res) => {
       newUser.school = school
       newUser.vendorAddress = vendorAddress
       newUser.vendorCategory = vendorCategory
-      newUser.vendorFlyerUrl = vendorFlyerUrl
+      newUser.vendorFlyerUrl = optimizedImageUrl
       newUser.role = 'vendor'
     }
     await newUser.save()

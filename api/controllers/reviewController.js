@@ -20,7 +20,10 @@ const addReview = async (req, res) => {
 
     await review.save();
 
-    const newReview = await Review.findById(review._id).populate('user');
+    const newReview = await Review.findById(review._id).populate({
+      path: 'user',
+      select: '-password'
+    });
 
     product.totalReviews = product.totalReviews + 1;
     if (product.totalReviews === 1) {
@@ -91,7 +94,10 @@ const editReview = async (req, res) => {
     const { id } = req.params;
     const { rating, comment, productId } = req.body;
 
-    const review = await Review.findById(id).populate('user');;
+    const review = await Review.findById(id).populate({
+      path: 'user',
+      select: '-password'
+    });;
     if (!review) {
       return res.status(404).json({ message: 'Review not found' });
     }

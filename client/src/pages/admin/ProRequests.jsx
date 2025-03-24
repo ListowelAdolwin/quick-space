@@ -83,7 +83,9 @@ const ProRequestsPage = () => {
                         Search
                     </button>
                 </div>
+                
             </div>
+            <div className="mb-3 mt-2"><span className="font-bold">{requests && requests.length}</span> vendors found</div>
 
             {/* Vendor requests cards */}
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

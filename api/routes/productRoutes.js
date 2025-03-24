@@ -12,7 +12,13 @@ const {
     updateProduct, 
     deleteProduct, 
     featureProduct, 
-    unfeatureProduct 
+    unfeatureProduct, 
+    upgradeProduct,
+    getProProducts,
+    downgradeProduct,
+    addIsProField,
+    getRandomProducts,
+    updateProductImageUrls
 } = require("../controllers/productController.js");
 const { verifyRole, verifyToken } = require("../controllers/authController.js");
 
@@ -21,6 +27,10 @@ const router = express.Router();
 router.post("/add", verifyRole(["vendor", "admin"]), addProduct);
 router.delete("/delete/:id", verifyToken, deleteProduct);
 router.post("/update/:id", verifyToken, updateProduct);
+router.get("/pro-products", getProProducts)
+router.get("/random-products", getRandomProducts)
+router.post("/pro-products/:id", verifyToken, verifyRole(["admin"]), upgradeProduct)
+router.delete("/pro-products/:id", verifyToken, verifyRole(["admin"]), downgradeProduct)
 router.get("/feature/:id", featureProduct);
 router.get("/unfeature/:id", unfeatureProduct);
 router.get("/featured", getFeaturedProducts);

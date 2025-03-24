@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RotatingLines } from "react-loader-spinner";
 import ReactGA from "react-ga4";
+import ShareProfileButton from "../components/ShareProfileButton";
 
 const UserProfile = () => {
 		ReactGA.send({
@@ -80,7 +81,7 @@ const UserProfile = () => {
 	const handleDeleteProduct = async (id) => {
 		setIsDeleteLoading(id);
 		try {
-			await axios.get(`${BASE_URL}/api/products/delete/${id}`, {
+			await axios.delete(`${BASE_URL}/api/products/delete/${id}`, {
 				headers: {
 					Authorization: `Bearer ${currentUser?.accessToken}`,
 				},
@@ -202,12 +203,15 @@ const UserProfile = () => {
 										</a>
 									</p>
 									{isVendor && (
-										<p className="text-gray-600">
+										<><p className="text-gray-600">
 											School:{" "}
 											<span className="uppercase">
 												{userData?.school}
 											</span>
 										</p>
+										<p className="flex justify-start"><ShareProfileButton/></p>
+										
+										</>
 									)}
 									<div>
 										{userData?.socialMedia?.facebook && <p className="text-gray-600">

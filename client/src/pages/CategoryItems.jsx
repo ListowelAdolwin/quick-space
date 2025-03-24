@@ -9,7 +9,7 @@ import PageLoader from "../components/PageLoader";
 import { MdOutlinePerson3, MdVerified } from "react-icons/md";
 import { FaCircleChevronLeft } from "react-icons/fa6";
 import ReactGA from "react-ga4";
-import { FaStar } from "react-icons/fa";
+import { FaImages, FaStar } from "react-icons/fa";
 
 const CategoryItems = () => {
 	ReactGA.send({
@@ -75,12 +75,13 @@ const CategoryItems = () => {
 									className="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
 								>
 									<div className="flex items-center justify-center">
-										<p className="mx-0 sm:mx-0 mt-3 flex h-36 sm:h-40 overflow-hidden rounded-xl">
+										<p className="mx-0 sm:mx-0 mt-3 flex h-36 sm:h-40 overflow-hidden rounded-xl relative">
 											<img
 												className="object-cover"
 												src={product.imageUrls[0]}
 												alt="product image"
 											/>
+											<span className="absolute left-1 bottom-1 font-bold text-white px-1 bg-opacity-85 bg-blue-700 rounded-sm flex gap-1 items-center">{product.imageUrls.length} <FaImages /></span>
 										</p>
 									</div>
 									<div className="mt-4 px-2 sm:px-4 pb-3">

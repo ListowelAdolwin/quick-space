@@ -51,7 +51,7 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         server-dir: ${{ secrets.FTP_API_DIR }}
-        local-dir: "./api"
+        local-dir: "./api/"
         protocol: ftps
         log-level: verbose
 
@@ -69,6 +69,6 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         server-dir: ${{ secrets.FTP_CLIENT_DIR }}
-        local-dir: "./client/dist"
+        local-dir: "./client/dist/"
         protocol: ftps
         log-level: verbose

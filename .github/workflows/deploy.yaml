@@ -1,25 +1,74 @@
-name: Deploy to cPanel via FTP
+# name: Deploy to cPanel via FTP
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy:
+#     name: Upload Files to cPanel
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Checkout Repository
+#       uses: actions/checkout@v4
+
+#     - name: FTP Deploy
+#       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+#       with:
+#         server: ${{ secrets.FTP_SERVER }}
+#         username: ${{ secrets.FTP_USERNAME }}
+#         password: ${{ secrets.FTP_PASSWORD }}
+#         #server-dir: ${{ secrets.FTP_DIR }}
+#         protocol: ftps
+#         log-level: verbose
+
+
+
+
+name: Deploy API and Client to cPanel via FTP
 
 on:
   push:
     branches:
-      - main
+      - main  # Deploy only on main branch push
 
 jobs:
   deploy:
-    name: Upload Files to cPanel
+    name: Upload API and Client
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: FTP Deploy
+    # Deploy API Folder
+    - name: Upload API (Node.js)
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        #server-dir: ${{ secrets.FTP_DIR }}
+        server-dir: ${{ secrets.FTP_API_DIR }}
+        local-dir: "./api"
+        protocol: ftps
+        log-level: verbose
+
+    # Build and Deploy React Client
+    - name: Install Dependencies and Build Client
+      run: |
+        cd client
+        npm install
+        npm run build
+
+    - name: Upload Client (React Dist)
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: ${{ secrets.FTP_CLIENT_DIR }}
+        local-dir: "./client/dist"
         protocol: ftps
         log-level: verbose
